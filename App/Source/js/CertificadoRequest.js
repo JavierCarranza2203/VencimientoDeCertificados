@@ -1,31 +1,60 @@
-let container = document.getElementById("Contenedor");
+let frmValidarCertificado = document.getElementById("frmValidarCertificado");
 
-document.getElementById("btnVerDatos").addEventListener("click", ()=>{
-    fetch("../Controllers/ClienteController.php")
-        .then(response => response.json())
-            .then(datosJson =>{
-                let newRow = document.createElement('tr');
 
-                let cell = document.createElement('td');
-                cell.textContent = datosJson.Nombre;
+frmValidarCertificado.addEventListener("submit", (e)=>{
+    e.preventDefault();
 
-                newRow.appendChild(cell);
+    const datosFormulario = new FormData(frmValidarCertificado); // Crea un objeto FormData con los datos del formulario
 
-                let cell2 = document.createElement('td');
-                cell2.textContent = datosJson.FechaInicio;
+    const httpRequest = new XMLHttpRequest(); // Crea una instancia de XMLHttpRequest
 
-                newRow.appendChild(cell2);
+    httpRequest.open("POST", "../Controllers/ClienteController.php"); // Establece la URL y el método de la petición
 
-                let cell3 = document.createElement('td');
-                cell3.textContent = datosJson.FechaFin;
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (httpRequest.status === 200) {
+                let respuesta = JSON.parse(httpRequest.responseText);
+                console.log(respuesta.Nombre);
+            } 
+            else {
+                // Hubo un error en la petición
+                alert("Hubo un error");
+                console.error('Error en la petición');
+            }
+        }
+    };
 
-                newRow.appendChild(cell3);
+    const inputCertificado = document.getElementById("certificadoFirma");
+    const certificado = inputCertificado.files[0];
+    datosFormulario.append("Certificado", certificado);
 
-                let cell4 = document.createElement('td');
-                cell4.textContent = datosJson.Emisor;
-
-                newRow.appendChild(cell4);
-
-                container.appendChild(newRow);
-        });
+    httpRequest.send(datosFormulario);
 });
+
+    // fetch("../Controllers/ClienteController.php")
+    //     .then(response => response.json())
+    //         .then(datosJson =>{
+    //             let newRow = document.createElement('tr');
+
+    //             let cell = document.createElement('td');
+    //             cell.textContent = datosJson.Nombre;
+
+    //             newRow.appendChild(cell);
+
+    //             let cell2 = document.createElement('td');
+    //             cell2.textContent = datosJson.FechaInicio;
+
+    //             newRow.appendChild(cell2);
+
+    //             let cell3 = document.createElement('td');
+    //             cell3.textContent = datosJson.FechaFin;
+
+    //             newRow.appendChild(cell3);
+
+    //             let cell4 = document.createElement('td');
+    //             cell4.textContent = datosJson.Emisor;
+
+    //             newRow.appendChild(cell4);
+
+    //             container.appendChild(newRow);
+    //     });

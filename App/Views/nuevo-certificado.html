@@ -3,15 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Nuevo certificado</title>
+
+    <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
 </head>
 <body>
-        <label for="certificadoFirma">Ingrese el certificado para obtener los datos</label>
+    <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
+        <!-- <label for="certificadoFirma">Ingrese el certificado para obtener los datos</label> -->
         <input type="file" name="certificadoFirma" id="certificadoFirma">
-        <br><br>
 
-        <button type="submit">Enviar</button>
+        <button type="submit">Ver datos</button>
     </form>
+
+
+    <form method="post" id="frmGuardarCertificado">
+        <label for="txtNombre">Titular del certificado:</label>
+        <input type="text" name="txtNombre" id="txtNombre" readonly>
+
+        <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
+        <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly>
+
+        <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
+        <input type="text" name="txtFechaFin" id="txtFechaFin" readonly>
+
+        <button type="submit">Confirmar y guardar</button>
     </form>
+
+    <script src="../Source/js/CertificadoRequest.js"></script>
 </body>
 </html>

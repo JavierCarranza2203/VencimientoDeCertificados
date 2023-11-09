@@ -22,7 +22,6 @@
             $this->Emisor = "Desconocido";
             $this->FechaInicio = null;
             $this->FechaFin = null;
-            $this->_blnStatus = false;
         }
     }
 
