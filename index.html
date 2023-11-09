@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--======== Título ========-->
+    <title> | Iniciar sesión </title>
+
+    <!--======== Icono principal ========-->
+    <link rel="icon" href="App/Utilities/LOGO RG.jpg" type="image/x-icon">
+
+    <!--======== Archivos css ========-->
+    <link rel="stylesheet" href="App/Source/css/reset-syle.css">
+    <link rel="stylesheet" href="App/Source/css/index-style.css">
+
+    <!--======== Archivos js ========-->
+    <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <main>
+        <form action="" class="login-form">
+            <div class="login-form__logo-container">
+                <img src="App/Utilities/LOGO RG.jpg" alt="RG" class="login-form__logo-img">
+                <div class="login-form__logo-text-container">
+                    <h1 class="login-form__logo-text">GARCIA REYES Y ASOCIADOS</h1>
+                    <span class="login-form__line"></span>
+                    <h2>SERVICIOS CONTABLES FISCALES</h2>
+                </div>
+            </div>
+            
+            <a href="" class="login-form__sign-up-button"><i class="fa-solid fa-user-plus"></i> Crear cuenta</a>
+
+            <span class="login-form__line"></span>
+
+            
+            <div class="login-form__textbox">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="txtUserName" id="txtUserName" placeholder="Usuario">
+            </div>
+
+            <div class="login-form__textbox">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="txtPassword" id="txtPassword" placeholder="Contraseña">
+                <i class="fa-solid fa-eye" id="btnShowPassword"></i>
+            </div>
+
+            <!-- <input type="submit" value="Iniciar sesión" class="login-form__login-button"> -->
+            <a href="App/Views/ver-certificados.html" class="login-form__login-button">Iniciar sesion</a>
+        </form>
+    </main>
+</body>
+</html>
