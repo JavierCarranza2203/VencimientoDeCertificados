@@ -1,0 +1,17 @@
+.logo-container{
+    display: flex;
+    text-align: center;
+}
+
+.logo-container__img{
+    width: 75px;
+}
+
+.logo-container__text-container{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 8px;
+    font-size: 1.3em;
+}

@@ -1,0 +1,17 @@
+/* Reset de los estilos */
+@import url("../base/reset-syle.css");
+
+/* Layout de la pagina de login y el formulario */
+@import url("../layout/login-page_layout.css");
+
+/* Tema de la pagina de login y el formulario */
+@import url("../theme/login-page_theme.css");
+
+/* Estados de los elementos de la pagina de login */
+@import url("../state/login-page_states.css");
+
+/* Importacion de los estilos del logo */
+@import url("../module/logo_styles.css");
+
+/* Importacion de los estilos de los textbox */
+@import url("../module/textbox_style.css");

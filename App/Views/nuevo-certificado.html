@@ -4,36 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Nuevo certificado</title>
+    <title>RG I Agregar nuevo cliente</title>
 
     <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
 
+    <!--======== Archivos css ========-->
+    <link rel="stylesheet" href="../Source/css/reset-syle.css">
+    <link rel="stylesheet" href="../Source/css/index-style.css">
     <link rel="stylesheet" href="../Source/css/style-temp.css">
+
+    <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
-        <!-- <label for="certificadoFirma">Ingrese el certificado para obtener los datos</label> -->
-        <input type="file" name="certificadoFirma" id="certificadoFirma">
+    <header class="header">
+        <div class="login-form__logo-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="login-form__logo-img">
+            <div class="login-form__logo-text-container">
+                <h1 class="login-form__logo-text">GARCIA REYES Y ASOCIADOS</h1>
+                <span class="login-form__line"></span>
+                <h2>SERVICIOS CONTABLES FISCALES</h2>
+            </div>
+        </div>
 
-        <button type="submit">Ver datos</button>
-    </form>
+        <h2 class="page-title">Agregar nuevo cliente</h2>
 
+        <nav class="navbar">
+            <a href="#" class="navbar_item">Página principal</a>
+        </nav>
+    </header>
 
-    <form method="post" id="frmGuardarCertificado">
-        <label for="txtNombre">Titular del certificado:</label>
-        <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
+    <main>
+        <section>
+            <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
+                <h3>Ingrese el certificado de la Firme-e</h3>
+                <input type="file" name="certificadoFirma" id="certificadoFirma">
+    
+                <button type="submit">Ver datos</button>
+            </form>
+    
+    
+            <form method="post" id="frmGuardarCertificado">
+                <label for="txtNombre">Titular del certificado:</label>
+                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
 
-        <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
-        <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
+                <label for="txtNombre">RFC del titular:</label>
+                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
+    
+                <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
+                <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
+    
+                <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
+                <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled>   
 
-        <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
-        <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled>
+                <label><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
+            </form>
+        </section>
 
-        <label for="txtEmisor">Emisor del certificado:</label>
-        <input type="text" name="txtEmisor" id="txtEmisor" readonly disabled>
+        <section>
+            <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
+                <h3>Ingrese el certificado del sello</h3>
+                <input type="file" name="certificadoFirma" id="certificadoFirma">
+    
+                <button type="submit">Ver datos</button>
+            </form>
+    
+    
+            <form method="post" id="frmGuardarCertificado">
+                <label for="txtNombre">Titular del certificado:</label>
+                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
 
-        <button type="submit">Confirmar y guardar</button>
-    </form>
+                <label for="txtNombre">RFC del titular:</label>
+                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
+    
+                <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
+                <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
+    
+                <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
+                <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled>
+
+                <label><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
+            </form>
+        </section>
+    </main>
 
     <script src="../Source/js/CertificadoRequest.js"></script>
 </body>

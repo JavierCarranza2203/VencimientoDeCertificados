@@ -1,0 +1,18 @@
+main{
+    min-height: 100vh;
+    display: grid;
+    place-content: center;
+}
+
+.login-form{
+    padding: 24px 32px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login-form__button{
+    padding: 8px 0;
+    text-align: center;
+}

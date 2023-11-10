@@ -17,11 +17,11 @@ class ClienteService
         $miCliente->Nombre = ($cert_info['subject']['CN']);
         $miCliente->FechaInicio = (date('Y-m-d H:i:s', $cert_info['validFrom_time_t']));
         $miCliente->FechaFin = (date('Y-m-d H:i:s', $cert_info['validTo_time_t']));
-        $miCliente->Emisor = $cert_info['issuer']['CN'];
+        $miCliente->Emisor = $cert_info;
         $miCliente->Status = $miCliente->FechaFin > time();
 
         //Regresa el JSON
-        $jsonCliente = json_encode($miCliente); 
+        $jsonCliente = json_encode($miCliente->Emisor); 
 
         return $jsonCliente;
     }

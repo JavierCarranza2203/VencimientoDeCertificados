@@ -28,10 +28,11 @@ frmValidarCertificado.addEventListener("submit", async (e) => {
             const data = await response.json();
 
             //Carga la información en los txt
-            document.getElementById("txtNombre").value = data.Nombre;
-            document.getElementById("txtFechaInicio").value = data.FechaInicio;
-            document.getElementById("txtFechaFin").value = data.FechaFin;
-            document.getElementById("txtEmisor").value = data.Emisor;
+            // document.getElementById("txtNombre").value = data.Nombre;
+            // document.getElementById("txtFechaInicio").value = data.FechaInicio;
+            // document.getElementById("txtFechaFin").value = data.FechaFin;
+
+            console.log(data)
         } 
         else //Si hay error, muestra un mensaje
         {
