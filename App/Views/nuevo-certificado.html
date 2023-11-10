@@ -7,6 +7,8 @@
     <title>Nuevo certificado</title>
 
     <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
+
+    <link rel="stylesheet" href="../Source/css/style-temp.css">
 </head>
 <body>
     <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
@@ -19,13 +21,16 @@
 
     <form method="post" id="frmGuardarCertificado">
         <label for="txtNombre">Titular del certificado:</label>
-        <input type="text" name="txtNombre" id="txtNombre" readonly>
+        <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
 
         <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
-        <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly>
+        <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
 
         <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
-        <input type="text" name="txtFechaFin" id="txtFechaFin" readonly>
+        <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled>
+
+        <label for="txtEmisor">Emisor del certificado:</label>
+        <input type="text" name="txtEmisor" id="txtEmisor" readonly disabled>
 
         <button type="submit">Confirmar y guardar</button>
     </form>

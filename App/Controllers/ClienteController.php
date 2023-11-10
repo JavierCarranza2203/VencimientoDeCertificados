@@ -1,16 +1,26 @@
 <?php
+
 require_once "../Services/ClienteService.php";
 
-$ClienteService = new ClienteService();
+    try
+    {
+        //Instancia de los servicios
+        $ClienteService = new ClienteService();
 
-if (isset($_FILES['Certificado']['tmp_name'])) {
-
-    $contenidoCertificado = file_get_contents($_FILES['Certificado']['tmp_name']);
-    
-    echo $ClienteService->ObtenerDatosCertificado($contenidoCertificado);
-} else {
-    // Manejo de error si no se recibió el archivo
-    echo "No se recibió el archivo Certificado.";
-}
+        //Asigna un nombre temporal al certificado recibido del formulario
+        if (isset($_FILES['Certificado']['tmp_name'])) 
+        {    
+            echo $ClienteService->ObtenerDatosCertificado(file_get_contents($_FILES['Certificado']['tmp_name']));
+        } 
+        else 
+        {
+            // Manejo de error si no se recibió el archivo
+            throw new Exception("No se recibió el archivo");
+        }
+    }
+    catch(Exception $ex)
+    {
+        echo json_encode("Error al analizar el certificado: " . $ex->getMessage());
+    }
 
 ?>
