@@ -11,7 +11,7 @@
 @import url("../state/login-page_states.css");
 
 /* Importacion de los estilos del logo */
-@import url("../module/logo_styles.css");
+@import url("logo_style.css");
 
 /* Importacion de los estilos de los textbox */
-@import url("../module/textbox_style.css");
+@import url("textbox_style.css");

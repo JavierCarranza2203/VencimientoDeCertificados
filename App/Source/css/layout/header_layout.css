@@ -1,0 +1,14 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+}
+
+.header__navbar{
+    display: flex;
+    align-items: center;
+}
+
+.header__navbar-item{
+    margin: 0 8px;
+}

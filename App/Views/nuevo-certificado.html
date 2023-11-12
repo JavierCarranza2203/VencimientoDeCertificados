@@ -9,19 +9,17 @@
     <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/reset-syle.css">
-    <link rel="stylesheet" href="../Source/css/index-style.css">
-    <link rel="stylesheet" href="../Source/css/style-temp.css">
+    <link rel="stylesheet" href="../Source/css/module/new-client_style.css">
 
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header class="header">
-        <div class="login-form__logo-container">
-            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="login-form__logo-img">
-            <div class="login-form__logo-text-container">
-                <h1 class="login-form__logo-text">GARCIA REYES Y ASOCIADOS</h1>
-                <span class="login-form__line"></span>
+        <div class="logo-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
+            <div class="logo-container__text-container">
+                <h1 class="logo-container__text">GARCIA REYES Y ASOCIADOS</h1>
+                <span class="line"></span>
                 <h2>SERVICIOS CONTABLES FISCALES</h2>
             </div>
         </div>
@@ -47,8 +45,8 @@
                 <label for="txtNombre">Titular del certificado:</label>
                 <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
 
-                <label for="txtNombre">RFC del titular:</label>
-                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
+                <label for="txtRFC">RFC del titular:</label>
+                <input type="text" name="txtRFC" id="txtRFC" readonly disabled>
     
                 <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
                 <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
@@ -60,7 +58,7 @@
             </form>
         </section>
 
-        <section>
+        <!-- <section>
             <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
                 <h3>Ingrese el certificado del sello</h3>
                 <input type="file" name="certificadoFirma" id="certificadoFirma">
@@ -84,7 +82,7 @@
 
                 <label><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
             </form>
-        </section>
+        </section> -->
     </main>
 
     <script src="../Source/js/CertificadoRequest.js"></script>

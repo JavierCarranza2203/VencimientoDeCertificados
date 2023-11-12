@@ -1,0 +1,8 @@
+.double-form-container__form-input--disabled{
+    cursor: no-drop;
+    user-select: none;
+}
+
+.double-form-container__form-button:hover{
+    background-color: #4583a0;
+}

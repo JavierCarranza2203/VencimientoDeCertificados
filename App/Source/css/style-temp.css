@@ -1,38 +1,11 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #202020;
-    min-height: 100vh;
-}
-
-.header{
-    display: flex;
-    background-color: #ccc;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px;
-}
-
-main{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    min-height: 100%;
-    margin-top: 16px;
-}
-
 form {
     color: #202020;
-    background-color: #fff;
-    padding: 20px;
+    padding: 8px 16px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px #000;
     max-width: 400px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 10px;
 }
 
 label {
@@ -45,26 +18,12 @@ font-weight: bold;
 input[type="text"],
 input[type="file"] {
 width: 100%;
-padding: 10px;
 border: 1px solid #ccc;
-border-radius: 5px;
-box-sizing: border-box;
-font-size: 16px;
-}
-
-input[type="text"]{
-    cursor: no-drop;
 }
 
 button {
 background-color: #4c77af;
 color: #fff;
-border: none;
-padding: 12px 20px;
-border-radius: 5px;
-font-size: 16px;
-cursor: pointer;
-margin-top: 10px;
 }
 
 button:hover {

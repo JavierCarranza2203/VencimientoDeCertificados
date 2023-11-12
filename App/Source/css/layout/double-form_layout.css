@@ -1,0 +1,43 @@
+.double-form-container{
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+                "form1 form2"
+                "_____ form2";
+}
+
+.double-form-container__form{
+    padding: 8px 16px;
+    border-radius: 10px;
+    max-width: 450px;
+    width: 100%;
+}
+
+.double-form-container__left-form{
+    height: 50%;
+    grid-area: form1;
+}
+
+.double-form-container__right-form{
+    height: 100%;
+    grid-area: form2;
+}
+
+.double-form-container__form-label{
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.double-form-container__form-input{
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.double-form-container__form-button{
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}

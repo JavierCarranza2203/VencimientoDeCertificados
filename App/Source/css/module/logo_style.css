@@ -1,0 +1,5 @@
+/* Layout del logo */
+@import url("../layout/logo_layout.css");
+
+/* Importacion de los estilos para la linea separadora */
+@import url("line_style.css");

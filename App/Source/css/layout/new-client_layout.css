@@ -1,0 +1,21 @@
+body{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 70px 1fr 40px;
+}
+
+.progress-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0 16px;
+}
+
+.progress-bar__levels-container{
+    width: 40%;
+    height: 30px;
+}
+
+.progress-bar__levels-container-level{
+    clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+}

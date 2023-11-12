@@ -1,0 +1,12 @@
+.form{
+    box-shadow: 0 0 10px #202020;
+}
+
+.double-form-container__form-input{
+    border: 1px solid #ccc;
+}
+
+.double-form-container__form-button{
+    background-color: #4c77af;
+    color: #fff;
+}

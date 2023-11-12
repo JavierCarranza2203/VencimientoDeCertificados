@@ -1,0 +1,7 @@
+.progress-bar__levels-container-level--uncomplete{
+    background-color: #ccc;
+}
+
+.progress-bar__levels-container-level--complete{
+    background-color: #a5a5a5;
+}

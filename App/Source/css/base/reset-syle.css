@@ -41,6 +41,7 @@
     -webkit-box-sizing: border-box;
         box-sizing: border-box;
     vertical-align: baseline;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
 /* Evitamos problemas con las imagenes */
@@ -139,7 +140,7 @@ width: initial;
 /* Configuramos la tipografía para toda la web */
 body {
     min-height: 100vh;
-    font-size: 16px;
+    font-size: 14px;
     color: inherit;
     /* opcional */
     line-height: 1.4em;
