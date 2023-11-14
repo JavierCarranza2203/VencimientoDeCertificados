@@ -15,10 +15,10 @@ class ClienteService
         //Instancia de lc clase Cliente
         $miCliente = new Cliente();
         $miCliente->Nombre = ($cert_info['subject']['CN']);
-        $miCliente->FechaInicio = (date('Y-m-d H:i:s', $cert_info['validFrom_time_t']));
-        $miCliente->FechaFin = (date('Y-m-d H:i:s', $cert_info['validTo_time_t']));
+        $miCliente->FechaInicio = (date('d-m-Y', $cert_info['validFrom_time_t']));
+        $miCliente->FechaFin = (date('d-m-Y', $cert_info['validTo_time_t']));
         $miCliente->RFC = $cert_info['subject']['x500UniqueIdentifier'];
-        $miCliente->Status = $miCliente->FechaFin > time();
+        $miCliente->Status = strtotime($miCliente->FechaFin) > time();
 
         //Regresa el JSON
         $jsonCliente = json_encode($miCliente); 

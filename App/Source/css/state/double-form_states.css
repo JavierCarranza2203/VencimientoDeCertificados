@@ -6,3 +6,11 @@
 .double-form-container__form-button:hover{
     background-color: #4583a0;
 }
+
+.double-form-container__form-status--active{
+    color: #106806;
+}
+
+.double-form-container__form-status--inactive{
+    color: #680606;
+}

@@ -2,3 +2,7 @@
     font-weight: bold;
     color: blue;
 }
+
+.header__navbar-item:hover{
+    font-weight: bold;
+}

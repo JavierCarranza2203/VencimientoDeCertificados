@@ -1,11 +1,11 @@
-let frmValidarCertificado = document.getElementById("frmValidarCertificado");
+let frmValidarCertificadoFirma = document.getElementById("frmValidarCertificadoFirma");
 
 
-frmValidarCertificado.addEventListener("submit", async (e) => {
+frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     // Obtener el formulario y crear un objeto FormData
-    const formData = new FormData(document.getElementById("frmValidarCertificado"));
+    const formData = new FormData(frmValidarCertificadoFirma);
     const inputCertificado = document.getElementById("certificadoFirma");
 
     // Obtener el archivo del input
@@ -29,12 +29,30 @@ frmValidarCertificado.addEventListener("submit", async (e) => {
 
             //Carga la información en los txt   
             
-            document.getElementById("txtNombre").value = data.Nombre;
-            document.getElementById("txtRFC").value = data.RFC; 
-
+            document.getElementById("txtNombreEnFirma").value = data.Nombre;
+            document.getElementById("txtRfcEnFirma").value = data.RFC; 
+            document.getElementById("txtFechaInicioEnFirma").value = data.FechaInicio;
+            document.getElementById("txtFechaFinEnFirma").value = data.FechaFin;
             
-            document.getElementById("txtFechaInicio").value = data.FechaInicio;
-            document.getElementById("txtFechaFin").value = data.FechaFin;
+            let status = document.getElementById("StatusFirma");
+            status.innerHTML = "";
+
+            let icon = document.createElement('i');
+            icon.classList.add("fa-solid");
+            icon.classList.add("fa-circle");
+
+            if(data.Status)
+            {
+                icon.classList.add("double-form-container__form-status--active");
+                status.appendChild(icon);
+                status.appendChild(document.createTextNode(" Vigente"))
+            }
+            else
+            {
+                icon.classList.add("double-form-container__form-status--inactive");
+                status.appendChild(icon);
+                status.appendChild(document.createTextNode(" Vencido"))
+            }
 
             console.log(data)
         } 
@@ -49,4 +67,4 @@ frmValidarCertificado.addEventListener("submit", async (e) => {
         alert("Error")
         console.error('Error en la petición:', error);
     }
-});
+})

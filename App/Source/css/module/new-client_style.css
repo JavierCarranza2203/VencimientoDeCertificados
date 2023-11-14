@@ -7,6 +7,9 @@
 /* Tema de la pagina de nuevo cliente */
 @import url("../theme/new-client_theme.css");
 
+/* Estados de la pagina de nuevo cliente */
+@import url("../state/new-client_states.css");
+
 /* Importacion de los estilos del header */
 @import url("header_style.css");
 

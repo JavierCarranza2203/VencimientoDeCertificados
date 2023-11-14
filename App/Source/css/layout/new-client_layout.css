@@ -1,7 +1,7 @@
 body{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 70px calc(100vh - 150px) 80px;
+    grid-template-rows: 70px 1fr 70px;
     grid-template-areas:
                 "header header"
                 "double-form-container double-form-container"
@@ -12,14 +12,14 @@ body{
     grid-area: footer;
     display: flex;
     justify-content: space-between;
-    padding: 0 10%;
-    
+    padding: 10px 32px;
+    align-items: center;
 }
 
 .progress-bar__levels-container{
     display: flex;
     width: 40%;
-    height: 70%;
+    height: 40px;
 }
 
 .progress-bar__levels-container-level{
@@ -28,7 +28,8 @@ body{
     display: flex;
     align-items: center;
     padding: 10px;
-    font-size: 1.3em;
+    user-select: none;
+    font-weight: bold;
     clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
 }
 
