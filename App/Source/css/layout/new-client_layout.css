@@ -1,21 +1,55 @@
 body{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 70px 1fr 40px;
+    grid-template-rows: 70px calc(100vh - 150px) 80px;
+    grid-template-areas:
+                "header header"
+                "double-form-container double-form-container"
+                "footer footer";
 }
 
 .progress-bar{
+    grid-area: footer;
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    padding: 0 16px;
+    justify-content: space-between;
+    padding: 0 10%;
+    
 }
 
 .progress-bar__levels-container{
+    display: flex;
     width: 40%;
-    height: 30px;
+    height: 70%;
 }
 
 .progress-bar__levels-container-level{
+    width: 170px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 1.3em;
     clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+}
+
+.progress-bar__levels-container-level:nth-child(2){
+    margin-left: -40px;
+    clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%, 0% 0%);
+}
+
+.progress-bar__levels-container-level > span{
+    margin-left: 35px;
+}
+
+.progress-bar__levels-container-level:nth-child(2) > span{
+    margin-left: 55px;
+}
+
+.progress-bar__levels-container-level:nth-child(3){
+    margin-left: -40px;
+    clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 25% 50%, 0% 0%);
+}
+
+.progress-bar__levels-container-level:nth-child(3) > span{
+    margin-left: 50px;
 }

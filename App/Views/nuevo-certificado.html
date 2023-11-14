@@ -31,32 +31,32 @@
         </nav>
     </header>
 
-    <main>
-        <section>
-            <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
-                <h3>Ingrese el certificado de la Firme-e</h3>
-                <input type="file" name="certificadoFirma" id="certificadoFirma">
-    
-                <button type="submit">Ver datos</button>
-            </form>
-    
-    
-            <form method="post" id="frmGuardarCertificado">
-                <label for="txtNombre">Titular del certificado:</label>
-                <input type="text" name="txtNombre" id="txtNombre" readonly disabled>
+    <section class="double-form-container">
+        <form method="post" id="frmValidarCertificado" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
+            <h3 class="double-form-container__form-title">Ingrese el certificado de la Firme-e</h3>
+            <input type="file" name="certificadoFirma" id="certificadoFirma" class="double-form-container__form-input">
 
-                <label for="txtRFC">RFC del titular:</label>
-                <input type="text" name="txtRFC" id="txtRFC" readonly disabled>
-    
-                <label for="txtFechaInicio">Fecha de trámite del certificado:</label>
-                <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled>
-    
-                <label for="txtFechaFin">Fecha de vencimiento del certificado:</label>
-                <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled>   
+            <button type="submit" class="double-form-container__form-button">Ver datos</button>
+        </form>
 
-                <label><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
-            </form>
-        </section>
+
+        <div class="double-form-container__form double-form-container__right-form">
+            <h3 class="double-form-container__form-title">Datos del certificado</h3>
+            <label for="txtNombre" class="double-form-container__form-label">Titular del certificado:</label>
+            <input type="text" name="txtNombre" id="txtNombre" readonly disabled class="double-form-container__form-input">
+
+            <label for="txtRFC" class="double-form-container__form-label">RFC del titular:</label>
+            <input type="text" name="txtRFC" id="txtRFC" readonly disabled class="double-form-container__form-input">
+
+            <label for="txtFechaInicio" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
+            <input type="text" name="txtFechaInicio" id="txtFechaInicio" readonly disabled class="double-form-container__form-input">
+
+            <label for="txtFechaFin" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
+            <input type="text" name="txtFechaFin" id="txtFechaFin" readonly disabled class="double-form-container__form-input">   
+
+            <label class="double-form-container__form-label"><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
+        </div>
+    </section>
 
         <!-- <section>
             <form method="post" id="frmValidarCertificado" enctype="multipart/form-data">
@@ -83,7 +83,17 @@
                 <label><i class="fa-solid fa-circle" style="color: #106806;"></i> Vigente</label>
             </form>
         </section> -->
-    </main>
+
+    <footer class="progress-bar">
+        <section class="progress-bar__levels-container">
+            <h3 class="progress-bar__levels-container-level"><span>Firma</span></h3>
+            <h3 class="progress-bar__levels-container-level"><span>Sello</span></h3>
+            <h3 class="progress-bar__levels-container-level"><span>Listo!</span></h3>
+        </section>
+
+        <button>asda</button>
+    </footer>
+
 
     <script src="../Source/js/CertificadoRequest.js"></script>
 </body>

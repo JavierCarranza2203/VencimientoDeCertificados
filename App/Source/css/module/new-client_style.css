@@ -4,8 +4,14 @@
 /* Layout de la pagina de nuevo cliente */
 @import url("../layout/new-client_layout.css");
 
+/* Tema de la pagina de nuevo cliente */
+@import url("../theme/new-client_theme.css");
+
 /* Importacion de los estilos del header */
 @import url("header_style.css");
+
+/* Importacion de los estilos del form */
+@import url("double-form_style.css");
 
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{

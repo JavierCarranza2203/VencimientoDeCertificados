@@ -27,7 +27,8 @@ frmValidarCertificado.addEventListener("submit", async (e) => {
             // Obtiene los datos de la respuesta como un objeto JSON
             const data = await response.json();
 
-            //Carga la información en los txt
+            //Carga la información en los txt   
+            
             document.getElementById("txtNombre").value = data.Nombre;
             document.getElementById("txtRFC").value = data.RFC; 
 

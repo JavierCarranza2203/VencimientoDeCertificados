@@ -1,5 +1,9 @@
-.form{
+.double-form-container__form{
     box-shadow: 0 0 10px #202020;
+}
+
+.double-form-container__form-title{
+    font-weight: bold;
 }
 
 .double-form-container__form-input{
