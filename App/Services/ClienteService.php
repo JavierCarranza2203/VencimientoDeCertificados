@@ -25,7 +25,6 @@ class ClienteService
 
         return $jsonCliente;
     }
-
 }
 
 ?>

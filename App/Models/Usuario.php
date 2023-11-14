@@ -4,15 +4,20 @@ class Usuario
 {
     public $NombreCompleto;
     public $NombreUsuario;
-    public $Password;
+    private $Password;
     public $Rol;
 
-    public function __construct()
+    public function __construct($pw)
     {   
         $this->NombreCompleto = "Desconocido";
         $this->NombreUsuario = "Desconocido";
-        $this->Password = "Desconocida";
+        $this->Password = $pw;
         $this->Rol = "Desconocido";
+    }
+
+    public function CompararPassword($pw)
+    {
+        return $this->Password === $pw;
     }
 }
 

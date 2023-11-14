@@ -1,0 +1,4 @@
+CREATE TABLE cliente(
+    rfc VARCHAR(10) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(80)
+);

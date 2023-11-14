@@ -1,3 +1,12 @@
+.double-form-container{
+    transition: all 0.5s;
+}
+
+.double-form-container__form--disabled{
+    margin-right: 100vw;
+    transition: all 0.5s;
+}
+
 .double-form-container__form-input--disabled{
     cursor: no-drop;
     user-select: none;
