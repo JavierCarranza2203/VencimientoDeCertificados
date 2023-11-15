@@ -2,12 +2,13 @@
 
 class Usuario
 {
-    public $NombreCompleto;
-    public $NombreUsuario;
-    private $Password;
-    public $Rol;
+    public string $NombreCompleto;
+    public string $NombreUsuario;
+    private string $Password;
+    public string $Rol;
+    public string $GrupoClientes;
 
-    public function __construct($pw)
+    public function __construct(string $pw)
     {   
         $this->NombreCompleto = "Desconocido";
         $this->NombreUsuario = "Desconocido";
@@ -15,7 +16,7 @@ class Usuario
         $this->Rol = "Desconocido";
     }
 
-    public function CompararPassword($pw)
+    public function CompararPassword(string $pw)
     {
         return $this->Password === $pw;
     }

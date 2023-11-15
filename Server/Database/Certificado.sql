@@ -4,6 +4,6 @@ CREATE TABLE certificado(
     fecha_inicio DATE,
     fecha_fin DATE,
     estatus BOOLEAN,
-    -- Llave foranea para la tabla cliente
-    id_cliente INT
+    id_cliente VARCHAR(15),
+    FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE
 );
