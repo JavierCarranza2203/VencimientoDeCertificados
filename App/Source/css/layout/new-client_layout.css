@@ -1,11 +1,10 @@
 body{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 70px 1fr 70px;
     grid-template-areas:
-                "header header"
-                "double-form-container double-form-container"
-                "footer footer";
+                "header"
+                "double-form-container"
+                "footer";
 }
 
 .progress-bar{

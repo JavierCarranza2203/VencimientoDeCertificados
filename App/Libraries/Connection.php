@@ -10,7 +10,7 @@ class Connection
 
         if ($this->db_conection->connect_error) 
         {
-            echo "Hubo un error al conectar al servidor: " . $this->db_conection->connect_error;
+            throw new Exception("Hubo un error al conectar al servidor: " . $this->db_conection->connect_error);
         }
         
         $this->db_conection->set_charset(DB_CHARSET);

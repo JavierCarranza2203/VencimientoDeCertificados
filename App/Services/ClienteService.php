@@ -4,7 +4,7 @@ require_once "../Models/Cliente.php";
 
 class ClienteService 
 {
-    public function ObtenerDatosCertificado($rcContent)
+    public function ObtenerDatosCertificado($rcContent) : string
     {
         //Convierte el contenido del archivo a binario
         $encoded = "-----BEGIN CERTIFICATE-----\n".base64_encode($rcContent)."\n-----END CERTIFICATE-----";

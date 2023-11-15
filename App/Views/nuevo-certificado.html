@@ -10,7 +10,6 @@
 
     <!--======== Archivos css ========-->
     <link rel="stylesheet" href="../Source/css/module/new-client_style.css">
-    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
 
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
@@ -34,59 +33,60 @@
         </nav>
     </header>
 
-    <section class="double-form-container" id="DatosFirmaE">
-        <form method="POST" id="frmValidarCertificadoFirma" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
-            <h3 class="double-form-container__form-title">Ingrese el certificado de la Firme-e</h3>
-            <input type="file" name="certificadoFirma" id="certificadoFirma" class="double-form-container__form-input">
+        <!-- <section class="double-form-container" id="DatosFirmaE">
+            <form method="POST" id="frmValidarCertificadoFirma" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
+                <h3 class="double-form-container__form-title">Ingrese el certificado de la Firme-e</h3>
+                <input type="file" name="certificadoFirma" id="certificadoFirma" class="double-form-container__form-input">
 
-            <button type="submit" class="double-form-container__form-button">Ver datos</button>
-        </form>
-
-
-        <div class="double-form-container__form double-form-container__right-form">
-            <h3 class="double-form-container__form-title">Datos del certificado</h3>
-            <label for="txtNombreEnFirma" class="double-form-container__form-label">Titular del certificado:</label>
-            <input type="text" name="txtNombreEnFirma" id="txtNombreEnFirma" readonly disabled class="double-form-container__form-input">
-
-            <label for="txtRfcEnFirma" class="double-form-container__form-label">RFC del titular:</label>
-            <input type="text" name="txtRfcEnFirma" id="txtRfcEnFirma" readonly disabled class="double-form-container__form-input">
-
-            <label for="txtFechaInicioEnFirma" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
-            <input type="text" name="txtFechaInicioEnFirma" id="txtFechaInicioEnFirma" readonly disabled class="double-form-container__form-input">
-
-            <label for="txtFechaFinEnFirma" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
-            <input type="text" name="txtFechaFinEnFirma" id="txtFechaFinEnFirma" readonly disabled class="double-form-container__form-input">   
-
-            <label class="double-form-container__form-label" id="StatusFirma"></label>
-        </div>
-    </section>
-
-    <!-- <section class="double-form-container" id="datosSellos">
-        <form method="POST" id="frmValidarCertificadoSello" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
-            <h3 class="double-form-container__form-title">Ingrese el certificado del sello</h3>
-            <input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input">
-
-            <button type="submit" class="double-form-container__form-button">Ver datos</button>
-        </form>
+                <button type="submit" class="double-form-container__form-button">Ver datos</button>
+            </form>
 
 
-        <div class="double-form-container__form double-form-container__right-form">
-            <h3 class="double-form-container__form-title">Datos del certificado</h3>
-            <label for="txtNombreEnSello" class="double-form-container__form-label">Titular del certificado:</label>
-            <input type="text" name="txtNombreEnSello" id="txtNombreEnSello" readonly disabled class="double-form-container__form-input">
+            <div class="double-form-container__form double-form-container__right-form">
+                <h3 class="double-form-container__form-title">Datos del certificado</h3>
+                <label for="txtNombreEnFirma" class="double-form-container__form-label">Titular del certificado:</label>
+                <input type="text" name="txtNombreEnFirma" id="txtNombreEnFirma" readonly disabled class="double-form-container__form-input">
 
-            <label for="txtRfcEnSello" class="double-form-container__form-label">RFC del titular:</label>
-            <input type="text" name="txtRfcEnSello" id="txtRfcEnSello" readonly disabled class="double-form-container__form-input">
+                <label for="txtRfcEnFirma" class="double-form-container__form-label">RFC del titular:</label>
+                <input type="text" name="txtRfcEnFirma" id="txtRfcEnFirma" readonly disabled class="double-form-container__form-input">
 
-            <label for="txtFechaInicioEnSello" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
-            <input type="text" name="txtFechaInicioEnSello" id="txtFechaInicioEnSello" readonly disabled class="double-form-container__form-input">
+                <label for="txtFechaInicioEnFirma" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
+                <input type="text" name="txtFechaInicioEnFirma" id="txtFechaInicioEnFirma" readonly disabled class="double-form-container__form-input">
 
-            <label for="txtFechaFinEnSello" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
-            <input type="text" name="txtFechaFinEnSello" id="txtFechaFinEnSello" readonly disabled class="double-form-container__form-input">   
+                <label for="txtFechaFinEnFirma" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
+                <input type="text" name="txtFechaFinEnFirma" id="txtFechaFinEnFirma" readonly disabled class="double-form-container__form-input">   
 
-            <label class="double-form-container__form-label" id="StatusSello"></label>
-        </div>
-    </section> -->
+                <label class="double-form-container__form-label" id="StatusFirma"></label>
+            </div>
+        </section> -->
+
+        <section class="double-form-container" id="datosSellos">
+            <form method="POST" id="frmValidarCertificadoSello" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
+                <h3 class="double-form-container__form-title">Ingrese el certificado del sello</h3>
+                <input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input">
+
+                <button type="submit" class="double-form-container__form-button">Ver datos</button>
+            </form>
+
+
+            <div class="double-form-container__form double-form-container__right-form">
+                <h3 class="double-form-container__form-title">Datos del certificado</h3>
+                <label for="txtNombreEnSello" class="double-form-container__form-label">Titular del certificado:</label>
+                <input type="text" name="txtNombreEnSello" id="txtNombreEnSello" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtRfcEnSello" class="double-form-container__form-label">RFC del titular:</label>
+                <input type="text" name="txtRfcEnSello" id="txtRfcEnSello" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtFechaInicioEnSello" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
+                <input type="text" name="txtFechaInicioEnSello" id="txtFechaInicioEnSello" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtFechaFinEnSello" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
+                <input type="text" name="txtFechaFinEnSello" id="txtFechaFinEnSello" readonly disabled class="double-form-container__form-input">   
+
+                <label class="double-form-container__form-label" id="StatusSello"></label>
+            </div>
+        </section>
+    
 
     <footer class="progress-bar">
         <section class="progress-bar__levels-container">
@@ -98,8 +98,7 @@
         <button class="double-form-container__form-button">Siguiente</button>
     </footer>
 
-
-    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
-    <script src="../Source/js/CertificadoRequest.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="../Source/js/app_nuevo-certificado.js"></script>
 </body>
 </html>
