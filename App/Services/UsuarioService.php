@@ -4,23 +4,9 @@ require_once '../Models/Usuario.php';
 
 class UsuarioService
 {
-    public function BuscarUsuario($nu)
+    public function IniciarSesion($nu, $pw)
     {
-        $miUsuario = new Usuario($nu);
-
-        return $miUsuario;
-    }
-
-    public function ValidarUsuarioLogeado()
-    {
-    }
-
-    public function AgregarUsuario($nuevoUsuario)
-    {
-    }
-
-    public function EliminarUsuario($antiguoUsuario)
-    {
+        $miUsuario = $this->BuscarUsuario($nu);
     }
 
     public function CerrarSesion()
@@ -28,8 +14,31 @@ class UsuarioService
         return session_destroy();
     }
 
-    public function IniciarSesion($nu, $pw)
+    public function ValidarUsuarioLogeado()
     {
+        return true;
+    }
+
+    public function AgregarUsuario($nuevoUsuario)
+    {
+        return true;
+    }
+
+    public function EliminarUsuario($antiguoUsuario)
+    {
+        return true;
+    }
+
+    private function BuscarUsuario($nu)
+    {
+        $miUsuario = new Usuario($nu);
+
+        return $miUsuario;
+    }
+
+    public function ObtenerTodosLosUsuarios()
+    {
+        $miUsuario = new Usuario("Desconocida");
     }
 }
 ?>
