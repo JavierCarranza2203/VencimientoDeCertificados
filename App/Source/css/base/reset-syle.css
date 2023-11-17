@@ -10,9 +10,6 @@
 /* Aquí definimos las Custom properties */
 :root {
     --negro: #393939;
-    /* Tipografía */
-    --tipo-principal: Helvetica, Arial, sans-serif;
-    --tipo-secundaria: Verdana;
 }
 
 /* Las adaptamos al modo oscuro */

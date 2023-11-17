@@ -6,7 +6,7 @@ define('DB_USER', 'root');
 
 define('DB_PASSWORD', '');
 
-define('DB_NAME', 'proyecto_notarial_db');
+define('DB_NAME', 'despacho_contable');
 
 define('DB_CHARSET', 'utf8');
 

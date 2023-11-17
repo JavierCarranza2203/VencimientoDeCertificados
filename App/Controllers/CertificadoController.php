@@ -1,16 +1,14 @@
 <?php
 
-require_once "../Services/ClienteService.php";
-
+require_once "../Services/CertificadoService.php";
     try
     {
-        //Instancia de los servicios
-        $ClienteService = new ClienteService();
+        $CertificadoService = new CertificadoService();
 
         //Asigna un nombre temporal al certificado recibido del formulario
         if (isset($_FILES['Certificado']['tmp_name'])) 
         {    
-            echo $ClienteService->ObtenerDatosCertificado(file_get_contents($_FILES['Certificado']['tmp_name']));
+            echo $CertificadoService->ObtenerDatosCertificado(file_get_contents($_FILES['Certificado']['tmp_name']));
         } 
         else 
         {

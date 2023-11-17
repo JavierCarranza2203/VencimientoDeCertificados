@@ -5,26 +5,35 @@ require_once '../Libraries/Connection.php';
 
 class UsuarioService extends Connection
 {
+    //Código de acceso (Se requiere para operaciones críticas como borrar usuarios)
     private int $codigoDeAccesso = 00175;
 
+    //Constructor para inicializar la conexién a la base de datos
     public function __construct()
     {
         parent::__construct();
     }
 
+    //Método para iniciar sesion
     public function IniciarSesion(string $nu, string $pw) : string
     {
         $miUsuario = $this->BuscarUsuario($nu);
+
+        if($miUsuario == null)
+        {
+            throw new Error("El nombre de usuario no es correcto");
+        }
 
         if($miUsuario->CompararPassword($pw))
         {
             session_start();
 
+            $_SESSION['nombre_completo'] = $miUsuario->NombreCompleto;
             $_SESSION['nombre_usuario'] = $miUsuario->NombreUsuario;
             $_SESSION['rol_usuario'] = $miUsuario->Rol;
             $_SESSION['grupo_cliente_usuario'] = $miUsuario->GrupoClientes;
 
-            return "La sesión ha sido iniciada correctamente";
+            return "Se ha iniciado sesión";
         }
         else
         {
@@ -32,16 +41,18 @@ class UsuarioService extends Connection
         }
     }
 
+    //Método para cerrar sesión
     public function CerrarSesion() : bool
     {
         session_start();
         return session_destroy();
     }
 
-    public function ObtenerUsuarioLogeado() : Usuario
+    //Método para obtener el usuario actual en sesión
+    public function ObtenerUsuarioLogeado(int $codigoDeAccesso) : Usuario
     {
         session_start();
-        if($_SESSION['usuario'] != null)
+        if($_SESSION['nombre_usuario'] != null)
         {
             $miUsuario = new Usuario("Desconocida");
 
@@ -57,7 +68,8 @@ class UsuarioService extends Connection
         }
     }
 
-    public function AgregarUsuario(Usuario $nuevoUsuario, string $password) : string
+    //Método para agregar usuarios
+    public function AgregarUsuario(Usuario $nuevoUsuario, int $codigoDeAccesso) : string
     {
         if($this->BuscarUsuario($nuevoUsuario->NombreUsuario) != null)
         {
@@ -80,6 +92,7 @@ class UsuarioService extends Connection
         }
     }
 
+    //Método para eliminar usuarios
     public function EliminarUsuario(string $nombre_antiguo_usuario, int $codigoDeAccesso) : string
     {
         if($codigoDeAccesso == $this->codigoDeAccesso)
@@ -103,6 +116,7 @@ class UsuarioService extends Connection
         }
     }
 
+    //Método para buscar un usuario (solo se usa dentro de la clase)
     private function BuscarUsuario(string $nu) : ?Usuario
     {
         $stmt = $this->db_conection->prepare("SELECT * FROM usuario WHERE nombre_usuario = ?");
@@ -120,6 +134,8 @@ class UsuarioService extends Connection
 
             $miUsuario->NombreCompleto = $usuarioVirtual["nombre_completo"];
             $miUsuario->NombreUsuario = $usuarioVirtual["nombre_usuario"];
+            $miUsuario->Rol = $usuarioVirtual["rol"];
+            $miUsuario->GrupoClientes = $usuarioVirtual["grupo_clientes"];
 
             $usuarioVirtual = null;
 
@@ -131,7 +147,8 @@ class UsuarioService extends Connection
         }
     }
 
-    public function ObtenerTodosLosUsuarios()
+    //Método para obtener todos los usuarios
+    public function ObtenerTodosLosUsuarios(int $codigoDeAccesso)
     {
         $miUsuario = new Usuario("Desconocida");
     }

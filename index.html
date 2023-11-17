@@ -18,7 +18,7 @@
 </head>
 <body>
     <main>
-        <form action="" class="login-form">
+        <form method="POST" enctype="multipart/form-data" id="frmIniciarSesion" class="login-form">
             <div class="logo-container">
                 <img src="App/Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
                 <div class="logo-container__text-container">
@@ -44,9 +44,11 @@
                 <i class="fa-solid fa-eye" id="btnShowPassword"></i>
             </div>
 
-            <!-- <input type="submit" value="Iniciar sesión" class="login-form__login-button"> -->
-            <a href="App/Views/nuevo-certificado.html" class="login-form__button">Iniciar sesion</a>
+            <input type="submit" value="Iniciar sesión" class="login-form__button">
         </form>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="App/Source/js/app_iniciar-sesion.js"></script>
 </body>
 </html>

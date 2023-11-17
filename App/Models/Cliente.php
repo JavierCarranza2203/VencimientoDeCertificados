@@ -1,5 +1,9 @@
 <?php
 
+require_once 'Firma.php';
+require_once 'Sello.php';
+
+
     class Cliente
     {
         /*========== Propiedades ==========*/
@@ -15,6 +19,9 @@
         //Status del certificado (Vigente / Vencido)
         public bool $Status;
 
+        public Sello $Sello;
+        public Firma $Firma;
+
         //Constructor
         public function __construct()
         {
@@ -23,6 +30,8 @@
             $this->FechaInicio = null;
             $this->FechaFin = null;
             $this->Status = false;
+            $this->Sello = new Sello("Desconocida");
+            $this->Firma = new Firma("Desconocida");
         }
     }
 

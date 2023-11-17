@@ -1,5 +1,7 @@
 <?php
 
+require_once '../Config/config.php';
+
 class Connection
 {
     protected $db_conection;
