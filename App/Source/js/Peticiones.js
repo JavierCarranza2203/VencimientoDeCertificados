@@ -44,3 +44,22 @@ export async function IniciarSesion(NombreDeUsuario, Contrasenia) {
         throw new Error('No se puede iniciar sesión. Intente más tarde');
     }
 }
+
+export async function ValidarUsuarioLogeado()
+{
+
+    const response = await fetch("../Controllers/CertificadoController.php?operacion=userLogged", {
+        method: "GET"
+    });
+
+    if (response.ok) 
+    {
+        const data = await response.json();
+        return data;
+    } 
+    else 
+    {
+        console.error("Hubo un error. Estado de la respuesta: " + response.status + ", Texto de la respuesta: " + await response.text());
+        throw new Error('Error en la petición');
+    }
+}

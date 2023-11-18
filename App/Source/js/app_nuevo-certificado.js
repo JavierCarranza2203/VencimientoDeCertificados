@@ -1,11 +1,25 @@
 import { ObtenerDatosDelCertificado } from "./Peticiones.js";
 
-let frmValidarCertificadoFirma = document.getElementById("frmValidarCertificadoFirma");
+window.addEventListener("load", async ()=> {
+    const response = await fetch("../Controllers/UsuarioController.php?Operacion=userLogged",{method:"GET"})
 
-const txtNombreEnFirma = document.getElementById("txtNombreEnFirma");
-const txtRfcEnFirma = document.getElementById("txtRfcEnFirma");
-const txtFechaInicioEnFirma = document.getElementById("txtFechaInicioEnFirma");
-const txtFechaFinEnFirma = document.getElementById("txtFechaFinEnFirma");
+    if (response.ok) 
+    {
+        console.log(response)
+    } 
+    else 
+    {
+        console.error("Hubo un error. Estado de la respuesta: " + response.status + ", Texto de la respuesta: " + await response.text());
+        throw new Error('Error en la petición');
+    }
+});
+
+// let frmValidarCertificadoFirma = document.getElementById("frmValidarCertificadoFirma");
+
+// const txtNombreEnFirma = document.getElementById("txtNombreEnFirma");
+// const txtRfcEnFirma = document.getElementById("txtRfcEnFirma");
+// const txtFechaInicioEnFirma = document.getElementById("txtFechaInicioEnFirma");
+// const txtFechaFinEnFirma = document.getElementById("txtFechaFinEnFirma");
 
 let frmValidarCertificadoSello = document.getElementById("frmValidarCertificadoSello");
 
@@ -16,37 +30,37 @@ const txtFechaFinEnSello = document.getElementById("txtFechaFinEnSello");
 const statusSello = document.getElementById("StatusSello");
 
 
-frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
-    try 
-    {
-        //Cancela el evento submit del formulario para validar el sello
-        e.preventDefault();
+// frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
+//     try 
+//     {
+//         //Cancela el evento submit del formulario para validar el sello
+//         e.preventDefault();
 
-        // Obtener el archivo del input
-        const certificado = document.getElementById("certificadoFirma").files[0];
+//         // Obtener el archivo del input
+//         const certificado = document.getElementById("certificadoFirma").files[0];
 
-        //Llama al metodo para mostrar los datos en los inputs y recibe como parametro la funcion para obtener los datos
-        MostrarDatos(
-            txtNombreEnFirma, 
-            txtRfcEnFirma, 
-            txtFechaInicioEnFirma, 
-            txtFechaFinEnFirma, 
-            statusSello, 
-            await ObtenerDatosDelCertificado(certificado) //Aqui recibe la funcion para sacar los datos del certificado
-        );
-    } 
-    catch (error) //En caso de que sea un error no esperado, muestra el mensaje en consola
-    {
-        Swal.fire({
-            icon: "error",
-            title: "¡Hubo un error inesperado!",
-            text: "Intente de nuevo más tarde",
-            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
-        });
+//         //Llama al metodo para mostrar los datos en los inputs y recibe como parametro la funcion para obtener los datos
+//         MostrarDatos(
+//             txtNombreEnFirma, 
+//             txtRfcEnFirma, 
+//             txtFechaInicioEnFirma, 
+//             txtFechaFinEnFirma, 
+//             statusSello, 
+//             await ObtenerDatosDelCertificado(certificado) //Aqui recibe la funcion para sacar los datos del certificado
+//         );
+//     } 
+//     catch (error) //En caso de que sea un error no esperado, muestra el mensaje en consola
+//     {
+//         Swal.fire({
+//             icon: "error",
+//             title: "¡Hubo un error inesperado!",
+//             text: "Intente de nuevo más tarde",
+//             footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+//         });
 
-        console.error('Error en la petición:', error);
-    }
-});
+//         console.error('Error en la petición:', error);
+//     }
+// });
 
 frmValidarCertificadoSello.addEventListener("submit", async (e) => {
     try 

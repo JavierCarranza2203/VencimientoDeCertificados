@@ -21,7 +21,7 @@ class UsuarioService extends Connection
 
         if($miUsuario == null)
         {
-            throw new Error("El nombre de usuario no es correcto");
+            throw new Exception("El nombre de usuario no es correcto");
         }
 
         if($miUsuario->CompararPassword($pw))
@@ -31,13 +31,13 @@ class UsuarioService extends Connection
             $_SESSION['nombre_completo'] = $miUsuario->NombreCompleto;
             $_SESSION['nombre_usuario'] = $miUsuario->NombreUsuario;
             $_SESSION['rol_usuario'] = $miUsuario->Rol;
-            $_SESSION['grupo_cliente_usuario'] = $miUsuario->GrupoClientes;
+            $_SESSION['grupo_clientes_usuario'] = $miUsuario->GrupoClientes;
 
             return "Se ha iniciado sesión";
         }
         else
         {
-            throw new Error("La contraseña no es correcta");
+            throw new Exception("La contraseña no es correcta");
         }
     }
 
@@ -64,7 +64,7 @@ class UsuarioService extends Connection
         }
         else
         {
-            throw new Error("Por favor inicie sesión");
+            throw new Exception("Por favor inicie sesión");
         }
     }
 

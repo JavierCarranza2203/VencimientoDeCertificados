@@ -1,4 +1,4 @@
-import { IniciarSesion } from "./Peticiones";
+// import { IniciarSesion } from "./Peticiones";
 
 //Obtiene el formulario para iniciar sesión
 const frmIniciarSesion = document.getElementById("frmIniciarSesion");
@@ -20,13 +20,39 @@ frmIniciarSesion.addEventListener("submit", async (e)=>{
             throw new Error("Por favor, llene los campos");
         }
 
-        IniciarSesion(NombreDeUsuario, Contrasenia);
+        const credentials = new FormData();
 
-        Swal.fire({
-            title: "¡Tarea realizada con éxito!",
-            text: "Se ha iniciado sesión",
-            icon: "success"
+        //Agrega las variables al formData creado
+        credentials.append("NombreDeUsuario", NombreDeUsuario);
+        credentials.append("Contrasenia", Contrasenia);
+
+        //Hace una petición HTTP usando el método POST y mandando las credenciales
+        const response = await fetch("App/Controllers/UsuarioController.php?Operacion=login", {
+            method: "POST",
+            body: credentials,
         });
+
+        if (response.ok) 
+        {
+            const data = await response.json();
+            
+            Swal.fire({
+                title: "¡Tarea realizada con éxito!",
+                text: data,
+                icon: "success",
+                confirmButtonText: "OK"
+            }).then((result) => {
+
+                if(result.isConfirmed)
+                {
+                    location.href = "App/Views/nuevo-certificado.html";
+                }
+            });
+        } 
+        else //Si no, genera un error
+        {
+            throw new Error(await response.text());
+        }
     }
     catch(error) //Aqui captura los errores y muestra un mensaje al usuario
     {
@@ -36,7 +62,5 @@ frmIniciarSesion.addEventListener("submit", async (e)=>{
             text: error,
             footer: '<label>Si no funciona, llame al administrador de sistemas</label>'
         });
-
-        console.error('Error en la petición:', error);
     }
 });
