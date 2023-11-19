@@ -19,7 +19,7 @@ require_once "../Services/UsuarioService.php";
     }
     catch(Exception $e)
     {
-        header("HTTP/1.1 401");
+        header("HTTP/1.1 401 Unauthorized");
         echo json_encode($e->getMessage());
     }
 

@@ -152,3 +152,19 @@ body {
     /* opcional */
     -moz-osx-font-smoothing: grayscale;
 }
+
+.content-blocker
+{
+    display: block;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fffdfd;
+}
+
+.content-blocker--hidden{
+    display: none;
+}

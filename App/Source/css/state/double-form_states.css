@@ -1,5 +1,14 @@
 .double-form-container{
+    background-color: #fff;
     transition: all 0.5s;
+}
+
+.double-form-container__form--next{
+    margin-right: -100%;
+}
+
+.double-form-container__form--previous{
+    margin-left: 100%;
 }
 
 .double-form-container__form--disabled{

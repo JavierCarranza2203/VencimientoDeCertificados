@@ -6,6 +6,8 @@ abstract class Certificado
 
     //Ruta del archivo
     private string $Ruta;
+    //Nombre del archivo
+    private string $Nombre;
     //Fecha de tramite
     public mixed $FechaInicio;
     //Fecha de vencimiento
@@ -17,6 +19,7 @@ abstract class Certificado
     public function __construct(string $r)
     {
         $this->Ruta = $r;
+        $this->Nombre = $r;
         $this->FechaInicio = "Desconocida";
         $this->FechaFin = "Desconocida";
         $this->Status = false;
@@ -26,6 +29,11 @@ abstract class Certificado
     public function GetRuta()
     {
         return $this->Ruta;
+    }
+
+    public function SubirArchivo()
+    {
+
     }
 }
 

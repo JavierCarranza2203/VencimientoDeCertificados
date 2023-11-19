@@ -52,7 +52,7 @@ class UsuarioService extends Connection
     public function ObtenerUsuarioLogeado(int $codigoDeAccesso) : Usuario
     {
         session_start();
-        if($_SESSION['nombre_usuario'] != null)
+        if(isset($_SESSION['nombre_usuario']) && $_SESSION['nombre_usuario'] != null)
         {
             $miUsuario = new Usuario("Desconocida");
 
@@ -69,7 +69,7 @@ class UsuarioService extends Connection
     }
 
     //Método para agregar usuarios
-    public function AgregarUsuario(Usuario $nuevoUsuario, int $codigoDeAccesso) : string
+    public function AgregarUsuario(Usuario $nuevoUsuario, int $codigoDeAccesso, string $password) : string
     {
         if($this->BuscarUsuario($nuevoUsuario->NombreUsuario) != null)
         {

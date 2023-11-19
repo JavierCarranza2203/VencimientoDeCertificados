@@ -1,4 +1,4 @@
-// import { IniciarSesion } from "./Peticiones";
+import { IniciarSesion } from "./Metodos/Peticiones.js";
 
 //Obtiene el formulario para iniciar sesión
 const frmIniciarSesion = document.getElementById("frmIniciarSesion");
@@ -15,44 +15,23 @@ frmIniciarSesion.addEventListener("submit", async (e)=>{
         let Contrasenia = document.getElementById("txtPassword").value;
 
         //Si ambas variables están vacías, genera un error
-        if(NombreDeUsuario == "" && Contrasenia == "")
+        if(NombreDeUsuario == "" || Contrasenia == "")
         {
             throw new Error("Por favor, llene los campos");
         }
 
-        const credentials = new FormData();
+        const data = await IniciarSesion(NombreDeUsuario, Contrasenia);
+        
+        Swal.fire({
+            title: "¡Tarea realizada con éxito!",
+            text: data,
+            icon: "success",
+            confirmButtonText: "OK",
+        })
 
-        //Agrega las variables al formData creado
-        credentials.append("NombreDeUsuario", NombreDeUsuario);
-        credentials.append("Contrasenia", Contrasenia);
-
-        //Hace una petición HTTP usando el método POST y mandando las credenciales
-        const response = await fetch("App/Controllers/UsuarioController.php?Operacion=login", {
-            method: "POST",
-            body: credentials,
-        });
-
-        if (response.ok) 
-        {
-            const data = await response.json();
-            
-            Swal.fire({
-                title: "¡Tarea realizada con éxito!",
-                text: data,
-                icon: "success",
-                confirmButtonText: "OK"
-            }).then((result) => {
-
-                if(result.isConfirmed)
-                {
-                    location.href = "App/Views/nuevo-certificado.html";
-                }
-            });
-        } 
-        else //Si no, genera un error
-        {
-            throw new Error(await response.text());
-        }
+        setTimeout(()=>{
+            location.href = "App/Views/nuevo-certificado.html"
+        }, 1000)
     }
     catch(error) //Aqui captura los errores y muestra un mensaje al usuario
     {

@@ -1,5 +1,9 @@
+.forms-container{
+    overflow: hidden;
+}
+
 .double-form-container__form{
-    box-shadow: 0 0 5px #b1b1b1;
+    box-shadow: 0 0 5px #8a8a8a;
 }
 
 .double-form-container__form-title{

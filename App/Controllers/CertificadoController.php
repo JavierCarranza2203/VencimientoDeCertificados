@@ -3,6 +3,13 @@
 require_once "../Services/CertificadoService.php";
     try
     {
+        // Verificar que el archivo tiene la extensión .cer
+        $fileExtension = pathinfo($_FILES['Certificado']['name'], PATHINFO_EXTENSION);
+
+        if (strtolower($fileExtension) !== 'cer') {
+            throw new Exception("Por favor ingrese un archivo con extensión .cer");
+        }
+
         $CertificadoService = new CertificadoService();
 
         //Asigna un nombre temporal al certificado recibido del formulario
@@ -13,12 +20,14 @@ require_once "../Services/CertificadoService.php";
         else 
         {
             // Manejo de error si no se recibió el archivo
+            header("HTTP/1.1 400 Bad Request");
             throw new Exception("No se recibió el archivo");
         }
     }
-    catch(Exception $ex)
+    catch(Exception $e)
     {
-        echo json_encode("Error al analizar el certificado: " . $ex->getMessage());
+        header("HTTP/1.1 400 Bad Request");
+        echo json_encode($e->getMessage());
     }
 
 ?>

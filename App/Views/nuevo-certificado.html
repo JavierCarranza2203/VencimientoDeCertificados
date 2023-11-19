@@ -14,6 +14,7 @@
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <div id="blocker" class="content-blocker"></div>
     <header class="header">
         <div class="logo-container">
             <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
@@ -32,8 +33,8 @@
             <a href="#" class="header__navbar-item">Eliminar</a>
         </nav>
     </header>
-
-        <!-- <section class="double-form-container" id="DatosFirmaE">
+    <main class="forms-container">
+        <section class="double-form-container" id="DatosFirmaE">
             <form method="POST" id="frmValidarCertificadoFirma" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
                 <h3 class="double-form-container__form-title">Ingrese el certificado de la Firme-e</h3>
                 <input type="file" name="certificadoFirma" id="certificadoFirma" class="double-form-container__form-input">
@@ -58,9 +59,9 @@
 
                 <label class="double-form-container__form-label" id="StatusFirma"></label>
             </div>
-        </section> -->
+        </section>
 
-        <section class="double-form-container" id="datosSellos">
+        <section class="double-form-container" id="DatosSello">
             <form method="POST" id="frmValidarCertificadoSello" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
                 <h3 class="double-form-container__form-title">Ingrese el certificado del sello</h3>
                 <input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input">
@@ -86,16 +87,45 @@
                 <label class="double-form-container__form-label" id="StatusSello"></label>
             </div>
         </section>
-    
+
+        <section class="double-form-container" id="DatosFirmaEas">
+            <form method="POST" id="frmValidarCertificadoFirma" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
+                <h3 class="double-form-container__form-title">Ingrese el certificado de la Firme-e</h3>
+                <input type="file" name="certificadoFirma" id="certificadoFirma" class="double-form-container__form-input">
+
+                <button type="submit" class="double-form-container__form-button">Ver datos</button>
+            </form>
+
+
+            <div class="double-form-container__form double-form-container__right-form">
+                <h3 class="double-form-container__form-title">Datos del certificado</h3>
+                <label for="txtNombreEnFirma" class="double-form-container__form-label">Titular del certificado:</label>
+                <input type="text" name="txtNombreEnFirma" id="txtNombreEnFirma" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtRfcEnFirma" class="double-form-container__form-label">RFC del titular:</label>
+                <input type="text" name="txtRfcEnFirma" id="txtRfcEnFirma" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtFechaInicioEnFirma" class="double-form-container__form-label">Fecha de trámite del certificado:</label>
+                <input type="text" name="txtFechaInicioEnFirma" id="txtFechaInicioEnFirma" readonly disabled class="double-form-container__form-input">
+
+                <label for="txtFechaFinEnFirma" class="double-form-container__form-label">Fecha de vencimiento del certificado:</label>
+                <input type="text" name="txtFechaFinEnFirma" id="txtFechaFinEnFirma" readonly disabled class="double-form-container__form-input">   
+
+                <label class="double-form-container__form-label" id="StatusFirma"></label>
+            </div>
+        </section>
+    </main>
 
     <footer class="progress-bar">
+        <button class="double-form-container__form-button" id="btnAnterior">Anterior</button>
+
         <section class="progress-bar__levels-container">
             <h3 class="progress-bar__levels-container-level progress-bar__levels-container-level--complete"><span>Firma</span></h3>
-            <h3 class="progress-bar__levels-container-level"><span>Sello</span></h3>
-            <h3 class="progress-bar__levels-container-level"><span>Listo!</span></h3>
+            <h3 class="progress-bar__levels-container-level" id="level2"><span>Sello</span></h3>
+            <h3 class="progress-bar__levels-container-level" id="level3"><span>Listo!</span></h3>
         </section>
 
-        <button class="double-form-container__form-button">Siguiente</button>
+        <button class="double-form-container__form-button" id="btnSiguiente">Siguiente</button>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
