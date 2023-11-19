@@ -10,4 +10,6 @@ define('DB_NAME', 'despacho_contable');
 
 define('DB_CHARSET', 'utf8');
 
+$hOla;
+
 ?>
