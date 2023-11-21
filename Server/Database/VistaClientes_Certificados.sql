@@ -1,4 +1,4 @@
--- Active: 1696360839993@@127.0.0.1@3306@despacho_contable
+-- Active: 1700088529553@@127.0.0.1@3306@despacho_contable
 CREATE VIEW clientes_certificados
 AS
 WITH CertificadosNumerados AS (

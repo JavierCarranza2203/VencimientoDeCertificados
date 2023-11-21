@@ -62,3 +62,27 @@ btnShowPassword.addEventListener("click", ()=>{
         btnShowPassword.classList.remove("fa-eye-slash");
     }
 });
+
+//Asignacion del evento click del btn para crear una nueva cuenta
+document.getElementById("btnCrearCuenta").addEventListener("click", ()=>{
+    Swal.fire({
+        title: "Ingrese el código de acceso",
+        input: "password",
+        showCancelButton: true,
+        confirmButtonText: "Validar código",
+        showLoaderOnConfirm: true,
+        preConfirm: (code)=>
+        {
+            if(code === "RG2023")
+            {
+                location.href = "App/Views/nuevo-usuario.html";
+            }
+            else
+            {
+                Swal.showValidationMessage(`
+                    El código es incorrecto
+                `);
+            }
+        }
+    },);
+});

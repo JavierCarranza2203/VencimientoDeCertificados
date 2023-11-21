@@ -11,6 +11,7 @@ require_once 'Sello.php';
         //Nombre del titular del certificado
         public string $Nombre;
         public string $RFC;
+        public string $GrupoClientes;
 
         //Sello y firma del cliente
         public Sello $Sello;

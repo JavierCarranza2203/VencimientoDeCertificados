@@ -45,7 +45,7 @@ const nivel3 = document.getElementById("level3");
 //Contador de clicks para el funcionamiento del formulario
 let numeroClicks = 0;
 
-let NuevoCliente = new Cliente();
+// let NuevoCliente = new Cliente();
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -133,23 +133,23 @@ document.getElementById("btnSiguiente").addEventListener("click", ()=>{
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
 
-                NuevoCliente.Nombre = txtNombreEnFirma.value;
-                NuevoCliente.Rfc = txtRfcEnFirma.value;
-                NuevoCliente.Firma.FechaVencimiento = txtFechaFinEnFirma.value;
-                NuevoCliente.Sello.Status = statusFirma.textContent;
+                // NuevoCliente.Nombre = txtNombreEnFirma.value;
+                // NuevoCliente.Rfc = txtRfcEnFirma.value;
+                // NuevoCliente.Firma.FechaVencimiento = txtFechaFinEnFirma.value;
+                // NuevoCliente.Sello.Status = statusFirma.textContent;
                 break;
             case 2:
                 CambiarPaginaFormulario(statusSello, contenedorSello, nivel3);
 
-                if(NuevoCliente.Nombre != txtNombreEnSello || NuevoCliente.Rfc != txtRfcEnSello)
-                {
-                    throw new Error("Hola");
-                }
-                else
-                {
-                    NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello;
-                    NuevoCliente.Sello.Status = statusSello.textContent;
-                }
+                // if(NuevoCliente.Nombre != txtNombreEnSello || NuevoCliente.Rfc != txtRfcEnSello)
+                // {
+                //     throw new Error("Hola");
+                // }
+                // else
+                // {
+                //     NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello;
+                //     NuevoCliente.Sello.Status = statusSello.textContent;
+                // }
                 break;
             default:
                 numeroClicks--;

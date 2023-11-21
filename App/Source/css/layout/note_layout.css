@@ -1,0 +1,17 @@
+.note{
+    width: 60%;
+    border-radius: 10px;
+    place-self: center;
+    padding: 10px;
+    user-select: none;
+}
+
+.note__title{
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.note__message{
+    font-size: 1.2em;
+}

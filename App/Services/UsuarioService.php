@@ -73,7 +73,7 @@ class UsuarioService extends Connection
     {
         if($this->BuscarUsuario($nuevoUsuario->NombreUsuario) != null)
         {
-            throw new Error("El usuario ya existe");
+            throw new Exception("El usuario ya existe");
         }
         else
         {
@@ -87,7 +87,7 @@ class UsuarioService extends Connection
             }
             else
             {
-                throw new Error("Hubo un error al agregar los datos");
+                throw new Exception("Hubo un error al agregar los datos");
             }
         }
     }

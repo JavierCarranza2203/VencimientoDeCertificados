@@ -4,6 +4,7 @@
     justify-content: space-between;
     padding: 5px 10px;
     align-items: center;
+    z-index: 1;
 }
 
 .header__navbar{

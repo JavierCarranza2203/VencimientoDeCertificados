@@ -16,6 +16,9 @@
 /* Importacion de los estilos del form */
 @import url("double-form_style.css");
 
+/* Importacion de los estilos de la nota */
+@import url("note_style.css");
+
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{
     width: 50px;

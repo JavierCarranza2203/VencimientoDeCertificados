@@ -15,9 +15,9 @@ export class Cliente
 
     //Get y set para la propiedad del nombre
     get Nombre() { return this.Nombre; }
-    set Nombre(value) { this.Nombre = value; }
+    // set Nombre(n) { if(this.Nombre == "Desconocido"){ this.Nombre = n; } else { return } }
 
     //Get y set para la propiedad del RFC
     get Rfc() { return this.Rfc; }
-    set Rfc(value) { this.Rfc = value; }
+    // set Rfc(value) { this.Rfc = value; }
 }
