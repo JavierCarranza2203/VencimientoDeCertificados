@@ -21,8 +21,8 @@ require_once 'Sello.php';
         {
             $this->Nombre = "Desconocido";
             $this->RFC = "Desconocido";
-            $this->Sello = new Sello("Desconocida");
-            $this->Firma = new Firma("Desconocida");
+            $this->Sello = new Sello();
+            $this->Firma = new Firma();
         }
     }
 

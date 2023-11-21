@@ -1,5 +1,6 @@
 import { ObtenerDatosDelCertificado } from "./Metodos/Peticiones.js";
 import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
+import { Cliente } from "./Clases/Cliente.js";
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
@@ -14,6 +15,7 @@ const UsuarioLoggeado = PermitirAcceso();
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
 /*************************************************************/
+
 //Contenedores de las secciones del formulario
 const contenedorFirma = document.getElementById("DatosFirmaE");
 const contenedorSello = document.getElementById("DatosSello");
@@ -40,21 +42,11 @@ const statusSello = document.getElementById("StatusSello");
 const nivel2 = document.getElementById("level2");
 const nivel3 = document.getElementById("level3");
 
-
 //Contador de clicks para el funcionamiento del formulario
 let numeroClicks = 0;
 
-//Objeto para mandar en la peticion
-let nuevoCliente = {
-    Nombre: "Desconocido",
-    RFC: "Desconocida",
-    FechaDeTramiteFirma: "Desconocida",
-    FechaDeVencimientoFirma: "Desconocida",
-    EstatusFirma: false,
-    FechaDeTramiteSello: "Desconocida",
-    FechaDeVencimientoSello: "Desconocida",
-    EstatusSello: false
-}
+let NuevoCliente = new Cliente();
+
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
 /*************************************************************/
@@ -62,6 +54,7 @@ let nuevoCliente = {
 /*************************************************************/
 /*             Eventos de los controles del html             */
 /*************************************************************/
+
 frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
     try 
     {
@@ -70,6 +63,8 @@ frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
 
         // Obtener el archivo del input
         const certificado = document.getElementById("certificadoFirma").files[0];
+
+        if(!certificado){ throw new Error("Ingrese un archivo"); }
 
         let data = await ObtenerDatosDelCertificado(certificado);
 
@@ -102,6 +97,8 @@ frmValidarCertificadoSello.addEventListener("submit", async (e) => {
 
         // Obtener el archivo del input
         const certificado = document.getElementById("certificadoSello").files[0];
+
+        if(!certificado){ throw new Error("Ingrese un archivo"); }
         
         let data = await ObtenerDatosDelCertificado(certificado);
 
@@ -131,23 +128,32 @@ document.getElementById("btnSiguiente").addEventListener("click", ()=>{
     {
         numeroClicks++;
 
-        if(numeroClicks == 1)
+        switch(numeroClicks)
         {
-            if(statusFirma.textContent !== " Vigente"){ throw new Error("Ingrese un certificado válido"); }
+            case 1:
+                CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
 
-            contenedorFirma.classList.add("double-form-container__form--next");
-            nivel2.classList.add("progress-bar__levels-container-level--complete");
-        }
-        else if(numeroClicks == 2)
-        {
-            if(statusSello.textContent !== " Vigente"){ throw new Error("Ingrese un certificado válido"); }
+                NuevoCliente.Nombre = txtNombreEnFirma.value;
+                NuevoCliente.Rfc = txtRfcEnFirma.value;
+                NuevoCliente.Firma.FechaVencimiento = txtFechaFinEnFirma.value;
+                NuevoCliente.Sello.Status = statusFirma.textContent;
+                break;
+            case 2:
+                CambiarPaginaFormulario(statusSello, contenedorSello, nivel3);
 
-            contenedorSello.classList.add("double-form-container__form--next");
-            nivel3.classList.add("progress-bar__levels-container-level--complete");
-        }
-        else
-        {
-            numeroClicks--;
+                if(NuevoCliente.Nombre != txtNombreEnSello || NuevoCliente.Rfc != txtRfcEnSello)
+                {
+                    throw new Error("Hola");
+                }
+                else
+                {
+                    NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello;
+                    NuevoCliente.Sello.Status = statusSello.textContent;
+                }
+                break;
+            default:
+                numeroClicks--;
+                break;
         }
     }
     catch(error)
@@ -162,7 +168,7 @@ document.getElementById("btnSiguiente").addEventListener("click", ()=>{
     }
 });
 
-document.getElementById("btnAnterior").addEventListener("click", ()=>{
+document.getElementById("btnAnterior").addEventListener("click", ()=> {
     if(numeroClicks == 1){
         contenedorFirma.classList.remove("double-form-container__form--next");
         nivel2.classList.remove("progress-bar__levels-container-level--complete");
@@ -177,6 +183,7 @@ document.getElementById("btnAnterior").addEventListener("click", ()=>{
     
     numeroClicks--;
 });
+
 /*************************************************************/
 /*             Eventos de los controles del html             */
 /*************************************************************/
@@ -184,6 +191,7 @@ document.getElementById("btnAnterior").addEventListener("click", ()=>{
 /**************************************************************/
 /*             Métodos implementados en la página             */
 /**************************************************************/
+
 //Recibe los inputs para poner los datos del array recibido por parametro
 function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data)
 {
@@ -214,6 +222,16 @@ function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data)
         status.appendChild(document.createTextNode(" Vencido"));
     }
 }
+
+function CambiarPaginaFormulario(status, contenedorActual, siguienteNivel)
+{
+    if(status.textContent == ""){ throw new Error('Ingrese un archivo o haga click en "Ver datos"'); }
+    else if(status.textContent !== " Vigente"){ throw new Error("Ingrese un certificado vigente"); }
+
+    contenedorActual.classList.add("double-form-container__form--next");
+    siguienteNivel.classList.add("progress-bar__levels-container-level--complete");
+}
+
 /**************************************************************/
 /*             Métodos implementados en la página             */
 /**************************************************************/

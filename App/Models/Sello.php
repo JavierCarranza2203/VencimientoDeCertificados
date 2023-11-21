@@ -4,9 +4,9 @@ require_once 'Certificado.php';
 
 class Sello extends Certificado
 {
-    public function __construct(string $r)
+    public function __construct()
     {
-        parent::__construct($r);
+        parent::__construct();
     }
 }
 

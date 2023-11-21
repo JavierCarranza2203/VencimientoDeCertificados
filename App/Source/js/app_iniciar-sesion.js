@@ -1,10 +1,11 @@
 import { IniciarSesion } from "./Metodos/Peticiones.js";
 
-//Obtiene el formulario para iniciar sesión
-const frmIniciarSesion = document.getElementById("frmIniciarSesion");
+const txtPassword = document.getElementById("txtPassword");
+const btnShowPassword = document.getElementById("btnShowPassword");
+let muestraContrasenia = false;
 
 //Captura el evento submit del formulario
-frmIniciarSesion.addEventListener("submit", async (e)=>{
+document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)=>{
     try
     {
         //Cancela el evento submit
@@ -12,7 +13,7 @@ frmIniciarSesion.addEventListener("submit", async (e)=>{
 
         //Obtiene el nombre de usuario y la contraseña
         let NombreDeUsuario = document.getElementById("txtUserName").value;
-        let Contrasenia = document.getElementById("txtPassword").value;
+        let Contrasenia = txtPassword.value;
 
         //Si ambas variables están vacías, genera un error
         if(NombreDeUsuario == "" || Contrasenia == "")
@@ -41,5 +42,23 @@ frmIniciarSesion.addEventListener("submit", async (e)=>{
             text: error,
             footer: '<label>Si no funciona, llame al administrador de sistemas</label>'
         });
+    }
+});
+
+//Asignacion del evento click
+btnShowPassword.addEventListener("click", ()=>{
+    muestraContrasenia = !muestraContrasenia;
+
+    if(muestraContrasenia)
+    {
+        txtPassword.type = "text";
+        btnShowPassword.classList.remove("fa-eye");
+        btnShowPassword.classList.add("fa-eye-slash");
+    }
+    else
+    {
+        txtPassword.type = "password";
+        btnShowPassword.classList.add("fa-eye");
+        btnShowPassword.classList.remove("fa-eye-slash");
     }
 });
