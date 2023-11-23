@@ -11,12 +11,60 @@
     <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/module/new-client_style.css">
+    <link rel="stylesheet" href="../Source/css/module/new-user_style.css">
 
     <!--======== Archivos js ========-->
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    
+    <header class="header">
+        <div class="logo-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
+            <div class="logo-container__text-container">
+                <h1 class="logo-container__text">GARCIA REYES Y ASOCIADOS</h1>
+                <span class="line"></span>
+                <h2>SERVICIOS CONTABLES FISCALES</h2>
+            </div>
+        </div>
+
+        <h2 class="header__title">Agregar nuevo cliente</h2>
+
+        <nav class="header__navbar">
+            <a href="#" class="header__navbar-item">Ver todos</a>
+            <a href="#" class="header__navbar-item">Agregar</a>
+            <a href="#" class="header__navbar-item">Eliminar</a>
+        </nav>
+    </header>
+
+    <form id="frmNuevoUsuario" class="double-form-container__form">
+        <h3 class="double-form-container__form-title">Ingrese los datos del nuevo cliente</h3>
+        <label for="txtNombreCompleto" class="double-form-container__form-label">Nombre completo:</label>
+        <input type="text" name="txtNombreCompleto" id="txtNombreCompleto" class="double-form-container__form-input">
+
+        <label for="txtNombreDeUsuario" class="double-form-container__form-label">Nombre de usuario:</label>
+        <input type="text" name="txtNombreUsuario" id="txtNombreUsuario" class="double-form-container__form-input">
+
+        <label for="txtPassword" class="double-form-container__form-label">Contraseña:</label>
+        <input type="password" name="txtPassword" id="txtPassword" class="double-form-container__form-input">
+
+        <label for="cmbGrupoClientes" class="double-form-container__form-label">Grupo de clientes:</label>
+        <select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">
+            <option value="a" selected>Clientes A</option>
+            <option value="b">Clientes B</option>
+            <option value="c">Clientes C</option>
+            <option value="s">Puede ver todos</option>
+        </select>
+
+        <label for="cmbRol" class="double-form-container__form-label">Rol del usuario:</label>
+        <select name="cmbRol" id="cmbRol" class="double-form-container__form-combobox">
+            <option value="a" selected>Usuario común</option>
+            <option value="b">Administrador</option>
+        </select>
+
+        <button type="button" class="double-form-container__form-button double-form-container__form-button--margin" id="btnAgregarUsuario">Agregar usuario</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="../Source/js/app_nuevo-usuario.js"></script>
 </body>
 </html>

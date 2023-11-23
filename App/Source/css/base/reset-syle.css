@@ -12,6 +12,8 @@
     --negro: #393939;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 /* Las adaptamos al modo oscuro */
 @media (prefers-color-scheme: dark) {
     :root {
@@ -126,8 +128,6 @@ svg {
     fill: currentColor;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
 /* (Probándolo, no usar en producción) En el caso de añadir una  */
 /* p svg{
 display: inline;
@@ -135,7 +135,7 @@ width: initial;
 } */
 /* Configuramos la tipografía para toda la web */
 body {
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-family: system-ui, -apple-system;
     min-height: 100vh;
     font-size: 15px;
     color: inherit;

@@ -1,4 +1,5 @@
-export async function ObtenerDatosDelCertificado(certificado) {
+export async function ÆObtenerDatosDelCertificado(certificado) 
+{
     const formData = new FormData();
     formData.append("Certificado", certificado);
 
@@ -18,7 +19,8 @@ export async function ObtenerDatosDelCertificado(certificado) {
     }
 }
 
-export async function IniciarSesion(NombreDeUsuario, Contrasenia) {
+export async function IniciarSesion(NombreDeUsuario, Contrasenia) 
+{
     const credentials = new FormData();
 
     // Agrega las variables al formData creado
@@ -50,6 +52,31 @@ export async function ValidarUsuarioLogeado()
         return await response.json();
     } 
     else 
+    {
+        throw new Error(await response.json());
+    }
+}
+
+export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contrasenia, grupoClientes, rol)
+{
+    const formData = new FormData();
+    formData.append('NombreCompleto', nombreCompleto);
+    formData.append('NombreDeUsuario', nombreUsuario);
+    formData.append('Contrasenia', contrasenia);
+    formData.append('GrupoDeClientes', grupoClientes);
+    formData.append('Rol', rol);
+
+    const response = await fetch("../Controllers/UsuarioController.php?Operacion=add", {
+        method: "POST",
+        body: formData
+    });
+
+    if(response.ok)
+    {
+        const data = await response.json();
+        return data;
+    }
+    else
     {
         throw new Error(await response.json());
     }

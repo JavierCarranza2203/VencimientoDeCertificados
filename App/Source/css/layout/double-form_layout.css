@@ -51,7 +51,7 @@
     font-size: 1.05em;
 }
 
-.double-form-container__form-input{
+.double-form-container__form-input, .double-form-container__form-combobox{
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -63,4 +63,8 @@
     border-radius: 5px;
     cursor: pointer;
     max-width: fit-content;
+}
+
+.double-form-container__form-button--margin{
+    margin-top: 20px;
 }

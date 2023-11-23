@@ -15,6 +15,15 @@ require_once "../Services/UsuarioService.php";
             case 'userLogged':
                 echo json_encode($UsuarioService->ObtenerUsuarioLogeado(00175));
                 break;
+            case 'add':
+                $nuevoUsuario = new Usuario("Desconocida");
+                $nuevoUsuario->NombreCompleto = $_POST['NombreCompleto'];
+                $nuevoUsuario->NombreUsuario = $_POST['NombreDeUsuario'];
+                $nuevoUsuario->Rol = $_POST['Rol'];
+                $nuevoUsuario->GrupoClientes = $_POST['GrupoDeClientes'];
+
+                echo json_encode(($UsuarioService->AgregarUsuario($nuevoUsuario, 00175, $_POST['Contrasenia'])));
+                break;
         }
     }
     catch(Exception $e)
