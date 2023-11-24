@@ -8,32 +8,40 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/module/new-user_style.css">
+    <link rel="stylesheet" href="../Source/css/module/all-users_style.css">
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
 
     <!--======== Archivos js ========-->
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="body"></div>
+    <div id="blocker" class="content-blocker"></div>
+    <header class="header">
+        <div class="logo-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
+            <div class="logo-container__text-container">
+                <h1 class="logo-container__text">GARCIA REYES Y ASOCIADOS</h1>
+                <span class="line"></span>
+                <h2>SERVICIOS CONTABLES FISCALES</h2>
+            </div>
+        </div>
+
+        <h2 class="header__title">Ver todos los clientes</h2>
+
+        <nav class="header__navbar">
+            <a href="#" class="header__navbar-item">Página principal</a>
+            <button>Cerrar sesión</button>
+        </nav>
+    </header>
+
+    <div></div>
+
+    <main class="table-client-container">
+        <div id="wrapper"></div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-
-    <script>
-            $('.body').load('./ver-clientes.html');
-
-
-        setTimeout(()=>{
-            new gridjs.Grid({
-                columns: ["RFC", "Nombre", "Grupo de clientes", "Vencimiento del sello", "Estatus del sello", "Vencimiento de la firma", "Estatus de la firma"],
-                server: {
-                    url: 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php',
-                    then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], cliente[4], cliente[6], cliente[5]])
-                }
-            }).render(document.getElementById("wrapper"))
-        }, 1)
-    </script>
-    <!-- <script type="module" src="../Source/js/app_ver-clientes.js"></script> -->
+    <script type="module" src="../Source/js/app_ver-clientes.js"></script>
 </body>
 </html>

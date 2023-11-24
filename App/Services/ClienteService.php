@@ -108,7 +108,9 @@ class ClienteService extends Connection
     //Este método sirve para buscar los clientes por grupoo
     public function ObtenerTodosLosClientes(string $grupoClientes)
     {
-        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados");
+        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados WHERE grupo_clientes = ?");
+
+        $stmt->bind_param("s", $grupoClientes);
 
         $stmt->execute();
 

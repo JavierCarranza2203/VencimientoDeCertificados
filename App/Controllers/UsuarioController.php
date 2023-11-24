@@ -24,6 +24,9 @@ require_once "../Services/UsuarioService.php";
 
                 echo json_encode(($UsuarioService->AgregarUsuario($nuevoUsuario, $_POST['Contrasenia'])));
                 break;
+            case 'logout':
+                echo json_encode($UsuarioService->CerrarSesion());
+                break;
         }
     }
     catch(Exception $e)

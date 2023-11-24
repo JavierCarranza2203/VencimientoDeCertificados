@@ -4,12 +4,12 @@ document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=
     try
     {
         let data = await AgregarNuevoUsuario(
-                            document.getElementById("txtNombreCompleto").value,
-                            document.getElementById("txtNombreUsuario").value,
-                            document.getElementById("txtPassword").value,
-                            document.getElementById("cmbGrupoClientes").value,
-                            document.getElementById("cmbRol").value
-                        );
+            document.getElementById("txtNombreCompleto").value,
+            document.getElementById("txtNombreUsuario").value,
+            document.getElementById("txtPassword").value,
+            document.getElementById("cmbGrupoClientes").value,
+            document.getElementById("cmbRol").value
+        );
         
         Swal.fire({
             title: "¡Tarea realizada con éxito!",

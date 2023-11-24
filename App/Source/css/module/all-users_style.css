@@ -1,0 +1,12 @@
+/* Reset de los estilos */
+@import url("../base/reset-syle.css");
+
+/* Layout de la pagina de todos los clientes */
+@import url("../layout/all-users_layout.css");
+
+/* Estilos del header */
+@import url("header_style.css");
+
+.logo-container__img{
+    width: 50px;
+}

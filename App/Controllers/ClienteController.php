@@ -5,7 +5,7 @@ require_once "../Services/ClienteService.php";
     {
         $ClienteService = new ClienteService();
 
-        echo json_encode($ClienteService->ObtenerTodosLosClientes_Admin());
+        echo json_encode($ClienteService->ObtenerTodosLosClientes("A"));
     }
     catch(Exception $e)
     {

@@ -81,3 +81,17 @@ export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contras
         throw new Error(await response.json());
     }
 }
+
+export async function CerrarSesion()
+{
+    const response = await fetch("../Controllers/UsuarioController.php?Operacion=logout");
+
+    if(response.ok)
+    {
+        return await response.json();
+    }
+    else
+    {
+        throw new Error(await response.json);
+    }
+}

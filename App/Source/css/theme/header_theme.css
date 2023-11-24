@@ -1,4 +1,16 @@
 .header{
     box-shadow: 0 0 5px #8a8a8a;
+}
 
+.header__navbar-logout{
+    background-color: #f35b6f;
+    padding: 15px 0;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.header__navbar-logout:hover{
+    background-color: #cc4c5d;
 }

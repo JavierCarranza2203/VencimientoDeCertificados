@@ -6,6 +6,7 @@ export function PermitirAcceso()
     window.addEventListener("load", async (e)=> {
         try
         {
+            e.preventDefault();
             const data = await ValidarUsuarioLogeado();
 
             document.getElementById("blocker").classList.add("content-blocker--hidden");
@@ -22,8 +23,12 @@ export function PermitirAcceso()
                 confirmButtonText: "Iniciar sesión",
                 allowOutsideClick: false
             })
-
-            setTimeout(location.href = "../../index.html", 3000)
+            .then((result)=>{
+                if(result.isConfirmed)
+                {
+                    location.href = "../../index.html";
+                }
+            });
         }
     });
 }

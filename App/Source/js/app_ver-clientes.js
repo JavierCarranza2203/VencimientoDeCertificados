@@ -11,10 +11,26 @@ const UsuarioLoggeado = PermitirAcceso();
 
 window.addEventListener("load", ()=>{
     new gridjs.Grid({
-        columns: ["RFC", "Nombre", "Grupo de clientes", "Vencimiento del sello", "Estatus del sello", "Vencimiento de la firma", "Estatus de la firma"],
+        search: true,
+        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma"],
         server: {
             url: 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php',
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], cliente[4], cliente[6], cliente[5]])
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
+        },
+        language: {
+            'search': {
+                'placeholder': '🔍 Escriba para buscar...'
+            }
         }
     }).render(document.getElementById("wrapper"));
 })
+
+function MostrarVigencia(bitBooleano)
+{
+    if(bitBooleano == 1){
+        return "Vigente";
+    }
+    else{
+        return "Vencido";
+    }
+}
