@@ -22,7 +22,7 @@ require_once "../Services/UsuarioService.php";
                 $nuevoUsuario->Rol = $_POST['Rol'];
                 $nuevoUsuario->GrupoClientes = $_POST['GrupoDeClientes'];
 
-                echo json_encode(($UsuarioService->AgregarUsuario($nuevoUsuario, 00175, $_POST['Contrasenia'])));
+                echo json_encode(($UsuarioService->AgregarUsuario($nuevoUsuario, $_POST['Contrasenia'])));
                 break;
         }
     }

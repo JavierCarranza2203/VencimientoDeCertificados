@@ -23,7 +23,7 @@ export function PermitirAcceso()
                 allowOutsideClick: false
             })
 
-            setTimeout(location.href = "../../index.html", 2000)
+            setTimeout(location.href = "../../index.html", 3000)
         }
     });
 }

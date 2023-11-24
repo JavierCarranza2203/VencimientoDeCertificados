@@ -1,4 +1,4 @@
-export async function ÆObtenerDatosDelCertificado(certificado) 
+export async function ObtenerDatosDelCertificado(certificado) 
 {
     const formData = new FormData();
     formData.append("Certificado", certificado);

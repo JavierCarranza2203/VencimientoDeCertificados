@@ -31,7 +31,7 @@ document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)
         })
 
         setTimeout(()=>{
-            location.href = "App/Views/nuevo-certificado.html"
+            location.href = "App/Views/pagina-principal.html"
         }, 1000)
     }
     catch(error) //Aqui captura los errores y muestra un mensaje al usuario

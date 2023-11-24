@@ -67,7 +67,8 @@ class ClienteService extends Connection
 
         $stmt->bind_param("s", $rfc);
 
-        $resultado = $stmt->execute();
+        $stmt->execute();
+
         $resultado = $stmt->get_result();
 
         if($resultado->num_rows > 0)
@@ -107,13 +108,43 @@ class ClienteService extends Connection
     //Este método sirve para buscar los clientes por grupoo
     public function ObtenerTodosLosClientes(string $grupoClientes)
     {
+        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados");
 
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+
+            $resultado = $resultado->fetch_all();
+
+            return $resultado;
+        } 
+        else 
+        {
+            throw new Exception("No hay registros"); 
+        }
     }
 
     //Este método es para regresar TODOS los clientes sin importar el grupo al que pertenecen
     public function ObtenerTodosLosClientes_Admin()
     {
-        
+        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados");
+
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+
+            $resultado = $resultado->fetch_all();
+
+            return $resultado;
+        } 
+        else 
+        {
+            throw new Exception("No hay registros"); 
+        }
     }
 }
 

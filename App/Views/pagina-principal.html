@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!--======== Archivos css ========-->
+    <link rel="stylesheet" href="../Source/css/module/new-user_style.css">
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
+
+    <!--======== Archivos js ========-->
+    <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="body"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+
+    <script>
+            $('.body').load('./ver-clientes.html');
+
+
+        setTimeout(()=>{
+            new gridjs.Grid({
+                columns: ["RFC", "Nombre", "Grupo de clientes", "Vencimiento del sello", "Estatus del sello", "Vencimiento de la firma", "Estatus de la firma"],
+                server: {
+                    url: 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php',
+                    then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], cliente[4], cliente[6], cliente[5]])
+                }
+            }).render(document.getElementById("wrapper"))
+        }, 1)
+    </script>
+    <!-- <script type="module" src="../Source/js/app_ver-clientes.js"></script> -->
+</body>
+</html>

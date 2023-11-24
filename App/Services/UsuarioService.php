@@ -69,7 +69,7 @@ class UsuarioService extends Connection
     }
 
     //Método para agregar usuarios
-    public function AgregarUsuario(Usuario $nuevoUsuario, int $codigoDeAccesso, string $password) : string
+    public function AgregarUsuario(Usuario $nuevoUsuario, string $password) : string
     {
         if($this->BuscarUsuario($nuevoUsuario->NombreUsuario) != null)
         {
@@ -77,9 +77,9 @@ class UsuarioService extends Connection
         }
         else
         {
-            $stmt = $this->db_conection->prepare("INSERT INTO usuario (nombre_completo, nombre_usuario, contrasenia, grupo_clientes, rol) VALUES (?, ?, ?, ?, ?)");
+            $stmt = $this->db_conection->prepare("INSERT INTO usuario(nombre_completo, nombre_usuario, contrasenia, grupo_clientes, rol) VALUES(?, ?, ?, ?, ?)");
 
-            $stmt->bind_param("s", $nuevoUsuario->NombreCompleto, $nuevoUsuario->NombreUsuario, $password, $nuevoUsuario->GrupoClientes, $nuevoUsuario->Rol);
+            $stmt->bind_param("sssss", $nuevoUsuario->NombreCompleto, $nuevoUsuario->NombreUsuario, $password, $nuevoUsuario->GrupoClientes, $nuevoUsuario->Rol);
 
             if($stmt->execute())
             {
