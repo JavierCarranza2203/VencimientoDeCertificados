@@ -95,3 +95,7 @@ export async function CerrarSesion()
         throw new Error(await response.json);
     }
 }
+
+export async function AgregarCliente(){
+    
+}

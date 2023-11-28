@@ -6,7 +6,17 @@ import { Cliente } from "./Clases/Cliente.js";
 /* Llamando al método para permitir el acceso a la página */
 /**********************************************************/
 
-const UsuarioLoggeado = PermitirAcceso();
+let grupo, bandera = false;
+window.addEventListener("load", ()=>{
+    PermitirAcceso().then(res=> {
+        grupo = res["GrupoClientes"];
+
+        if(res["Rol"] == "admin")
+        {
+            bandera = true;
+        }
+    });
+});
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
@@ -45,7 +55,7 @@ const nivel3 = document.getElementById("level3");
 //Contador de clicks para el funcionamiento del formulario
 let numeroClicks = 0;
 
-// let NuevoCliente = new Cliente();
+let NuevoCliente = new Cliente();
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -123,7 +133,7 @@ frmValidarCertificadoSello.addEventListener("submit", async (e) => {
     }
 });
 
-document.getElementById("btnSiguiente").addEventListener("click", ()=>{
+document.getElementById("btnSiguiente").addEventListener("click", async()=>{
     try
     {
         numeroClicks++;
@@ -133,23 +143,62 @@ document.getElementById("btnSiguiente").addEventListener("click", ()=>{
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
 
-                // NuevoCliente.Nombre = txtNombreEnFirma.value;
-                // NuevoCliente.Rfc = txtRfcEnFirma.value;
-                // NuevoCliente.Firma.FechaVencimiento = txtFechaFinEnFirma.value;
-                // NuevoCliente.Sello.Status = statusFirma.textContent;
+                NuevoCliente._strNombre = txtNombreEnFirma.value;
+                NuevoCliente._strRfc = txtRfcEnFirma.value;
+                NuevoCliente.Firma._dtmFechaVencimiento = txtFechaFinEnFirma.value;
+                NuevoCliente.Firma._blnStatus = statusFirma.textContent;
                 break;
             case 2:
-                CambiarPaginaFormulario(statusSello, contenedorSello, nivel3);
+                if(NuevoCliente.Nombre != txtNombreEnSello.value || NuevoCliente.Rfc != txtRfcEnSello.value)
+                {
+                    throw new Error("Los certificados no son de la misma persona");
+                }
+                else
+                {
+                    if(bandera == true)
+                    {
+                        Swal.fire({
+                            title: "Ingrese el grupo de clientes al que pertenece",
+                            input: "text",
+                            showCancelButton: true,
+                            confirmButtonText: "Aceptar",
+                            showLoaderOnConfirm: true,
+                            preConfirm: (group)=>
+                            {
+                                grupo = group;
+                            }
+                        });
+                    }
 
-                // if(NuevoCliente.Nombre != txtNombreEnSello || NuevoCliente.Rfc != txtRfcEnSello)
-                // {
-                //     throw new Error("Hola");
-                // }
-                // else
-                // {
-                //     NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello;
-                //     NuevoCliente.Sello.Status = statusSello.textContent;
-                // }
+                    NuevoCliente.Sello._dtmFechaVencimiento = txtFechaFinEnSello.value;
+                    NuevoCliente.Sello._blnStatus = statusSello.textContent;
+                    NuevoCliente._chrGrupo = grupo;
+
+                    let jsonCliente = JSON.stringify(NuevoCliente);
+
+                    const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
+                    {
+                        method:"POST",
+                        body: jsonCliente
+                    });
+
+                    let data = await response.json()
+                    if(response.ok)
+                    {
+                        Swal.fire({
+                            title: "¡Tarea realizada con éxito!",
+                            text: data,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+
+                        CambiarPaginaFormulario(statusSello, contenedorSello, nivel3);
+                    }
+                    else
+                    {
+                        throw new Error("El Cliente ya existe")
+                    }
+                }
                 break;
             default:
                 numeroClicks--;

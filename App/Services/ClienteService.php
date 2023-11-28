@@ -19,7 +19,7 @@ class ClienteService extends Connection
         {
             $stmt = $this->db_conection->prepare("INSERT INTO cliente (rfc, nombre, grupo_clientes) VALUES (?, ?, ?)");
 
-            $stmt->bind_param("s", $c->RFC, $c->Nombre, $c->GrupoClientes);
+            $stmt->bind_param("sss", $c->RFC, $c->Nombre, $c->GrupoClientes);
 
             if($stmt->execute())
             {
@@ -44,11 +44,11 @@ class ClienteService extends Connection
     }
 
     //Método para agregar los certificados. Es privado ya que se manda a llamar desde AgregarCliente
-    private function AgregarCertificado(DateTime $fechaVencimiento, bool $status, string $rfcCliente, string $tipo) : bool
+    private function AgregarCertificado(string $fechaVencimiento, bool $status, string $rfcCliente, string $tipo) : bool
     {
         $stmt = $this->db_conection->prepare("INSERT INTO certificado (fecha_fin, estatus, tipo, id_cliente) VALUES (?, ?, ?, ?)");
 
-        $stmt->bind_param("s", $fechaVencimiento, $status, $tipo, $rfcCliente);
+        $stmt->bind_param("ssss", $fechaVencimiento, $status, $tipo, $rfcCliente);
 
         if($stmt->execute())
         {

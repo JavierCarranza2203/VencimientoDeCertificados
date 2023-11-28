@@ -1,4 +1,11 @@
-import { AgregarNuevoUsuario } from "./Metodos/Peticiones.js";
+import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
+import { AgregarNuevoUsuario} from "./Metodos/Peticiones.js";
+
+let grupo;
+
+window.addEventListener("load", ()=>{
+    PermitirAcceso()
+});
 
 document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=>{
     try

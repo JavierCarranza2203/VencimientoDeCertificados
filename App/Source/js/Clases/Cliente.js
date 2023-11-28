@@ -5,8 +5,9 @@ export class Cliente
     constructor()
     {
         //Inicializacion de las propiedades del cliente
-        this.Nombre = "Desconocido";
-        this.Rfc = "Desconocida";
+        this._strNombre = "Desconocido";
+        this._strRfc = "Desconocida";
+        this._chrGrupo = "";
 
         //Inicializacion del sello y firma
         this.Sello = new Certificado()
@@ -14,10 +15,11 @@ export class Cliente
     }
 
     //Get y set para la propiedad del nombre
-    get Nombre() { return this.Nombre; }
-    // set Nombre(n) { if(this.Nombre == "Desconocido"){ this.Nombre = n; } else { return } }
+    get Nombre() { return this._strNombre; }
 
     //Get y set para la propiedad del RFC
-    get Rfc() { return this.Rfc; }
-    // set Rfc(value) { this.Rfc = value; }
+    get Rfc() { return this._strRfc; }
+
+    //Get para el grupo de clientes
+    get Grupo() { return this._chrGrupo;}
 }

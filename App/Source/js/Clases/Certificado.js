@@ -2,15 +2,13 @@ export class Certificado
 {
     constructor()
     {
-        this.FechaVencimiento = "Desconocida";
-        this.Status = false;
+        this._dtmFechaVencimiento = "Desconocida";
+        this._blnStatus = false;
     }
     
     //Get y set para la fecha de vencimiento
-    get FechaVencimiento(){ return this.FechaVencimiento; }
-    // set FechaVencimiento(value) { this.FechaVencimiento = value; }
+    get FechaVencimiento(){ return this._dtmFechaVencimiento; }
 
     //Get y set para el status
-    get Status(){ return this.Status; }
-    // set Status(value) { this.Status = value; }
+    get Status(){ return this._blnStatus; }
 }

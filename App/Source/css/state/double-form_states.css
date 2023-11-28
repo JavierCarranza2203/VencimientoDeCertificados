@@ -32,3 +32,8 @@
 .double-form-container__form-status--inactive{
     color: #680606;
 }
+
+.double-form-container__form-combobox--hidden
+{
+    display: none;
+}
