@@ -1,8 +1,6 @@
 import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
 import { AgregarNuevoUsuario} from "./Metodos/Peticiones.js";
 
-let grupo;
-
 window.addEventListener("load", ()=>{
     PermitirAcceso()
 });
@@ -24,6 +22,12 @@ document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=
             icon: "success",
             confirmButtonText: "OK",
         });
+
+        document.getElementById("txtNombreCompleto").value = "";
+        document.getElementById("txtNombreUsuario").value = "";
+        document.getElementById("txtPassword").value = "";
+        document.getElementById("cmbGrupoClientes").value = "";
+        document.getElementById("cmbRol").value = "";
     }
     catch(error)
     {

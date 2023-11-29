@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--======== Título ========-->
-    <title>RG I Agregar nuevo cliente</title>
+    <title>RG | Agregar nuevo cliente</title>
 
     <!--======== Icono principal ========-->
     <link rel="icon" href="..//Utilities/LOGO RG.jpg" type="image/x-icon">
@@ -30,17 +30,17 @@
             </div>
         </div>
 
-        <h2 class="header__title">Agregar nuevo cliente</h2>
+        <h2 class="header__title">Agregar nuevo usuario</h2>
 
         <nav class="header__navbar">
-            <a href="#" class="header__navbar-item">Página principal</a>
-            <button>Cerrar sesión</button>
+            <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
+            <button class="header__navbar-logout" id="btnLogout">Cerrar sesión</button>
         </nav>
     </header>
 
     <!-- Formulario -->
     <form id="frmNuevoUsuario" class="double-form-container__form">
-        <h3 class="double-form-container__form-title">Ingrese los datos del nuevo cliente</h3>
+        <h3 class="double-form-container__form-title">Ingrese los datos del usuario</h3>
         <label for="txtNombreCompleto" class="double-form-container__form-label">Nombre completo:</label>
         <input type="text" name="txtNombreCompleto" id="txtNombreCompleto" class="double-form-container__form-input">
 
@@ -52,15 +52,15 @@
 
         <label for="cmbGrupoClientes" class="double-form-container__form-label">Grupo de clientes:</label>
         <select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">
-            <option value="a" selected>Clientes A</option>
-            <option value="b">Clientes B</option>
-            <option value="c">Clientes C</option>
-            <option value="s">Puede ver todos</option>
+            <option value="A" selected>Clientes A</option>
+            <option value="B">Clientes B</option>
+            <option value="C">Clientes C</option>
+            <option value="S">Puede ver todos</option>
         </select>
 
         <label for="cmbRol" class="double-form-container__form-label">Rol del usuario:</label>
         <select name="cmbRol" id="cmbRol" class="double-form-container__form-combobox">
-            <option value="comun" selected>Usuario común</option>
+            <option value="empleado" selected>Empleado</option>
             <option value="admin">Administrador</option>
         </select>
 
@@ -70,5 +70,6 @@
     <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="../Source/js/app_nuevo-usuario.js"></script>
+    <script type="module" src="../Source/js/btnLogout.js"></script>
 </body>
 </html>

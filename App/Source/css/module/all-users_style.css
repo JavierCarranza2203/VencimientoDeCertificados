@@ -7,6 +7,10 @@
 /* Estilos del header */
 @import url("header_style.css");
 
+.gridjs-pages{
+    display: flex;
+}
+
 .logo-container__img{
     width: 50px;
 }

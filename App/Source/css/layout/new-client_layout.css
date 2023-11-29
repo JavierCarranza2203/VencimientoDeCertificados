@@ -33,24 +33,15 @@ body{
     clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
 }
 
-.progress-bar__levels-container-level:nth-child(2){
-    margin-left: -40px;
-    clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%, 0% 0%);
-}
-
 .progress-bar__levels-container-level > span{
     margin-left: 35px;
 }
 
-.progress-bar__levels-container-level:nth-child(2) > span{
-    margin-left: 55px;
-}
-
-.progress-bar__levels-container-level:nth-child(3){
+.progress-bar__levels-container-level:nth-child(2){
     margin-left: -40px;
     clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 25% 50%, 0% 0%);
 }
 
-.progress-bar__levels-container-level:nth-child(3) > span{
+.progress-bar__levels-container-level:nth-child(2) > span{
     margin-left: 50px;
 }

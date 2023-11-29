@@ -1,0 +1,9 @@
+body
+{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 70px repeat(2, 1fr);
+    grid-template-areas: "header header"
+                        "first-card second-card"
+                        "third-card fourth-card";
+}

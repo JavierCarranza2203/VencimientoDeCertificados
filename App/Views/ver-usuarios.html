@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RG | Ver todos los usuarios</title>
+
+    <!--======== Archivos css ========-->
+    <link rel="stylesheet" href="../Source/css/module/all-users_style.css">
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
+
+    <!--======== Archivos js ========-->
+    <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="blocker" class="content-blocker"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
+            <div class="logo-container__text-container">
+                <h1 class="logo-container__text">GARCIA REYES Y ASOCIADOS</h1>
+                <span class="line"></span>
+                <h2>SERVICIOS CONTABLES FISCALES</h2>
+            </div>
+        </div>
+
+        <h2 class="header__title">Ver todos los clientes</h2>
+
+        <nav class="header__navbar">
+            <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
+            <button class="header__navbar-logout" id="btnLogout">Cerrar sesión</button>
+        </nav>
+    </header>
+
+    <div></div>
+
+    <main class="table-client-container">
+        <div id="wrapper"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script type="module" src="../Source/js/app_ver-usuarios.js"></script>
+    <script type="module" src="../Source/js/btnLogout.js"></script>
+</body>
+</html>

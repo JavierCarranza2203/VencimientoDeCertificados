@@ -49,8 +49,7 @@ const txtFechaFinEnSello = document.getElementById("txtFechaFinEnSello");
 const statusSello = document.getElementById("StatusSello");
 
 //Controles para indicar en que nivel se encuentra el usuario
-const nivel2 = document.getElementById("level2");
-const nivel3 = document.getElementById("level3");
+const nivel2 = document.getElementById("level3");
 
 //Contador de clicks para el funcionamiento del formulario
 let numeroClicks = 0;
@@ -155,6 +154,8 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 }
                 else
                 {
+                    CambiarPaginaFormulario(statusSello);
+
                     if(bandera == true)
                     {
                         Swal.fire({
@@ -190,9 +191,9 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                             text: data,
                             icon: "success",
                             confirmButtonText: "OK",
+                        }).then(()=>{
+                            location.href("pagina-principal.html");
                         });
-
-                        CambiarPaginaFormulario(statusSello, contenedorSello, nivel3);
                     }
                     else
                     {
@@ -272,13 +273,16 @@ function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data)
     }
 }
 
-function CambiarPaginaFormulario(status, contenedorActual, siguienteNivel)
+function CambiarPaginaFormulario(status, contenedorActual = null, siguienteNivel = null)
 {
     if(status.textContent == ""){ throw new Error('Ingrese un archivo o haga click en "Ver datos"'); }
     else if(status.textContent !== " Vigente"){ throw new Error("Ingrese un certificado vigente"); }
 
-    contenedorActual.classList.add("double-form-container__form--next");
-    siguienteNivel.classList.add("progress-bar__levels-container-level--complete");
+    if(siguienteNivel != null)
+    {
+        contenedorActual.classList.add("double-form-container__form--next");
+        siguienteNivel.classList.add("progress-bar__levels-container-level--complete");
+    }
 }
 
 /**************************************************************/

@@ -26,6 +26,9 @@ window.addEventListener("load", async ()=> {
                 url: url,
                 then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
             },
+            pagination: {
+                limit: 10
+            },
             language: {
                 'search': {
                     'placeholder': '🔍 Escriba para buscar...'

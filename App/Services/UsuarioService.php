@@ -150,7 +150,22 @@ class UsuarioService extends Connection
     //Método para obtener todos los usuarios
     public function ObtenerTodosLosUsuarios(int $codigoDeAccesso)
     {
-        $miUsuario = new Usuario("Desconocida");
+        $stmt = $this->db_conection->prepare("SELECT id, nombre_completo, nombre_usuario, grupo_clientes, rol FROM usuario");
+
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+
+            $resultado = $resultado->fetch_all();
+
+            return $resultado;
+        } 
+        else 
+        {
+            throw new Exception("No hay registros"); 
+        }
     }
 }
 ?>

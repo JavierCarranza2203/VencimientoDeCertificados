@@ -27,6 +27,9 @@ require_once "../Services/UsuarioService.php";
             case 'logout':
                 echo json_encode($UsuarioService->CerrarSesion());
                 break;
+            case 'view':
+                echo json_encode($UsuarioService->ObtenerTodosLosUsuarios(00175));
+                break;
         }
     }
     catch(Exception $e)

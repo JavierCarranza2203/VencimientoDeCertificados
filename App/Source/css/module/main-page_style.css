@@ -1,0 +1,16 @@
+/* Reset de los estilos */
+@import url("../base/reset-syle.css");
+
+/* Layout de la pagina de nuevo cliente */
+@import url("../layout/main-page_layout.css");
+
+/* Importacion de los estilos del header */
+@import url("header_style.css");
+
+/* Importacion de los estilos para las tarjetas */
+@import url("card_style.css");
+
+/* Modificacion del tamaño de la imagen del logo */
+.logo-container__img{
+    width: 50px;
+}

@@ -1,0 +1,22 @@
+.card{
+    height: 80%;
+    width: 50%;
+    display: grid;
+    grid-template-rows: 80% 20%;
+    margin: auto;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.card__img{
+    margin: 0 auto;
+    width: 250px;
+}
+
+.card__link{
+    width: 100%;
+    margin: 0 auto;
+    padding: 4% 0 0;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
