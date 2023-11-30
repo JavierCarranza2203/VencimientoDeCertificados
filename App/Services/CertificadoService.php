@@ -2,6 +2,8 @@
 
 class CertificadoService 
 {
+    public static string $_strRutaCarpeta = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Certificados\\"; 
+
     public function ObtenerDatosCertificado($rcContent) : string
     {
         //Convierte el contenido del archivo a binario
@@ -25,9 +27,19 @@ class CertificadoService
         return $jsonDatos;
     }
 
-    public function GuardarArchivo()
+    public static function GuardarArchivo($grupoCliente, $tipo, $archivo, $urlTemp) : string
     {
-        
+        $ruta = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Certificados\\" + 
+                            strtoupper($tipo) + "\\Clientes" + strtoupper($grupoCliente);
+
+        $url_target = str_replace('\\', '/', $ruta) . '/' . $archivo;
+
+        if (move_uploaded_file($urlTemp, $url_target)) {
+            return "El archivo " . htmlspecialchars(basename($archivo)) . " ha sido cargado con éxito.";
+        } 
+        else {
+            throw new Exception("Hubo un error al subir el archivo");
+        }
     }
 }
 
