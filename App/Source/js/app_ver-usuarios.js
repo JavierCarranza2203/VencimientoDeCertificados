@@ -1,5 +1,10 @@
 import {PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
 
+/**********************************************************/
+/* Llamando al método para permitir el acceso a la página */
+/**********************************************************/
+
+//NOTA: Además, aquí se cargan los usuarios en la tabla usando grid.js
 window.addEventListener("load", async ()=> {
     PermitirAcceso().then(() => {
         new gridjs.Grid({
@@ -20,3 +25,7 @@ window.addEventListener("load", async ()=> {
         }).render(document.getElementById("wrapper"));
     });
 });
+
+/**********************************************************/
+/* Llamando al método para permitir el acceso a la página */
+/**********************************************************/

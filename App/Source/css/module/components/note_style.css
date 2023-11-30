@@ -1,0 +1,5 @@
+/* Layout de la nota */
+@import url("../../layout/components/note_layout.css");
+
+/* Tema de la pagina de nuevo cliente */
+@import url("../../theme/components/note_theme.css");

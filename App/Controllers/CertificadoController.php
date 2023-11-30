@@ -3,18 +3,20 @@
 require_once "../Services/CertificadoService.php";
     try
     {
-        // Verificar que el archivo tiene la extensión .cer
+        //Obtiene la extensión del certificado
         $fileExtension = pathinfo($_FILES['Certificado']['name'], PATHINFO_EXTENSION);
 
+        //Valida si la extención del archivo es .cer
         if (strtolower($fileExtension) !== 'cer') {
             throw new Exception("Por favor ingrese un archivo con extensión .cer");
         }
 
+        //Crea una instancia del servicio de certificado
         $CertificadoService = new CertificadoService();
 
         //Asigna un nombre temporal al certificado recibido del formulario
         if (isset($_FILES['Certificado']['tmp_name'])) 
-        {    
+        {
             echo $CertificadoService->ObtenerDatosCertificado(file_get_contents($_FILES['Certificado']['tmp_name']));
         } 
         else 

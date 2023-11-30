@@ -1,43 +1,50 @@
 export async function ObtenerDatosDelCertificado(certificado) 
 {
+    //Genera una instancia de la clase FormData
     const formData = new FormData();
+
+    //Agrega el campo "Certificado" al formdata y asigna el valor
     formData.append("Certificado", certificado);
 
+    //Realiza la petición al controlador del certificado
     const response = await fetch("../Controllers/CertificadoController.php", {
         method: "POST",
         body: formData,
     });
 
+    //Si la petición responde con estado 200, regresa los datos del certificado
     if (response.ok) 
     {
         const data = await response.json();
         return data;
     } 
-    else 
+    else //Si no, genera un error
     {
         throw new Error(await response.json());
     }
 }
 
 export async function IniciarSesion(NombreDeUsuario, Contrasenia) 
-{
+{   //Crea una instancia de la clase FormData
     const credentials = new FormData();
 
     // Agrega las variables al formData creado
     credentials.append("NombreDeUsuario", NombreDeUsuario);
     credentials.append("Contrasenia", Contrasenia);
 
+    //Realiza la petición al controlador del usuario
     const response = await fetch("App/Controllers/UsuarioController.php?Operacion=login", {
         method: "POST",
         body: credentials,
     });
 
+    //Si la petición responde con un estado 200, regresa los datos
     if (response.ok) 
     {
         const data = await response.json();
         return data;
     } 
-    else //Si no responde con un codigo 200
+    else //Si no, genera un error
     {
         throw new Error(await response.json());
     }
@@ -45,8 +52,10 @@ export async function IniciarSesion(NombreDeUsuario, Contrasenia)
 
 export async function ValidarUsuarioLogeado()
 {
+    //Realiza la petición al controlador del usuario
     const response = await fetch("../Controllers/UsuarioController.php?Operacion=userLogged",{method:"GET"})
 
+    //Si responde con un estado 200, regresa los datos. Solo hay dos posibles datos true/false
     if (response.ok) 
     {
         return await response.json();
@@ -84,18 +93,41 @@ export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contras
 
 export async function CerrarSesion()
 {
+    //Realiza la petición al controlador
     const response = await fetch("../Controllers/UsuarioController.php?Operacion=logout");
 
+    //Si responde con un estado 200, regresa un true
     if(response.ok)
     {
         return await response.json();
     }
-    else
+    else //Si no, genera un error
     {
-        throw new Error(await response.json);
+        throw new Error(response.json);
     }
 }
 
-export async function AgregarCliente(){
-    
+export async function AgregarCliente(jsonCliente){
+    const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
+    {
+        method:"POST",
+        body: jsonCliente
+    });
+
+    let data = await response.json()
+    if(response.ok)
+    {
+        Swal.fire({
+            title: "¡Tarea realizada con éxito!",
+            text: data,
+            icon: "success",
+            confirmButtonText: "OK",
+        }).then(()=>{
+            location.href("pagina-principal.html");
+        });
+    }
+    else
+    {
+        throw new Error("El Cliente ya existe")
+    }
 }

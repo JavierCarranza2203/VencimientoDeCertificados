@@ -1,8 +1,20 @@
 import { IniciarSesion } from "./Metodos/Peticiones.js";
 
+/*************************************************************/
+/* Declaracion de variables y obtiene los elementos del html */
+/*************************************************************/
+
 const txtPassword = document.getElementById("txtPassword");
 const btnShowPassword = document.getElementById("btnShowPassword");
 let muestraContrasenia = false;
+
+/*************************************************************/
+/* Declaracion de variables y obtiene los elementos del html */
+/*************************************************************/
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/
 
 //Captura el evento submit del formulario
 document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)=>{
@@ -75,7 +87,7 @@ document.getElementById("btnCrearCuenta").addEventListener("click", ()=>{
         {
             if(code === "RG2023")
             {
-                location.href = "App/Views/nuevo-usuario.html";
+                location.href = "App/Views/nuevo-usuario.html?access_code=true";
             }
             else
             {
@@ -86,3 +98,7 @@ document.getElementById("btnCrearCuenta").addEventListener("click", ()=>{
         }
     },);
 });
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/

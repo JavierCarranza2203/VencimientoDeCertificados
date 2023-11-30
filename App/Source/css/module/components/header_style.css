@@ -1,0 +1,11 @@
+/* Layout del header */
+@import url("../../layout/components/header_layout.css");
+
+/* Tema del header */
+@import url("../../theme/components/header_theme.css");
+
+/* Estados del header */
+@import url("../../state/components/header__states.css");
+
+/* Importacion de los estilos del logo */
+@import url("logo_style.css");

@@ -5,6 +5,7 @@ import { Usuario } from "./Clases/Usuario.js";
 /* Llamando al método para permitir el acceso a la página */
 /**********************************************************/
 
+//NOTA: Ademas, aqui se cargan los clientes en la tabla usando grid.js
 window.addEventListener("load", async ()=> {
     PermitirAcceso().then(res => {
 
@@ -42,6 +43,10 @@ window.addEventListener("load", async ()=> {
 /* Llamando al método para permitir el acceso a la página */
 /**********************************************************/
 
+/**************************************************************/
+/*             Métodos implementados en la página             */
+/**************************************************************/
+
 function MostrarVigencia(bitBooleano)
 {
     if(bitBooleano == 1){
@@ -51,3 +56,7 @@ function MostrarVigencia(bitBooleano)
         return "Vencido";
     }
 }
+
+/**************************************************************/
+/*             Métodos implementados en la página             */
+/**************************************************************/

@@ -1,5 +1,5 @@
 import { ObtenerDatosDelCertificado } from "./Metodos/Peticiones.js";
-import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
+import { PermitirAcceso, RecibirDatosDelNuevoCliente } from "./Metodos/MetodosSinPeticion.js";
 import { Cliente } from "./Clases/Cliente.js";
 
 /**********************************************************/
@@ -8,7 +8,7 @@ import { Cliente } from "./Clases/Cliente.js";
 
 let grupo, bandera = false;
 window.addEventListener("load", ()=>{
-    PermitirAcceso().then(res=> {
+    PermitirAcceso().then(res => {
         grupo = res["GrupoClientes"];
 
         if(res["Rol"] == "admin")
@@ -73,8 +73,10 @@ frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
         // Obtener el archivo del input
         const certificado = document.getElementById("certificadoFirma").files[0];
 
+        //Si el certificado es nulo, genera una excepción
         if(!certificado){ throw new Error("Ingrese un archivo"); }
 
+        //Llama al metodo para obtener los datos
         let data = await ObtenerDatosDelCertificado(certificado);
 
         //Llama al metodo para mostrar los datos en los inputs y recibe como parametro la funcion para obtener los datos
@@ -141,65 +143,17 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
         {
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
-
-                NuevoCliente._strNombre = txtNombreEnFirma.value;
-                NuevoCliente._strRfc = txtRfcEnFirma.value;
-                NuevoCliente.Firma._dtmFechaVencimiento = txtFechaFinEnFirma.value;
-                NuevoCliente.Firma._blnStatus = statusFirma.textContent;
                 break;
             case 2:
                 if(NuevoCliente.Nombre != txtNombreEnSello.value || NuevoCliente.Rfc != txtRfcEnSello.value)
                 {
                     throw new Error("Los certificados no son de la misma persona");
                 }
-                else
-                {
-                    CambiarPaginaFormulario(statusSello);
 
-                    if(bandera == true)
-                    {
-                        Swal.fire({
-                            title: "Ingrese el grupo de clientes al que pertenece",
-                            input: "text",
-                            showCancelButton: true,
-                            confirmButtonText: "Aceptar",
-                            showLoaderOnConfirm: true,
-                            preConfirm: (group)=>
-                            {
-                                grupo = group;
-                            }
-                        });
-                    }
+                CambiarPaginaFormulario(statusSello);
 
-                    NuevoCliente.Sello._dtmFechaVencimiento = txtFechaFinEnSello.value;
-                    NuevoCliente.Sello._blnStatus = statusSello.textContent;
-                    NuevoCliente._chrGrupo = grupo;
-
-                    let jsonCliente = JSON.stringify(NuevoCliente);
-
-                    const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
-                    {
-                        method:"POST",
-                        body: jsonCliente
-                    });
-
-                    let data = await response.json()
-                    if(response.ok)
-                    {
-                        Swal.fire({
-                            title: "¡Tarea realizada con éxito!",
-                            text: data,
-                            icon: "success",
-                            confirmButtonText: "OK",
-                        }).then(()=>{
-                            location.href("pagina-principal.html");
-                        });
-                    }
-                    else
-                    {
-                        throw new Error("El Cliente ya existe")
-                    }
-                }
+                await RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, 
+                        txtFechaFinEnFirma, statusFirma, txtFechaFinEnSello, statusSello, bandera, grupo);
                 break;
             default:
                 numeroClicks--;

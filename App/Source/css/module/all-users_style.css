@@ -5,7 +5,7 @@
 @import url("../layout/all-users_layout.css");
 
 /* Estilos del header */
-@import url("header_style.css");
+@import url("components/header_style.css");
 
 .gridjs-pages{
     display: flex;
@@ -13,4 +13,30 @@
 
 .logo-container__img{
     width: 50px;
+}
+
+.table-client-container > .options{
+    position: absolute;
+    top: 82px;
+    right: 18px;
+    display: flex;
+    gap: 10px;
+}
+
+.table-client-container > .options > button
+{
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+#btnBorrar{
+    background-color: rgb(168, 16, 16);
+    cursor: pointer;
+}
+
+#btnEditar{
+    background-color: #385592;
+    cursor: pointer;
 }

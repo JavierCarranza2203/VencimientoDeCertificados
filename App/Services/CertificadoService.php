@@ -24,6 +24,11 @@ class CertificadoService
 
         return $jsonDatos;
     }
+
+    public function GuardarArchivo()
+    {
+        
+    }
 }
 
 ?>

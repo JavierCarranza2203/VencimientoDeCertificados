@@ -10,8 +10,10 @@
 /* Estados de los elementos de la pagina de login */
 @import url("../state/login-page_states.css");
 
+/* Compontentes de la página */
+
 /* Importacion de los estilos del logo */
-@import url("logo_style.css");
+@import url("components/logo_style.css");
 
 /* Importacion de los estilos de los textbox */
-@import url("textbox_style.css");
+@import url("components/textbox_style.css");

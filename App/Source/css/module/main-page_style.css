@@ -5,10 +5,10 @@
 @import url("../layout/main-page_layout.css");
 
 /* Importacion de los estilos del header */
-@import url("header_style.css");
+@import url("components/header_style.css");
 
 /* Importacion de los estilos para las tarjetas */
-@import url("card_style.css");
+@import url("components/card_style.css");
 
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{

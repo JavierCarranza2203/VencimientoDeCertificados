@@ -17,7 +17,8 @@
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- <div id="blocker" class="content-blocker"></div> -->
+    <!-- Bloqueador de contenido en caso de que no se haya iniciado sesión -->
+    <div id="blocker" class="content-blocker"></div>
 
     <!-- Header -->
     <header class="header">
@@ -38,21 +39,25 @@
         </nav>
     </header>
 
+    <!-- Tarjeta para la sección "Nuevo cliente" -->
     <section class="card" id="btnNewCustomer">
         <img src="https://img.freepik.com/free-vector/chatbot-customer-service-abstract-concept_335657-3037.jpg?size=626&ext=jpg&ga=GA1.1.1668157491.1701210920&semt=ais" alt="nuevo-cliente" class="card__img">
         <a class="card__link">Agregar nuevo cliente</a>
     </section>
 
+    <!-- Tarjeta para la sección "Ver clientes" -->
     <section class="card" id="btnAllCustomers">
         <img src="https://img.freepik.com/free-vector/grades-concept-illustration_114360-618.jpg?size=626&ext=jpg&ga=GA1.1.1668157491.1701210920&semt=ais" alt="ver-clientes" class="card__img">
         <a href="#" class="card__link">Ver todos los clientes</a>
     </section>
 
+    <!-- Tarjeta para la sección "Nuevo usuario" -->
     <section class="card" id="btnNewUser">
         <img src="https://img.freepik.com/free-vector/accept-request-concept-illustration_114360-3219.jpg?size=626&ext=jpg&ga=GA1.1.1668157491.1701210920&semt=ais" alt="nuevo-usuario" class="card__img">
         <a class="card__link">Agregar nuevo usuario</a>
     </section>
 
+    <!-- Tarjeta para la sección "Ver usuarios" -->
     <section class="card" id="btnAllUsers">
         <img src="https://img.freepik.com/free-vector/social-network-online-dating-service-chatting-internet-communication-girl-cartoon-character-looking-profiles-with-photo-social-media-concept-illustration_335657-2041.jpg?size=626&ext=jpg&ga=GA1.1.1668157491.1701210920&semt=ais" alt="nuevo-usuario" class="card__img">
         <a class="card__link">Ver todos los usuarios</a>
@@ -60,7 +65,7 @@
 
     <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../Source/js/app_pagina-principal.js"></script>
+    <script type="module" src="../Source/js/app_pagina-principal.js"></script>
     <script type="module" src="../Source/js/btnLogout.js"></script>
 </body>
 </html>

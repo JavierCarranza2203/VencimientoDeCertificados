@@ -1,0 +1,6 @@
+
+/* Layout del textbox */
+@import url("../../layout/components/textbox_layout.css");
+
+/* Tema del textbox */
+@import url("../../theme/components/textbox_theme.css");

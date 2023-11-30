@@ -13,6 +13,7 @@
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <!-- Bloqueador de contenido en caso de que no se haya iniciado sesión -->
     <div id="blocker" class="content-blocker"></div>
 
     <!-- Header -->
@@ -34,12 +35,19 @@
         </nav>
     </header>
 
+    <!-- div que solo sirve para que se acomode en el grid -->
     <div></div>
 
+    <!-- Contenedor de la tabla -->
     <main class="table-client-container">
+        <div class="options">
+            <button type="button" id="btnEditar"><i class="fa-solid fa-marker"></i> Editar</button>
+            <button type="button" id="btnBorrar"><i class="fa-solid fa-trash-can"></i> Borrar</button>
+        </div>
         <div id="wrapper"></div>
     </main>
 
+    <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
     <script type="module" src="../Source/js/app_ver-clientes.js"></script>

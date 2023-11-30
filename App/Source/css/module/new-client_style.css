@@ -10,14 +10,16 @@
 /* Estados de la pagina de nuevo cliente */
 @import url("../state/new-client_states.css");
 
+/* Componentes de la página */
+
 /* Importacion de los estilos del header */
-@import url("header_style.css");
+@import url("components/header_style.css");
 
 /* Importacion de los estilos del form */
-@import url("double-form_style.css");
+@import url("components/double-form_style.css");
 
 /* Importacion de los estilos de la nota */
-@import url("note_style.css");
+@import url("components/note_style.css");
 
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{

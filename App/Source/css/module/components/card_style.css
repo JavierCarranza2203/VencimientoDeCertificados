@@ -1,0 +1,5 @@
+/* Layout de la tarjeta */
+@import url("../../layout/components/card_layout.css");
+
+/* Estados de la tarjeta */
+@import url("../../state/components/card__states.css");

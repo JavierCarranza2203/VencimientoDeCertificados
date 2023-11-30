@@ -1,0 +1,8 @@
+/* Layout del form doble */
+@import url("../../layout/components/double-form_layout.css");
+
+/* Tema del form doble */
+@import url("../../theme/components/double-form_theme.css");
+
+/* Estados del form doble */
+@import url("../../state/components/double-form_states.css");

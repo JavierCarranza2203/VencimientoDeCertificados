@@ -166,5 +166,5 @@ body {
 }
 
 .content-blocker--hidden{
-    display: none;
+    display: none !important;
 }

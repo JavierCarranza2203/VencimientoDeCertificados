@@ -1,9 +1,30 @@
 import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
 import { AgregarNuevoUsuario} from "./Metodos/Peticiones.js";
 
+/**********************************************************/
+/* Llamando al método para permitir el acceso a la página */
+/**********************************************************/
+
 window.addEventListener("load", ()=>{
-    PermitirAcceso()
+    const acceso = window.location.search;
+
+    if(!acceso)
+    {
+        PermitirAcceso();
+    }
+    else
+    {
+        document.getElementById("blocker").classList.add("content-blocker--hidden");
+    }
 });
+
+/**********************************************************/
+/* Llamando al método para permitir el acceso a la página */
+/**********************************************************/
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/
 
 document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=>{
     try
@@ -38,4 +59,8 @@ document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=
             footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
         });
     }
-})
+});
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/
