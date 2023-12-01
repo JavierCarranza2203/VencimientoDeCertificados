@@ -17,6 +17,7 @@ require_once "../Services/CertificadoService.php";
         //Asigna un nombre temporal al certificado recibido del formulario
         if (isset($_FILES['Certificado']['tmp_name'])) 
         {
+            //Llama al método para obtener los datos del certificado
             echo $CertificadoService->ObtenerDatosCertificado(file_get_contents($_FILES['Certificado']['tmp_name']));
         } 
         else 

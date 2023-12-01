@@ -131,3 +131,24 @@ export async function AgregarCliente(jsonCliente){
         throw new Error("El Cliente ya existe")
     }
 }
+
+export async function EliminarCliente(rfc)
+{
+    const response = await fetch("../Controllers/ClienteController.php?Operacion=delete&&rfc=" + rfc);
+
+    let data = await response.json();
+
+    if(response.ok)
+    {
+        Swal.fire({
+            title: "¡Tarea realizada con éxito!",
+            text: data,
+            icon: "success",
+            confirmButtonText: "OK",
+        });
+    }
+    else
+    {
+        throw new Error(data);
+    }
+}

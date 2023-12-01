@@ -15,28 +15,16 @@
     width: 50px;
 }
 
-.table-client-container > .options{
-    position: absolute;
-    top: 82px;
-    right: 18px;
+.acciones{
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    gap: 20px;
 }
 
-.table-client-container > .options > button
-{
-    padding: 8px 12px;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
+.acciones > i:first-child{
+    color: rgb(11, 0, 168);
 }
 
-#btnBorrar{
-    background-color: rgb(168, 16, 16);
-    cursor: pointer;
-}
-
-#btnEditar{
-    background-color: #385592;
-    cursor: pointer;
+.acciones > i:last-child{
+    color: rgb(172, 0, 0);
 }
