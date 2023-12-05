@@ -40,8 +40,7 @@ require_once "../Services/UsuarioService.php";
                     echo json_encode($UsuarioService->ObtenerTodosLosUsuarios(00175));
                 break;
             default:
-                    throw new Exception("La operación no es válida");
-                break;
+                throw new Exception("La operación no es válida");
         }
     }
     catch(Exception $e)

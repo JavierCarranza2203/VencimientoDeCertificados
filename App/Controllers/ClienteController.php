@@ -44,8 +44,7 @@ require_once "../Models/Cliente.php";
                     echo json_encode($ClienteService->EliminarCliente($_GET["rfc"], 00175));
                 break;
             default:
-                    throw new Exception("La operación no es válida");
-                break;
+                throw new Exception("La operación no es válida");
         }
     }
     catch(Exception $e)

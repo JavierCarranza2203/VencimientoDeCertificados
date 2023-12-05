@@ -145,7 +145,7 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
                 break;
             case 2:
-                if(NuevoCliente.Nombre != txtNombreEnSello.value || NuevoCliente.Rfc != txtRfcEnSello.value)
+                if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value)
                 {
                     throw new Error("Los certificados no son de la misma persona");
                 }

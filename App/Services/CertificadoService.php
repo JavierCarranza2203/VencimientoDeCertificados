@@ -2,8 +2,6 @@
 
 class CertificadoService 
 {
-    public static string $_strRutaCarpeta = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Certificados\\"; 
-
     public function ObtenerDatosCertificado($rcContent) : string
     {
         //Convierte el contenido del archivo a binario
