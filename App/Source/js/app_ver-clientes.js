@@ -105,6 +105,11 @@ function ActualizarTabla()
     }).forceRender();
 }
 
+document.getElementById("btnGenerarExcel").addEventListener('click', async ()=>{
+    let response = await fetch(`http://localhost:8082/clientes_por_vencer/excel`, { method: "GET" });
+    
+});
+
 /**************************************************************/
 /*             Métodos implementados en la página             */
 /**************************************************************/
