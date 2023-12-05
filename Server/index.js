@@ -12,8 +12,10 @@ app.use(cors());
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'ny-ox9Kq*shopg_X',
-    database: 'despacho_contable'
+    password: '',
+    database: 'db_despacho_contable'
+    // password: 'ny-ox9Kq*shopg_X',
+    // database: 'despacho_contable'
 });
 
 app.get('/clientes_por_vencer/excel', (req, res) => {
@@ -25,6 +27,17 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
 
         const columnHeaders = fields.map(field => field.name);
         sheet.addRow(columnHeaders);
+
+        const headerRow = sheet.getRow(1);
+        headerRow.font = { bold: true, color: { argb: 'FFFFFF' } }; // Fuente en negrita y color blanco
+        headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '3498db' } }; // Fondo azul
+        headerRow.alignment = { horizontal: 'center', vertical: 'middle' }; // Alineación al centro y vertical al medio
+        headerRow.border = {
+            top: { style: 'thin', color: { argb: 'FFFFFF' } },
+            bottom: { style: 'thin', color: { argb: 'FFFFFF' } },
+            left: { style: 'thin', color: { argb: 'FFFFFF' } },
+            right: { style: 'thin', color: { argb: 'FFFFFF' } }
+        };
 
         results.forEach(row => {
             const rowData = columnHeaders.map(header => row[header]);

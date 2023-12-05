@@ -5,5 +5,7 @@ CREATE TABLE certificado(
     estatus BOOLEAN,
     tipo VARCHAR(15),
     id_cliente VARCHAR(15),
-    FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE
+    id_status TINYINT,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE,
+    FOREIGN KEY (id_status) REFERENCES status(id) ON DELETE CASCADE
 );
