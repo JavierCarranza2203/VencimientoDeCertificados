@@ -43,6 +43,10 @@ window.addEventListener("load", async()=>{
 /*             Eventos de los controles del html             */
 /*************************************************************/
 
+document.getElementById("btnWarningCustomers").addEventListener("click", ()=>{
+    location.href = "clientes-por-vencer.html";
+});
+
 document.getElementById("btnNewCustomer").addEventListener("click", ()=>{
     location.href = "nuevo-certificado.html";
 });

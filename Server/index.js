@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mysql2 = require('mysql2');
+const ExcelJs = require('exceljs');
+const fs = require('fs/promises');
+const path = require('path');
 
 const app = new express();
 
@@ -13,39 +16,26 @@ const connection = mysql2.createConnection({
     database: 'despacho_contable'
 });
 
-
-
-app.get('/clientes_admin', (req, res) => {
+app.get('/clientes_por_vencer/excel', (req, res) => {
     let consulta = "SELECT * FROM clientes_certificados";
 
     connection.query(consulta, function(err, results, fields){
-        res.json(results);
-    });
-});
+        let workbook = new ExcelJs.Workbook();
+        const sheet = workbook.addWorksheet("Clientes por vencer este año");
 
-app.get('/clientes_por_grupo', (req, res) => {
-    let grupo = req.query.grupo;
+        const columnHeaders = fields.map(field => field.name);
+        sheet.addRow(columnHeaders);
 
-    if(typeof(grupo) == "undefined"){
-        throw new Error("El grupo no es válido");
-    }
-    let consulta = `SELECT * FROM clientes_certificados WHERE grupo_clientes=${grupo}`;
-    console.log(consulta);
+        results.forEach(row => {
+            const rowData = columnHeaders.map(header => row[header]);
+            sheet.addRow(rowData);
+        });
 
-    connection.query(consulta, function(err, results, fields){
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-
-        res.json(results);
-    });
-});
-
-app.get('/clientes_por_vencer', (req, res) => {
-    let consulta = "SELECT * FROM clientes_certificados";
-
-    connection.query(consulta, function(err, results, fields){
-        res.json(results);
+        workbook.xlsx.writeBuffer().then(excelBuffer => {
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+            res.send(excelBuffer);
+        });
     });
 });
 
