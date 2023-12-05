@@ -35,27 +35,6 @@ function MostrarVigencia(bitBooleano)
     }
 }
 
-async function EliminarCliente(rfc)
-{
-    const response = await fetch("../Controllers/ClienteController.php?Operacion=delete&&rfc=" + rfc);
-
-    let data = await response.json();
-
-    if(response.ok)
-    {
-        Swal.fire({
-            title: "¡Tarea realizada con éxito!",
-            text: data,
-            icon: "success",
-            confirmButtonText: "OK",
-        });
-    }
-    else
-    {
-        throw new Error(data);
-    }
-}
-
 function InicializarTabla(rol)
 {
     url = 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
@@ -74,8 +53,8 @@ function InicializarTabla(rol)
         columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
             name: 'Acciones',
             formatter: (cell, row) => {
-                const editarIcono = `<i class="fas fa-edit"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash" onclick="EliminarCliente(${row.cells[0].data})"></i>`;
+                const editarIcono = `<i class="fas fa-edit" onclick="EditarUsuario(${row.cells[0].data}, '${row.cells[1].data}', '${row.cells[2].data}', '${row.cells[3].data}')"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash" onclick="eliminarRegistro(${row.cells[0].data})"></i>`;
 
                 return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
             }
@@ -95,6 +74,37 @@ function InicializarTabla(rol)
     }).render(tableContainer);
 }
 
+
+function eliminarRegistro(id){
+    Swal.fire({
+        title: "¿Está seguro de borrar el cliente?",
+        text: "No se podrá recuperar la información",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, estoy seguro!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+
+            let request = await fetch('../Controllers/ClienteController.php?Operacion=delete&&rfc=' + rfc, {
+                method: 'DELETE'
+            });
+
+            if(request.ok)
+            {
+                Swal.fire({
+                    title: "¡Acción realizada con éxito!",
+                    text: "¡El usuario se ha borrado!",
+                    icon: "success"
+                });
+
+                ActualizarTabla();
+            }
+        }
+    });
+}
+
 function ActualizarTabla()
 {
     table.updateConfig({
@@ -104,16 +114,6 @@ function ActualizarTabla()
         }
     }).forceRender();
 }
-
-document.getElementById("btnGenerarExcel").addEventListener('click', async ()=>{
-    let response = await fetch(`http://localhost:8082/clientes_por_vencer/excel`, { method: "GET" });
-    let blob = await response.blob();
-    let url = window.URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'Reporte de firmas y sellos por vencer';
-    a.click();
-});
 
 /**************************************************************/
 /*             Métodos implementados en la página             */

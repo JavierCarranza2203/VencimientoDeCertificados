@@ -28,3 +28,22 @@
 .acciones > i:last-child{
     color: rgb(172, 0, 0);
 }
+
+#btnGenerarExcel{
+    position: absolute;
+    top: 82px;
+    right: 16px;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 8px 12px;
+    background-color: #4c77af;
+}
+
+#btnGenerarExcel > i{
+    margin-right: 3px;
+}
+
+#btnGenerarExcel:hover{
+    background-color: #4583a0;
+}
