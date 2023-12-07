@@ -1,5 +1,10 @@
-import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
+import { PermitirAcceso, ValidarCampos } from "./Metodos/MetodosSinPeticion.js";
 import { AgregarNuevoUsuario} from "./Metodos/Peticiones.js";
+
+const txtNombreCompleto = document.getElementById("txtNombreCompleto");
+const txtNombreUsuario = document.getElementById("txtNombreUsuario");
+const txtContrasenia = document.getElementById("txtPassword");
+const ArrayInputs = [txtNombreCompleto, txtNombreUsuario, txtContrasenia];
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
@@ -29,10 +34,9 @@ window.addEventListener("load", ()=>{
 document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=>{
     try
     {
+        ValidarCampos(ArrayInputs);
+
         let data = await AgregarNuevoUsuario(
-            document.getElementById("txtNombreCompleto").value,
-            document.getElementById("txtNombreUsuario").value,
-            document.getElementById("txtPassword").value,
             document.getElementById("cmbGrupoClientes").value,
             document.getElementById("cmbRol").value
         );
@@ -56,7 +60,7 @@ document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=
             icon: "error",
             title: "¡Hubo un error inesperado!",
             text: error,
-            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+            footer: '<label>Si el sistema sigue fallando, llame al administrador de sistemas.</label>'
         });
     }
 });

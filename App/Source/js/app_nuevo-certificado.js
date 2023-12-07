@@ -54,8 +54,6 @@ const nivel2 = document.getElementById("level3");
 //Contador de clicks para el funcionamiento del formulario
 let numeroClicks = 0;
 
-let NuevoCliente = new Cliente();
-
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
 /*************************************************************/
@@ -179,7 +177,6 @@ document.getElementById("btnAnterior").addEventListener("click", ()=> {
     }
     else if(numeroClicks == 2){
         contenedorSello.classList.remove("double-form-container__form--next");
-        nivel3.classList.remove("progress-bar__levels-container-level--complete");
     }
     else{
         numeroClicks++;

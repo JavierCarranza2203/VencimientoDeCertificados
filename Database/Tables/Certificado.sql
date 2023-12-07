@@ -1,11 +1,9 @@
--- Active: 1701438251905@@127.0.0.1@3306@db_despacho_contable
+-- Active: 1701900326404@@127.0.0.1@3306@db_despacho_contable
 CREATE TABLE certificado(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     fecha_fin DATE,
     estatus BOOLEAN,
     tipo VARCHAR(15),
     id_cliente VARCHAR(15),
-    id_status TINYINT,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE,
-    FOREIGN KEY (id_status) REFERENCES status(id) ON DELETE CASCADE
+    FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE
 );

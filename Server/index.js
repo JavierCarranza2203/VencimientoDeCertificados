@@ -15,10 +15,8 @@ app.use(cors());
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
-    // password: '',
-    // database: 'db_despacho_contable'
-    password: 'ny-ox9Kq*shopg_X',
-    database: 'despacho_contable'
+    password: 'RG_2023*LOCALHOST',
+    database: 'db_despacho_contable'
 });
 
 app.get('/clientes_por_vencer/excel', (req, res) => {

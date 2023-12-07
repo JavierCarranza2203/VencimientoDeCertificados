@@ -128,7 +128,7 @@ export async function AgregarCliente(jsonCliente){
     }
     else
     {
-        throw new Error("El Cliente ya existe")
+        throw new Error(data);
     }
 }
 

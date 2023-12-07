@@ -13,7 +13,7 @@ let url;
 //NOTA: Ademas, aqui se cargan los clientes en la tabla usando grid.js
 window.addEventListener("load", async ()=> {
     PermitirAcceso().then(res => {
-        InicializarTabla(res["Rol"]);
+        InicializarTabla(res["Rol"], res["GrupoClientes"]);
     });
 });
 
@@ -35,7 +35,42 @@ function MostrarVigencia(bitBooleano)
     }
 }
 
-function InicializarTabla(rol)
+function EliminarRegistro(rfc){
+    Swal.fire({
+        title: "¿Está seguro de borrar el cliente?",
+        text: "No se podrá recuperar la información",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, estoy seguro!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+
+            let request = await fetch('../Controllers/ClienteController.php?Operacion=delete&&rfc=' + rfc)
+
+            let mensaje = await request.json();
+
+            if(request.ok)
+            {
+                Swal.fire({
+                    title: "¡Acción realizada con éxito!",
+                    text: mensaje,
+                    icon: "success"
+                });
+
+                ActualizarTabla();
+            }
+        }
+    });
+}
+
+function EditarUsuario(grupo)
+{
+    alert("EDITADO");
+}
+
+function InicializarTabla(rol, grupoClientes = null)
 {
     url = 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
 
@@ -45,7 +80,7 @@ function InicializarTabla(rol)
     }
     else
     {
-        url += "view" + "&Grupo=" + res['GrupoClientes'];
+        url += "view" + "&Grupo=" + grupoClientes;
     }
 
     table = new gridjs.Grid({
@@ -53,8 +88,8 @@ function InicializarTabla(rol)
         columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
             name: 'Acciones',
             formatter: (cell, row) => {
-                const editarIcono = `<i class="fas fa-edit" onclick="EditarUsuario(${row.cells[0].data}, '${row.cells[1].data}', '${row.cells[2].data}', '${row.cells[3].data}')"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash" onclick="eliminarRegistro(${row.cells[0].data})"></i>`;
+                const editarIcono = `<i class="fas fa-edit"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash"></i>`;
 
                 return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
             }
@@ -74,37 +109,6 @@ function InicializarTabla(rol)
     }).render(tableContainer);
 }
 
-
-function eliminarRegistro(id){
-    Swal.fire({
-        title: "¿Está seguro de borrar el cliente?",
-        text: "No se podrá recuperar la información",
-        icon: "warning",
-        showCancelButton: true, 
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si, estoy seguro!"
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-
-            let request = await fetch('../Controllers/ClienteController.php?Operacion=delete&&rfc=' + rfc, {
-                method: 'DELETE'
-            });
-
-            if(request.ok)
-            {
-                Swal.fire({
-                    title: "¡Acción realizada con éxito!",
-                    text: "¡El usuario se ha borrado!",
-                    icon: "success"
-                });
-
-                ActualizarTabla();
-            }
-        }
-    });
-}
-
 function ActualizarTabla()
 {
     table.updateConfig({
@@ -114,6 +118,24 @@ function ActualizarTabla()
         }
     }).forceRender();
 }
+
+document.addEventListener('click', function(event) {
+    const row = event.target.parentElement.parentElement.parentElement.parentElement;
+
+    if (event.target.classList.contains('fa-edit')) 
+    {
+        const rfc = row.cells[0].textContent;
+        const nombre = row.cells[0].textContent;
+        const grupo = row.cells[2].textContent;
+        const vencimientoSello = row.cells[3].textContent;
+
+        EditarUsuario(grupo);
+    }
+    else if (event.target.classList.contains('fa-trash')) {
+        const rfc = row.cells[0].textContent;
+        EliminarRegistro(rfc);
+    }
+});
 
 /**************************************************************/
 /*             Métodos implementados en la página             */

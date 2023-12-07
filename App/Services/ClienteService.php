@@ -91,8 +91,8 @@ class ClienteService extends Connection
                 $stmt = $this->db_conection->prepare("DELETE FROM cliente WHERE rfc = ?");
                 $stmt->bind_param("s", $rfc_cliente_antiguo);
 
-
-                return "Se ha eliminado el cliente con el RFC: " . $rfc_cliente_antiguo;
+                if($stmt->execute()){ return "Se ha eliminado el cliente con el RFC: " . $rfc_cliente_antiguo; }
+                else{  }
             }
             else
             {

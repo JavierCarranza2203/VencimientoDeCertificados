@@ -33,30 +33,49 @@ export async function PermitirAcceso()
 
 //Este método se usa para construir un nuevo objeto cliente y posteriormente insertar a la db
 export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, txtFechaFinEnFirma, statusFirma, txtFechaFinEnSello, statusSello, bandera, grupo){
-    if(bandera == true)
-    {
-        await Swal.fire({
-            title: "Ingrese el grupo de clientes al que pertenece",
-            input: "text",
-            showCancelButton: true,
-            confirmButtonText: "Aceptar",
-            showLoaderOnConfirm: true,
-            preConfirm: (group)=>
-            {
-                grupo = group;
-            }
-        });
+    try{
+        if(bandera == true)
+        {
+            await Swal.fire({
+                title: "Ingrese el grupo de clientes al que pertenece",
+                input: "text",
+                showCancelButton: true,
+                confirmButtonText: "Aceptar",
+                showLoaderOnConfirm: true,
+                preConfirm: (group)=>
+                {
+                    grupo = group;
+                }
+            });
+        }
+
+        let NuevoCliente = new Cliente();
+
+        NuevoCliente._strNombre = txtNombreEnFirma.value;
+        NuevoCliente._strRfc = txtRfcEnFirma.value;
+        NuevoCliente.Firma._dtmFechaVencimiento = txtFechaFinEnFirma.value;
+        NuevoCliente.Firma._blnStatus = statusFirma.textContent;
+        NuevoCliente.Sello._dtmFechaVencimiento = txtFechaFinEnSello.value;
+        NuevoCliente.Sello._blnStatus = statusSello.textContent;
+        NuevoCliente._chrGrupo = grupo;
+
+        await AgregarCliente(JSON.stringify(NuevoCliente));
     }
+    catch(error){
+        throw new Error(error);
+    }
+}
 
-    let NuevoCliente = new Cliente();
+export function ValidarCampos(campos)
+{
+    const soloLetras = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
 
-    NuevoCliente._strNombre = txtNombreEnFirma.value;
-    NuevoCliente._strRfc = txtRfcEnFirma.value;
-    NuevoCliente.Firma._dtmFechaVencimiento = txtFechaFinEnFirma.value;
-    NuevoCliente.Firma._blnStatus = statusFirma.textContent;
-    NuevoCliente.Sello._dtmFechaVencimiento = txtFechaFinEnSello.value;
-    NuevoCliente.Sello._blnStatus = statusSello.textContent;
-    NuevoCliente._chrGrupo = grupo;
+    campos.forEach(input => {
+        if(!soloLetras.test(input.value))
+        {
+            throw new Error(input.value + " no es un valor correcto");
+        }
+    });
 
-    AgregarCliente(JSON.stringify(NuevoCliente));
+    return true;
 }
