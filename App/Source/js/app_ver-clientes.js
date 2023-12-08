@@ -1,5 +1,4 @@
 import { PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
-import { Usuario } from "./Clases/Usuario.js";
 import { EliminarCliente } from "./Metodos/Peticiones.js";
 // import { EliminarCliente } from "./Metodos/Peticiones.js";
 
@@ -21,6 +20,35 @@ window.addEventListener("load", async ()=> {
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
 /**********************************************************/
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/
+
+document.addEventListener('click', async function(event) {
+    const row = event.target.parentElement.parentElement.parentElement.parentElement;
+
+    if (event.target.classList.contains('fa-edit')) 
+    {
+        const rfc = row.cells[0].textContent;
+        const nombre = row.cells[0].textContent;
+        const grupo = row.cells[2].textContent;
+        const vencimientoSello = row.cells[3].textContent;
+
+        EditarUsuario(grupo);
+        ActualizarTablaClientes();
+    }
+    else if (event.target.classList.contains('fa-trash')) {
+        const rfc = row.cells[0].textContent;
+
+        await EliminarCliente(rfc);
+        ActualizarTablaClientes();
+    }
+});
+
+/*************************************************************/
+/*             Eventos de los controles del html             */
+/*************************************************************/
 
 /**************************************************************/
 /*             Métodos implementados en la página             */
@@ -79,28 +107,6 @@ function InicializarTabla(rol, grupoClientes = null)
         }
     }).render(tableContainer);
 }
-
-
-document.addEventListener('click', async function(event) {
-    const row = event.target.parentElement.parentElement.parentElement.parentElement;
-
-    if (event.target.classList.contains('fa-edit')) 
-    {
-        const rfc = row.cells[0].textContent;
-        const nombre = row.cells[0].textContent;
-        const grupo = row.cells[2].textContent;
-        const vencimientoSello = row.cells[3].textContent;
-
-        EditarUsuario(grupo);
-        ActualizarTablaClientes();
-    }
-    else if (event.target.classList.contains('fa-trash')) {
-        const rfc = row.cells[0].textContent;
-
-        await EliminarCliente(rfc);
-        ActualizarTablaClientes();
-    }
-});
 
 function ActualizarTablaClientes()
 {

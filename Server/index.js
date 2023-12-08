@@ -10,8 +10,10 @@ const app = new express();
 //Variable para el puerto en el que se abre el servidor
 const serverPort = 8082;
 
+//Para permitir el acceso desde cualquier server
 app.use(cors());
 
+//Crea la conexión para ingresar a la base de datos
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
@@ -19,6 +21,7 @@ const connection = mysql2.createConnection({
     database: 'db_despacho_contable'
 });
 
+//Metodo get
 app.get('/clientes_por_vencer/excel', (req, res) => {
     try{
         //Consulta para mandar como query de SQL
