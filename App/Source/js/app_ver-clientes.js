@@ -1,5 +1,6 @@
-import {PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
+import { PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
 import { Usuario } from "./Clases/Usuario.js";
+import { EliminarCliente } from "./Metodos/Peticiones.js";
 // import { EliminarCliente } from "./Metodos/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
@@ -33,36 +34,6 @@ function MostrarVigencia(bitBooleano)
     else{
         return "Vencido";
     }
-}
-
-function EliminarRegistro(rfc){
-    Swal.fire({
-        title: "¿Está seguro de borrar el cliente?",
-        text: "No se podrá recuperar la información",
-        icon: "warning",
-        showCancelButton: true, 
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si, estoy seguro!"
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-
-            let request = await fetch('../Controllers/ClienteController.php?Operacion=delete&&rfc=' + rfc)
-
-            let mensaje = await request.json();
-
-            if(request.ok)
-            {
-                Swal.fire({
-                    title: "¡Acción realizada con éxito!",
-                    text: mensaje,
-                    icon: "success"
-                });
-
-                ActualizarTabla();
-            }
-        }
-    });
 }
 
 function EditarUsuario(grupo)
@@ -109,17 +80,8 @@ function InicializarTabla(rol, grupoClientes = null)
     }).render(tableContainer);
 }
 
-function ActualizarTabla()
-{
-    table.updateConfig({
-        server: {
-            url: url,
-            then: data => data.map( user => [user.id, user.nombre, user.apellido, user.rfc])
-        }
-    }).forceRender();
-}
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', async function(event) {
     const row = event.target.parentElement.parentElement.parentElement.parentElement;
 
     if (event.target.classList.contains('fa-edit')) 
@@ -130,12 +92,34 @@ document.addEventListener('click', function(event) {
         const vencimientoSello = row.cells[3].textContent;
 
         EditarUsuario(grupo);
+        ActualizarTablaClientes();
     }
     else if (event.target.classList.contains('fa-trash')) {
         const rfc = row.cells[0].textContent;
-        EliminarRegistro(rfc);
+
+        await EliminarCliente(rfc);
+        ActualizarTablaClientes();
     }
 });
+
+function ActualizarTablaClientes()
+{
+    table.updateConfig({
+        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
+            name: 'Acciones',
+            formatter: (cell, row) => {
+                const editarIcono = `<i class="fas fa-edit"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash"></i>`;
+
+                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
+            }
+        }],
+        server: {
+            url: url,
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
+        }
+    }).forceRender();
+}
 
 /**************************************************************/
 /*             Métodos implementados en la página             */

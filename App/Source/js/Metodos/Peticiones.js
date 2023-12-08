@@ -1,3 +1,7 @@
+/**********************************************************/
+/*                   Metodos del certificado              */
+/**********************************************************/
+
 export async function ObtenerDatosDelCertificado(certificado) 
 {
     //Genera una instancia de la clase FormData
@@ -24,6 +28,13 @@ export async function ObtenerDatosDelCertificado(certificado)
     }
 }
 
+/**********************************************************/
+/*                   Metodos del certificado              */
+/**********************************************************/
+
+/**********************************************************/
+/*                     Metodos del usuario                */
+/**********************************************************/
 export async function IniciarSesion(NombreDeUsuario, Contrasenia) 
 {   //Crea una instancia de la clase FormData
     const credentials = new FormData();
@@ -80,14 +91,15 @@ export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contras
         body: formData
     });
 
+    const data = await response.json();
+
     if(response.ok)
     {
-        const data = await response.json();
         return data;
     }
     else
     {
-        throw new Error(await response.json());
+        throw new Error(data);
     }
 }
 
@@ -107,6 +119,46 @@ export async function CerrarSesion()
     }
 }
 
+export async function EliminarUsuario(nombreUsuario){
+    Swal.fire({
+        title: "¿Está seguro de borrar el cliente?",
+        text: "No se podrá recuperar la información",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, estoy seguro!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+
+            let request = await fetch('../Controllers/UsuarioController.php?Operacion=delete&nombreUsuario=' + nombreUsuario)
+
+            let mensaje = await request.json();
+
+            if(request.ok)
+            {
+                Swal.fire({
+                    title: "¡Acción realizada con éxito!",
+                    text: mensaje,
+                    icon: "success"
+                });
+            }
+            else
+            {
+                throw new Error(mensaje);
+            }
+        }
+    });
+}
+
+/**********************************************************/
+/*                     Metodos del usuario                */
+/**********************************************************/
+
+/**********************************************************/
+/*                     Metodos del cliente                */
+/**********************************************************/
+
 export async function AgregarCliente(jsonCliente){
     const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
     {
@@ -123,7 +175,7 @@ export async function AgregarCliente(jsonCliente){
             icon: "success",
             confirmButtonText: "OK",
         }).then(()=>{
-            location.href("pagina-principal.html");
+            location.href = "pagina-principal.html";
         });
     }
     else
@@ -132,23 +184,38 @@ export async function AgregarCliente(jsonCliente){
     }
 }
 
-export async function EliminarCliente(rfc)
-{
-    const response = await fetch("../Controllers/ClienteController.php?Operacion=delete&&rfc=" + rfc);
+export async function EliminarCliente(rfc){
+    Swal.fire({
+        title: "¿Está seguro de borrar el cliente?",
+        text: "No se podrá recuperar la información",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, estoy seguro!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
 
-    let data = await response.json();
+            let request = await fetch('../Controllers/ClienteController.php?Operacion=delete&&rfc=' + rfc)
 
-    if(response.ok)
-    {
-        Swal.fire({
-            title: "¡Tarea realizada con éxito!",
-            text: data,
-            icon: "success",
-            confirmButtonText: "OK",
-        });
-    }
-    else
-    {
-        throw new Error(data);
-    }
+            let mensaje = await request.json();
+
+            if(request.ok)
+            {
+                Swal.fire({
+                    title: "¡Acción realizada con éxito!",
+                    text: mensaje,
+                    icon: "success"
+                });
+            }
+            else
+            {
+                throw new Error(mensaje);
+            }
+        }
+    });
 }
+
+/**********************************************************/
+/*                     Metodos del cliente                */
+/**********************************************************/

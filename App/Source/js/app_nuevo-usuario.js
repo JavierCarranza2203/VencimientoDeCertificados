@@ -37,6 +37,9 @@ document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=
         ValidarCampos(ArrayInputs);
 
         let data = await AgregarNuevoUsuario(
+            txtNombreCompleto.value,
+            txtNombreUsuario.value,
+            txtContrasenia.value,
             document.getElementById("cmbGrupoClientes").value,
             document.getElementById("cmbRol").value
         );

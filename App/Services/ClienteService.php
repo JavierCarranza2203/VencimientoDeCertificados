@@ -92,7 +92,7 @@ class ClienteService extends Connection
                 $stmt->bind_param("s", $rfc_cliente_antiguo);
 
                 if($stmt->execute()){ return "Se ha eliminado el cliente con el RFC: " . $rfc_cliente_antiguo; }
-                else{  }
+                else{ throw new Exception("Hubo un error al eliminar el cliente"); }
             }
             else
             {

@@ -102,17 +102,23 @@ class UsuarioService extends Connection
                 $stmt = $this->db_conection->prepare("DELETE FROM usuario WHERE nombre_usuario = ?");
                 $stmt->bind_param("s", $nombre_antiguo_usuario);
 
-
-                return "Se ha eliminado a " . $nombre_antiguo_usuario;
+                if($stmt->execute())
+                {
+                    return "Se ha eliminado a " . $nombre_antiguo_usuario;
+                }
+                else
+                {
+                    throw new Exception("Hubo un error al eliminar el usuario");
+                }
             }
             else
             {
-                throw new Error("El usuario no se encuentra");
+                throw new Exception("El usuario no se encuentra");
             }
         }
         else
         {
-            throw new Error("Código de acceso incorrecto");
+            throw new Exception("Código de acceso incorrecto");
         }
     }
 

@@ -39,6 +39,9 @@ require_once "../Services/UsuarioService.php";
                     //Manda a llamar el método para obtener todos los usuarios
                     echo json_encode($UsuarioService->ObtenerTodosLosUsuarios(00175));
                 break;
+            case 'delete':
+                    echo json_encode($UsuarioService->EliminarUsuario($_GET["nombreUsuario"], 00175));
+                break;
             default:
                 throw new Exception("La operación no es válida");
         }
