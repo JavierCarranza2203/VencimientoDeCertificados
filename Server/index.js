@@ -51,6 +51,26 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
                     row['fecha_vencimiento_firma'], row['status_sello'], row['fecha_vencimiento_sello'],]);
             });
 
+            // Estilos para los encabezados
+            sheet.getCell('A1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('B1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('C1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('D1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('E1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('F1').font = { name: 'Arial', size: 13, bold: true };
+            sheet.getCell('G1').font = { name: 'Arial', size: 13, bold: true };
+
+            // Estilos para el resto de las filas
+            for(let i = 2; i <= results.length + 1; i++) {
+                sheet.getRow(i).font = { name: 'Arial', size: 12 };
+                sheet.getRow(i).height = 30;
+            }
+
+            //Estilos para las columnas
+            for(let i = 1; i <= 7; i++) {
+                sheet.getColumn(i).width = 30;
+            }
+
             //Se guarda el excel y se manda el archivo al cliente
             workbook.xlsx.writeBuffer().then(excelBuffer => {
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -62,6 +82,18 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
     catch(error){
         res.status(500).send("Error en el servidor: " + error);
     }
+});
+
+app.get("/test", (req, res)=>{
+    let mensaje = {
+        port: "8082",
+        server: "localhost",
+        url: "http://localhost:8082/test",
+        message: "El test se hizo correctamente",
+        method: "GET"
+    }
+
+    res.send(mensaje);
 });
 
 app.listen(serverPort, (req, res)=>{

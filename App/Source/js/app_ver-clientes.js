@@ -26,23 +26,21 @@ window.addEventListener("load", async ()=> {
 /*************************************************************/
 
 document.addEventListener('click', async function(event) {
-    const row = event.target.parentElement.parentElement.parentElement.parentElement;
-
     if (event.target.classList.contains('fa-edit')) 
     {
+        const row = event.target.parentElement.parentElement.parentElement.parentElement;
         const rfc = row.cells[0].textContent;
         const nombre = row.cells[0].textContent;
         const grupo = row.cells[2].textContent;
         const vencimientoSello = row.cells[3].textContent;
 
         EditarUsuario(grupo);
-        ActualizarTablaClientes();
     }
     else if (event.target.classList.contains('fa-trash')) {
+        const row = event.target.parentElement.parentElement.parentElement.parentElement;
         const rfc = row.cells[0].textContent;
 
-        await EliminarCliente(rfc);
-        ActualizarTablaClientes();
+        EliminarCliente(rfc, table);
     }
 });
 
@@ -106,25 +104,6 @@ function InicializarTabla(rol, grupoClientes = null)
             }
         }
     }).render(tableContainer);
-}
-
-function ActualizarTablaClientes()
-{
-    table.updateConfig({
-        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
-            name: 'Acciones',
-            formatter: (cell, row) => {
-                const editarIcono = `<i class="fas fa-edit"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash"></i>`;
-
-                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
-            }
-        }],
-        server: {
-            url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
-        }
-    }).forceRender();
 }
 
 /**************************************************************/

@@ -7,6 +7,9 @@
 /* Estilos del header */
 @import url("components/header_style.css");
 
+/* Estilos para el form de actualizar */
+@import url("components/double-form_style.css");
+
 .gridjs-pages{
     display: flex;
 }

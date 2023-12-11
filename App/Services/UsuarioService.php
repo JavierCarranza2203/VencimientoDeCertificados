@@ -173,5 +173,26 @@ class UsuarioService extends Connection
             throw new Exception("No hay registros"); 
         }
     }
+
+    public function ActualizarUsuario(int $id, string $nombre, string $usuario, string $grupo, string $rol)
+    {
+        $stmt = $this->db_conection->prepare("UPDATE usuario SET 
+                    nombre_completo = ?, 
+                    nombre_usuario = ?,
+                    grupo_clientes = ?,
+                    rol = ? 
+                WHERE id = ?");
+        
+        $stmt->bind_param("issss", $nombre, $usuario, $grupo, $rol);
+
+        if($stmt->execute())
+        {
+            return "Se actualizó el usuario correctamente";
+        }
+        else
+        {
+            throw new Exception("No se pudo actualizar el usuario");
+        }
+    }
 }
 ?>

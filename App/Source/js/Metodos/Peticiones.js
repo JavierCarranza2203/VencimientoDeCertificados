@@ -119,7 +119,75 @@ export async function CerrarSesion()
     }
 }
 
-export async function EliminarUsuario(nombreUsuario){
+export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
+    Swal.fire({
+        title: 'Insertar Datos del usuario',
+        html:
+            '<label for="swal-input1" class="form__label">Ingrese el nombre completo:</label>' +
+            `<input id="swal-input1" class="double-form-container__form-input" value="${nombre}" placeholder="Nombre"><br>` +
+            '<label for="swal-input2" class="form__label">Ingrese el nombre de usuario:</label>' +
+            `<input id="swal-input2" class="double-form-container__form-input" value="${usuario}" placeholder="NombreUsuario"><br>` +
+            '<label for="swal-input2" class="form__label">Ingrese el grupo de clientes:</label>' +
+            '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
+                '<option value="A">Clientes A</option>' +
+                '<option value="B">Clientes B</option>' +
+                '<option value="C">Clientes C</option>' +
+                '<option value="S">Puede ver todos</option>' +
+            '</select><br>' +
+            '<label for="swal-input2" class="form__label">Ingrese el rol:</label>' +
+            '<select name="cmbRol" id="cmbRol" class="double-form-container__form-combobox">' +
+                '<option value="empleado" selected>Empleado</option>' +
+                '<option value="admin">Administrador</option>' +
+            '</select>',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const nombre = Swal.getPopup().querySelector('#swal-input1').value;
+            const apellido = Swal.getPopup().querySelector('#swal-input2').value;
+            const rfc = Swal.getPopup().querySelector('#swal-input3').value;
+
+            fetch('../Controllers/UsuarioController.php?Operacion=update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    nombre: nombre,
+                    apellido: apellido,
+                    rfc: rfc,
+                }),
+            })
+        }
+    }).then((result) => {
+        // Maneja la respuesta de la petición AJAX
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Datos insertados correctamente.',
+                icon: 'success'
+            });
+
+            ActualizarTablaUsuarios(table);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un error al insertar datos.',
+                icon: 'error'
+            });
+        }
+    });
+}
+
+export function EliminarUsuario(nombreUsuario, tabla){
     Swal.fire({
         title: "¿Está seguro de borrar el cliente?",
         text: "No se podrá recuperar la información",
@@ -142,6 +210,8 @@ export async function EliminarUsuario(nombreUsuario){
                     text: mensaje,
                     icon: "success"
                 });
+
+                ActualizarTablaUsuarios(tabla)
             }
             else
             {
@@ -149,6 +219,24 @@ export async function EliminarUsuario(nombreUsuario){
             }
         }
     });
+}
+
+export function ActualizarTablaUsuarios(table){
+    table.updateConfig({
+        columns: ["ID", "Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
+            name: 'Acciones',
+            formatter: (cell, row) => {
+                const editarIcono = `<i class="fas fa-edit"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash"></i>`;
+
+                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
+            }
+        }],
+        server: {
+            url: 'http://localhost/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
+            then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
+        }
+    }).forceRender();
 }
 
 /**********************************************************/
@@ -184,7 +272,7 @@ export async function AgregarCliente(jsonCliente){
     }
 }
 
-export async function EliminarCliente(rfc){
+export async function EliminarCliente(rfc, tabla){
     Swal.fire({
         title: "¿Está seguro de borrar el cliente?",
         text: "No se podrá recuperar la información",
@@ -207,6 +295,8 @@ export async function EliminarCliente(rfc){
                     text: mensaje,
                     icon: "success"
                 });
+
+                ActualizarTablaClientes(tabla)
             }
             else
             {
@@ -214,6 +304,25 @@ export async function EliminarCliente(rfc){
             }
         }
     });
+}
+
+export function ActualizarTablaClientes(table)
+{
+    table.updateConfig({
+        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
+            name: 'Acciones',
+            formatter: (cell, row) => {
+                const editarIcono = `<i class="fas fa-edit"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash"></i>`;
+
+                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
+            }
+        }],
+        server: {
+            url: url,
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
+        }
+    }).forceRender();
 }
 
 /**********************************************************/

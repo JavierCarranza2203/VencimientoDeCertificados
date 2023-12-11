@@ -21,7 +21,7 @@ Este programa ayuda a saber si un conjunto de certificados emitidos por el sat e
 
 ## Desarrollo
 
-Este sistema fué desarrollado por Javier Armando Carranza Garcia cómo idea de proyecto inicial.  
+Este sistema fué desarrollado por Javier Armando Carranza Garcia cómo idea de proyecto inicial.
   
 Para ver más acerca de mi trabajo, por favor visita mi portafolio.  
   

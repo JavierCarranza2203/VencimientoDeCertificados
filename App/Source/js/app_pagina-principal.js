@@ -6,6 +6,7 @@ import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
 
 const btnNewUser = document.getElementById("btnNewUser");
 const btnAllUsers = document.getElementById("btnAllUsers");
+const btnAutoUpdateService = document.getElementById("btnUseAutoUpdateService");
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -21,6 +22,7 @@ window.addEventListener("load", async()=>{
         {
             btnNewUser.classList.add("content-blocker--hidden");
             btnAllUsers.classList.add("content-blocker--hidden");
+            btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
         else
         {
@@ -30,6 +32,12 @@ window.addEventListener("load", async()=>{
             
             btnAllUsers.addEventListener("click", ()=>{
                 location.href = "ver-usuarios.html";
+            });
+
+            btnAutoUpdateService.addEventListener("click", ()=>{
+                let response = "RealizandoPeticion";
+
+                console.log(response);
             });
         }
     });

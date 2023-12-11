@@ -1,5 +1,5 @@
 import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
-import { EliminarUsuario } from "./Metodos/Peticiones.js";
+import { ActualizarUsuario, EliminarUsuario } from "./Metodos/Peticiones.js";
 
 let table;
 let tableContainer = document.getElementById("wrapper");
@@ -30,21 +30,20 @@ document.addEventListener('click', async function(event) {
         if (event.target.classList.contains('fa-edit')) 
         {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
-            // const rfc = row.cells[0].textContent;
-            // const nombre = row.cells[0].textContent;
-            // const grupo = row.cells[2].textContent;
-            // const vencimientoSello = row.cells[3].textContent;
+            const id = row.cells[0].textContent;
+            const nombre = row.cells[1].textContent;
+            const nombreUsuario = row.cells[2].textContent;
+            const grupo = row.cells[3].textContent;
+            const rol = row.cells[4].textContent;
 
-            // EditarUsuario(grupo);
-            ActualizarTablaUsuarios();
+            ActualizarUsuario(id, nombre, nombreUsuario, grupo, rol, table);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
 
             const nombreUsuario = row.cells[2].textContent;
 
-            await EliminarUsuario(nombreUsuario);
-            ActualizarTablaUsuarios();
+            EliminarUsuario(nombreUsuario, table)
         }
     }
     catch(error)
@@ -91,24 +90,6 @@ function InicializarTabla(){
             }
         }
     }).render(tableContainer);
-}
-
-function ActualizarTablaUsuarios(){
-    table.updateConfig({
-        columns: ["ID", "Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
-            name: 'Acciones',
-            formatter: (cell, row) => {
-                const editarIcono = `<i class="fas fa-edit"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash"></i>`;
-
-                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
-            }
-        }],
-        server: {
-            url: 'http://localhost/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
-            then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
-        }
-    }).forceRender();
 }
 
 /**************************************************************/

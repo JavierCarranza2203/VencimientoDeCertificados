@@ -42,6 +42,9 @@ require_once "../Services/UsuarioService.php";
             case 'delete':
                     echo json_encode($UsuarioService->EliminarUsuario($_GET["nombreUsuario"], 00175));
                 break;
+            case 'update':
+                    echo json_encode($UsuarioService->ActualizarUsuario(1, "", "", "", ""));
+                break;
             default:
                 throw new Exception("La operación no es válida");
         }
