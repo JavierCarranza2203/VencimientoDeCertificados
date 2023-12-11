@@ -47,8 +47,8 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
 
             //Agrega los renglones de acuerdo a los datos obtenidos de la consulta
             results.forEach(row => {
-                sheet.addRow([row['rfc'], row['nombre'], row['grupo_clientes'], row['status_firma'],
-                    row['fecha_vencimiento_firma'], row['status_sello'], row['fecha_vencimiento_sello'],]);
+                sheet.addRow([row['rfc'], row['nombre'], row['grupo_clientes'], row['status_firma'] == 1? "Vigente" : "Vencido",
+                    row['fecha_vencimiento_firma'], row['status_sello'] == 1? "Vigente" : "Vencido", row['fecha_vencimiento_sello'],]);
             });
 
             // Estilos para los encabezados

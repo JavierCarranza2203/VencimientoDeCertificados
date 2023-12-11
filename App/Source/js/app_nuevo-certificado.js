@@ -11,7 +11,7 @@ window.addEventListener("load", ()=>{
     PermitirAcceso().then(res => {
         grupo = res["GrupoClientes"];
 
-        if(res["Rol"] == "admin")
+        if(res["Rol"] != "empleado")
         {
             bandera = true;
         }
