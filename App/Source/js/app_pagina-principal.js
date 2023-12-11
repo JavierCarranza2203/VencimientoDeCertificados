@@ -18,13 +18,19 @@ const btnAutoUpdateService = document.getElementById("btnUseAutoUpdateService");
 
 window.addEventListener("load", async()=>{
     await PermitirAcceso().then(res =>{
-        if(res["Rol"] != "admin")
+        if(res["Rol"] == "admin")
         {
-            btnNewUser.classList.add("content-blocker--hidden");
-            btnAllUsers.classList.add("content-blocker--hidden");
+            btnNewUser.addEventListener("click", ()=>{
+                location.href = "nuevo-usuario.html";
+            });
+
+            btnAllUsers.addEventListener("click", ()=>{
+                location.href = "ver-usuarios.html";
+            });
+
             btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
-        else
+        else if(res["Rol"] == "dev")
         {
             btnNewUser.addEventListener("click", ()=>{
                 location.href = "nuevo-usuario.html";
@@ -39,6 +45,11 @@ window.addEventListener("load", async()=>{
 
                 console.log(response);
             });
+        }
+        else{
+            btnNewUser.classList.add("content-blocker--hidden");
+            btnAllUsers.classList.add("content-blocker--hidden");
+            btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
     });
 });
