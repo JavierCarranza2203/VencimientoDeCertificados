@@ -21,7 +21,7 @@ const connection = mysql2.createConnection({
     database: 'db_despacho_contable'
 });
 
-//Metodo get
+//Metodo get para obtener el archivo
 app.get('/clientes_por_vencer/excel', (req, res) => {
     try{
         //Consulta para mandar como query de SQL
@@ -66,11 +66,6 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
                 sheet.getRow(i).height = 30;
             }
 
-            //Estilos para las columnas
-            for(let i = 1; i <= 7; i++) {
-                sheet.getColumn(i).width = 30;
-            }
-
             //Se guarda el excel y se manda el archivo al cliente
             workbook.xlsx.writeBuffer().then(excelBuffer => {
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -84,6 +79,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
     }
 });
 
+//Metodo get para probar la petición
 app.get("/test", (req, res)=>{
     let mensaje = {
         port: "8082",

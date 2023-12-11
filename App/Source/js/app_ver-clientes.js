@@ -26,21 +26,32 @@ window.addEventListener("load", async ()=> {
 /*************************************************************/
 
 document.addEventListener('click', async function(event) {
-    if (event.target.classList.contains('fa-edit')) 
-    {
-        const row = event.target.parentElement.parentElement.parentElement.parentElement;
-        const rfc = row.cells[0].textContent;
-        const nombre = row.cells[0].textContent;
-        const grupo = row.cells[2].textContent;
-        const vencimientoSello = row.cells[3].textContent;
+    try{
+        if (event.target.classList.contains('fa-edit')) 
+        {
+            const row = event.target.parentElement.parentElement.parentElement.parentElement;
+            const rfc = row.cells[0].textContent;
+            const nombre = row.cells[0].textContent;
+            const grupo = row.cells[2].textContent;
+            const vencimientoSello = row.cells[3].textContent;
 
-        EditarUsuario(grupo);
+            EditarUsuario(grupo);
+        }
+        else if (event.target.classList.contains('fa-trash')) {
+            const row = event.target.parentElement.parentElement.parentElement.parentElement;
+            const rfc = row.cells[0].textContent;
+    
+            EliminarCliente(rfc, table, url);
+        }
     }
-    else if (event.target.classList.contains('fa-trash')) {
-        const row = event.target.parentElement.parentElement.parentElement.parentElement;
-        const rfc = row.cells[0].textContent;
-
-        EliminarCliente(rfc, table);
+    catch(error)
+    {
+        Swal.fire({
+            icon: "error",
+            title: "¡Hubo un error inesperado!",
+            text: error,
+            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+        });
     }
 });
 

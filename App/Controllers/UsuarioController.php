@@ -13,9 +13,9 @@ require_once "../Services/UsuarioService.php";
         switch($Operacion)
         {
             case 'login': 
-                //Manda a llamar el método para inciar sesións
-                echo json_encode($UsuarioService->IniciarSesion($_POST['NombreDeUsuario'], $_POST['Contrasenia']));
-            break;
+                    //Manda a llamar el método para inciar sesións
+                    echo json_encode($UsuarioService->IniciarSesion($_POST['NombreDeUsuario'], $_POST['Contrasenia']));
+                break;
             case 'userLogged':
                     //Manda a llamar el método para obtener los datos de un usuario loggeado
                     echo json_encode($UsuarioService->ObtenerUsuarioLogeado(00175));

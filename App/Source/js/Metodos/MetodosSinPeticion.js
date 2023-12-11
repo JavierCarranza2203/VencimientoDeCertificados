@@ -44,7 +44,7 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
                 showLoaderOnConfirm: true,
                 preConfirm: (group)=>
                 {
-                    grupo = group;
+                    grupo = group.toUpperCase();
                 }
             });
         }

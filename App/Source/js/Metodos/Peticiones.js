@@ -272,7 +272,7 @@ export async function AgregarCliente(jsonCliente){
     }
 }
 
-export async function EliminarCliente(rfc, tabla){
+export async function EliminarCliente(rfc, tabla, url){
     Swal.fire({
         title: "¿Está seguro de borrar el cliente?",
         text: "No se podrá recuperar la información",
@@ -296,7 +296,7 @@ export async function EliminarCliente(rfc, tabla){
                     icon: "success"
                 });
 
-                ActualizarTablaClientes(tabla)
+                ActualizarTablaClientes(tabla, url)
             }
             else
             {
@@ -306,7 +306,7 @@ export async function EliminarCliente(rfc, tabla){
     });
 }
 
-export function ActualizarTablaClientes(table)
+export function ActualizarTablaClientes(table, url)
 {
     table.updateConfig({
         columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
