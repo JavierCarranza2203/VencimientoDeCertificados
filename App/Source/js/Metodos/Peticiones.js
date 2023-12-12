@@ -71,7 +71,7 @@ export async function ValidarUsuarioLogeado()
     {
         return await response.json();
     } 
-    else 
+    else //Si no, genera una excepción con la respuesta del servidor
     {
         throw new Error(await response.json());
     }
@@ -79,6 +79,7 @@ export async function ValidarUsuarioLogeado()
 
 export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contrasenia, grupoClientes, rol)
 {
+    //Crea una instancia del objeto FormData y agrega los campos
     const formData = new FormData();
     formData.append('NombreCompleto', nombreCompleto);
     formData.append('NombreDeUsuario', nombreUsuario);
@@ -86,11 +87,13 @@ export async function AgregarNuevoUsuario(nombreCompleto, nombreUsuario, contras
     formData.append('GrupoDeClientes', grupoClientes);
     formData.append('Rol', rol);
 
+    //Realiza el envío de la solicitud POST al controlador que se encarga de agregar nuevos usuarios
     const response = await fetch("../Controllers/UsuarioController.php?Operacion=add", {
         method: "POST",
         body: formData
     });
 
+    //Lee el resultado de la operación
     const data = await response.json();
 
     if(response.ok)
@@ -127,7 +130,7 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
             `<input id="swal-input1" class="double-form-container__form-input" value="${nombre}" placeholder="Nombre"><br>` +
             '<label for="swal-input2" class="form__label">Ingrese el nombre de usuario:</label>' +
             `<input id="swal-input2" class="double-form-container__form-input" value="${usuario}" placeholder="NombreUsuario"><br>` +
-            '<label for="swal-input2" class="form__label">Ingrese el grupo de clientes:</label>' +
+            '<label for="cmbGrupoClientes" class="form__label">Ingrese el grupo de clientes:</label>' +
             '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
                 '<option value="A">Clientes A</option>' +
                 '<option value="B">Clientes B</option>' +
@@ -145,8 +148,9 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
         preConfirm: () => {
             // Obtiene los valores de los campos de entrada
             const nombre = Swal.getPopup().querySelector('#swal-input1').value;
-            const apellido = Swal.getPopup().querySelector('#swal-input2').value;
-            const rfc = Swal.getPopup().querySelector('#swal-input3').value;
+            const usuario = Swal.getPopup().querySelector('#swal-input2').value;
+            const grupoClientes = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
+            const rol = Swal.getPopup().querySelector('#cmbRol').value;
 
             fetch('../Controllers/UsuarioController.php?Operacion=update', {
                 method: 'POST',
@@ -156,8 +160,9 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
                 body: JSON.stringify({
                     id: id,
                     nombre: nombre,
-                    apellido: apellido,
-                    rfc: rfc,
+                    usuario: usuario,
+                    grupoClientes: grupoClientes,
+                    rol: rol
                 }),
             })
         }
@@ -188,6 +193,7 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
 }
 
 export function EliminarUsuario(nombreUsuario, tabla){
+    //Muestra un modal para eliminar el usuario
     Swal.fire({
         title: "¿Está seguro de borrar el cliente?",
         text: "No se podrá recuperar la información",
@@ -222,6 +228,7 @@ export function EliminarUsuario(nombreUsuario, tabla){
 }
 
 export function ActualizarTablaUsuarios(table){
+    //Actualizamos la configuración de la tabla y volviendo a hacer la petición
     table.updateConfig({
         columns: ["ID", "Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
             name: 'Acciones',
@@ -248,13 +255,18 @@ export function ActualizarTablaUsuarios(table){
 /**********************************************************/
 
 export async function AgregarCliente(jsonCliente){
+
+    //Envía la solicitud por método POST al server
     const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
     {
         method:"POST",
         body: jsonCliente
     });
 
+    //Lee la respuesta del servidor
     let data = await response.json()
+
+    //Si responde con un código 200
     if(response.ok)
     {
         Swal.fire({
@@ -306,6 +318,73 @@ export async function EliminarCliente(rfc, tabla, url){
     });
 }
 
+export async function EditarCliente(rfc, tabla){
+    Swal.fire({
+        title: 'Modificar cliente',
+        html:
+            '<label for="swal-input1" class="form__label">RFC del cliente a editar:</label>' +
+            `<input id="swal-input1" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+            '<label for="certificadoSello" class="form__label">Ingrese certificado del sello:</label>' +
+            `<input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input"><br>` +
+            '<label for="certificadoFiel" class="form__label">Ingrese certificado del sello:</label>' +
+            `<input type="file" name="certificadoFiel" id="certificadoFiel" class="double-form-container__form-input"><br>` +
+            '<label for="cmbGrupoClientes" class="form__label">Ingrese grupo del cliente:</label>' + 
+            '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
+                '<option value="A">Clientes A</option>' +
+                '<option value="B">Clientes B</option>' +
+                '<option value="C">Clientes C</option>' +
+                '<option value="S">Puede ver todos</option>' +
+            '</select><br>',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const rfc = Swal.getPopup().querySelector('#swal-input1').value;
+            const sello = Swal.getPopup().querySelector('#certificadoSello').value;
+            const fiel = Swal.getPopup().querySelector('#certificadoFiel').value;
+            const grupoClientes = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
+
+            let datos = new FormData();
+            datos.append("rfc", rfc);
+            datos.append("sello", sello);
+            datos.append("fiel", fiel);
+            datos.append("grupoClientes", grupoClientes);
+
+            fetch('../Controllers/ClienteController.php?Operacion=update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: datos,
+            })
+        }
+    }).then((result) => {
+        // Maneja la respuesta de la petición AJAX
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Datos insertados correctamente.',
+                icon: 'success'
+            });
+
+            ActualizarTablaUsuarios(table);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un error al insertar datos.',
+                icon: 'error'
+            });
+        }
+    });
+}
+
 export function ActualizarTablaClientes(table, url)
 {
     table.updateConfig({
@@ -327,4 +406,32 @@ export function ActualizarTablaClientes(table, url)
 
 /**********************************************************/
 /*                     Metodos del cliente                */
+/**********************************************************/
+
+/**********************************************************/
+/*                Auto Update Service Request             */
+/**********************************************************/
+
+export async function RunAutoUpdateService()
+{
+    let response = await fetch("../Controllers/AutoUpdateController.php?status=run");
+
+    let message = await response.json();
+
+    if(response.ok)
+    {
+        Swal.fire({
+            title: "Mensaje de AUS",
+            text: message,
+            icon: "success"
+        });
+    }
+    else
+    {
+        throw new Error(message);
+    }
+}
+
+/**********************************************************/
+/*                Auto Update Service Request             */
 /**********************************************************/

@@ -181,9 +181,9 @@ class UsuarioService extends Connection
                     nombre_usuario = ?,
                     grupo_clientes = ?,
                     rol = ? 
-                WHERE id = ?");
+                WHERE id = " . $id);
         
-        $stmt->bind_param("issss", $nombre, $usuario, $grupo, $rol);
+        $stmt->bind_param("ssss", $nombre, $usuario, $grupo, $rol);
 
         if($stmt->execute())
         {

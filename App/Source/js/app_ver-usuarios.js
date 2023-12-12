@@ -11,7 +11,7 @@ let tableContainer = document.getElementById("wrapper");
 //NOTA: Además, aquí se cargan los usuarios en la tabla usando grid.js
 window.addEventListener("load", async ()=> {
     PermitirAcceso().then(res => {
-        if(res["Rol"] == "admin"){
+        if(res["Rol"] == "admin" || res["Rol"] == "dev"){
             InicializarTabla();
         }
     });

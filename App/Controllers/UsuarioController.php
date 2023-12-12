@@ -43,7 +43,18 @@ require_once "../Services/UsuarioService.php";
                     echo json_encode($UsuarioService->EliminarUsuario($_GET["nombreUsuario"], 00175));
                 break;
             case 'update':
-                    echo json_encode($UsuarioService->ActualizarUsuario(1, "", "", "", ""));
+                    $data = file_get_contents('php://input');
+
+                    // Convierte el contenido del cuerpo de la solicitud (request body) en un objeto PHP
+                    $requestObj = json_decode($data);
+
+                    print_r($requestObj);
+
+                    echo json_encode($UsuarioService->ActualizarUsuario($requestObj->id, 
+                                                                        $requestObj->nombre, 
+                                                                        $requestObj->usuario, 
+                                                                        $requestObj->grupoClientes, 
+                                                                        $requestObj->rol));
                 break;
             default:
                 throw new Exception("La operación no es válida");

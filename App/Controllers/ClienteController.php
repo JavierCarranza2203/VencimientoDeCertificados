@@ -8,6 +8,7 @@ require_once "../Models/Cliente.php";
         $ClienteService = new ClienteService();
         $Operacion = $_GET['Operacion'];
 
+        //Este switch sirve de router para correr el método del servicio que se
         switch($Operacion)
         {
             case 'view':
@@ -43,7 +44,9 @@ require_once "../Models/Cliente.php";
             case 'delete':
                     echo json_encode($ClienteService->EliminarCliente($_GET["rfc"], 00175));
                 break;
-            default:
+            case 'update':
+                break;
+                default:
                 throw new Exception("La operación no es válida");
         }
     }

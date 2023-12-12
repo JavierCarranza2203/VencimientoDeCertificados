@@ -1,5 +1,5 @@
 import { PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
-import { EliminarCliente } from "./Metodos/Peticiones.js";
+import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
 // import { EliminarCliente } from "./Metodos/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
@@ -31,16 +31,14 @@ document.addEventListener('click', async function(event) {
         {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
-            const nombre = row.cells[0].textContent;
             const grupo = row.cells[2].textContent;
-            const vencimientoSello = row.cells[3].textContent;
 
-            EditarUsuario(grupo);
+            EditarCliente(rfc, grupo);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
-    
+
             EliminarCliente(rfc, table, url);
         }
     }
@@ -73,16 +71,11 @@ function MostrarVigencia(bitBooleano)
     }
 }
 
-function EditarUsuario(grupo)
-{
-    alert("EDITADO");
-}
-
 function InicializarTabla(rol, grupoClientes = null)
 {
     url = 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
 
-    if(rol === "admin")
+    if(rol == "admin" || rol == "dev")
     {
         url += "viewAll";
     }

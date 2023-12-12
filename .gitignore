@@ -1,5 +1,8 @@
 App/Config/config.php
-Pruebas
+Test/Certificados
+Test/Reportes
+Test/Sellos
 Server/node_modules
 Server/package-lock.json
 Server/package.json
+Database/note.txt

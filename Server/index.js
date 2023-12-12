@@ -60,10 +60,25 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             sheet.getCell('F1').font = { name: 'Arial', size: 13, bold: true };
             sheet.getCell('G1').font = { name: 'Arial', size: 13, bold: true };
 
+            // Estilos para los encabezados de las columnas
+            sheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('B1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('C1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('D1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('E1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('F1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('G1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+
             // Estilos para el resto de las filas
             for(let i = 2; i <= results.length + 1; i++) {
                 sheet.getRow(i).font = { name: 'Arial', size: 12 };
-                sheet.getRow(i).height = 30;
+                
+                // Asignar colores alternados a las filas pares e impares
+                if(i % 2 === 0) {
+                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF' } }; // color claro
+                } else {
+                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCC' } }; // color oscuro
+                }
             }
 
             //Se guarda el excel y se manda el archivo al cliente

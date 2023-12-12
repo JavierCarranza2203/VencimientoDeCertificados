@@ -1,4 +1,5 @@
 import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
+import { RunAutoUpdateService } from "./Metodos/Peticiones.js";
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -41,9 +42,19 @@ window.addEventListener("load", async()=>{
             });
 
             btnAutoUpdateService.addEventListener("click", ()=>{
-                let response = "RealizandoPeticion";
-
-                console.log(response);
+                try
+                {
+                    RunAutoUpdateService();
+                }
+                catch(error)
+                {
+                    Swal.fire({
+                        icon: "error",
+                        title: "¡Hubo un error inesperado!",
+                        text: error,
+                        footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+                    });
+                }
             });
         }
         else{
