@@ -353,11 +353,8 @@ export async function EditarCliente(rfc, tabla){
 
             fetch('../Controllers/ClienteController.php?Operacion=update', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: datos,
-            })
+            });
         }
     }).then((result) => {
         // Maneja la respuesta de la petición AJAX

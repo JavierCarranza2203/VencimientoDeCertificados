@@ -2,6 +2,7 @@
 
 require_once '../Models/Cliente.php';
 require_once '../Libraries/Connection.php';
+require_once '../Services/CertificadoService.php';
 
 class ClienteService extends Connection
 {
@@ -147,6 +148,21 @@ class ClienteService extends Connection
         {
             throw new Exception("No hay registros"); 
         }
+    }
+
+    public function EditarCliente($rfc, $sello, $firma, $grupoClientes)
+    {
+        $CertificadoService = new CertificadoService();
+
+        $datosDelSello = $CertificadoService->ObtenerDatosCertificado($sello);
+        $datosDeLaFirma = $CertificadoService->ObtenerDatosCertificado($firma);
+
+        // $stmt = $this->db_conection->prepare("UPDATE cliente SET
+        //             nombre_completo = ?,
+        //             nombre_usuario = ?,
+        //             grupo_clientes = ?,
+        //             rol = ?
+        //         WHERE rfc = " . $rfc);
     }
 }
 

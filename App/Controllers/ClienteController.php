@@ -45,8 +45,11 @@ require_once "../Models/Cliente.php";
                     echo json_encode($ClienteService->EliminarCliente($_GET["rfc"], 00175));
                 break;
             case 'update':
+                    $rfc = $_POST['rfc'];
+
+                    print_r($nombre['rfc']);
                 break;
-                default:
+            default:
                 throw new Exception("La operación no es válida");
         }
     }
