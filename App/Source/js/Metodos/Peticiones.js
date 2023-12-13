@@ -1,3 +1,5 @@
+import { MostrarVigencia } from "./MetodosSinPeticion.js";
+
 /**********************************************************/
 /*                   Metodos del certificado              */
 /**********************************************************/
@@ -318,16 +320,19 @@ export async function EliminarCliente(rfc, tabla, url){
     });
 }
 
-export async function EditarCliente(rfc, tabla){
+export async function EditarCliente(rfc, grupo, tabla, url){
     Swal.fire({
         title: 'Modificar cliente',
         html:
-            '<label for="swal-input1" class="form__label">RFC del cliente a editar:</label>' +
-            `<input id="swal-input1" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+            '<label for="txtRfc" class="form__label">RFC del cliente a editar:</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+
             '<label for="certificadoSello" class="form__label">Ingrese certificado del sello:</label>' +
             `<input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input"><br>` +
-            '<label for="certificadoFiel" class="form__label">Ingrese certificado del sello:</label>' +
+
+            '<label for="certificadoFiel" class="form__label">Ingrese certificado de la firma:</label>' +
             `<input type="file" name="certificadoFiel" id="certificadoFiel" class="double-form-container__form-input"><br>` +
+
             '<label for="cmbGrupoClientes" class="form__label">Ingrese grupo del cliente:</label>' + 
             '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
                 '<option value="A">Clientes A</option>' +
@@ -340,16 +345,16 @@ export async function EditarCliente(rfc, tabla){
         cancelButtonText: 'Cancelar',
         preConfirm: () => {
             // Obtiene los valores de los campos de entrada
-            const rfc = Swal.getPopup().querySelector('#swal-input1').value;
-            const sello = Swal.getPopup().querySelector('#certificadoSello').value;
-            const fiel = Swal.getPopup().querySelector('#certificadoFiel').value;
-            const grupoClientes = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
+            const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
+            const CertificadoSello = Swal.getPopup().querySelector('#certificadoSello').files[0];
+            const CertificadoFirma = Swal.getPopup().querySelector('#certificadoFiel').files[0];
+            const GrupoClientes = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
 
             let datos = new FormData();
-            datos.append("rfc", rfc);
-            datos.append("sello", sello);
-            datos.append("fiel", fiel);
-            datos.append("grupoClientes", grupoClientes);
+            datos.append("Rfc", Rfc);
+            datos.append("CertificadoSello", CertificadoSello);
+            datos.append("CertificadoFirma", CertificadoFirma);
+            datos.append("GrupoClientes", GrupoClientes);
 
             fetch('../Controllers/ClienteController.php?Operacion=update', {
                 method: 'POST',
@@ -365,7 +370,7 @@ export async function EditarCliente(rfc, tabla){
                 icon: 'success'
             });
 
-            ActualizarTablaUsuarios(table);
+            ActualizarTablaClientes(tabla, url);
         } else if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
                 title: 'Cancelado',

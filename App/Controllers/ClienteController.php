@@ -45,9 +45,12 @@ require_once "../Models/Cliente.php";
                     echo json_encode($ClienteService->EliminarCliente($_GET["rfc"], 00175));
                 break;
             case 'update':
-                    $rfc = $_POST['rfc'];
-
-                    print_r($nombre['rfc']);
+                    $Rfc = $_POST['Rfc'];
+                    $CertificadoSello = file_get_contents($_FILES['CertificadoSello']['tmp_name']);
+                    $CertificadoFirma = file_get_contents($_FILES['CertificadoFirma']['tmp_name']);
+                    $GrupoClientes = $_POST['GrupoClientes'];
+                    
+                    echo $ClienteService->EditarCliente($Rfc, $CertificadoSello, $CertificadoFirma, $GrupoClientes);
                 break;
             default:
                 throw new Exception("La operación no es válida");

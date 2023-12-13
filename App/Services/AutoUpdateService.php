@@ -7,9 +7,9 @@ require_once "../Models/Cliente.php";
 class AutoUpdateService
 {
     //Rutas e instancias necesarias para correr el servicio
-    private string $FolderRoute = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\";
-    private string $RutaDelSello = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Sellos";
-    private string $RutaDelCertificado = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Certificados";
+    private string $FolderRoute = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Test\\";
+    private string $RutaDelSello = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Test\\Sellos\\";
+    private string $RutaDelCertificado = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Test\\Certificados\\";
     private CertificadoService $CertificadoService;
     private ClienteService $ClienteService;
 
@@ -24,6 +24,7 @@ class AutoUpdateService
     //Metodo para agregar los clientes
     public function AgregarClientes()
     {
+        $contador = 0;
         //Obtiene una lista de todos los directorios que hay dentro de la ruta de certificados
         $Certificados = scandir($this->RutaDelCertificado);
         //Obtiene una lista de todos los directorios que hay dentro de la ruta de sellos
@@ -33,43 +34,44 @@ class AutoUpdateService
         $bandera = false;
 
         //Ciclo para recorrer los certificados (Comienza en 2 porque a partir de ahí comienzan los archivos)
-        //Para ver de que hablo, descomente la siguiente linea
-        // print_r($Certificados);
-
-        for($i = 2; $i <= count($Certificados); $i++)
+        for($i = 2; $i < count($Certificados); $i++)
         {
             //Crea la instancia del cliente
             $Cliente = new Cliente();
 
             //Corre el servicio del certificado para obtener los datos
-            $datos = $this->CertificadoService->ObtenerDatosCertificado(file_get_contents($this->RutaDelCertificado . $Certificados[$i]));
+            $datos = json_decode($this->CertificadoService->ObtenerDatosCertificado(file_get_contents($this->RutaDelCertificado . $Certificados[$i])));
 
             //Asigna los valores al cliente
-            $Cliente->Nombre = $datos["NombreCliente"];
-            $Cliente->RFC = $datos["RfcCliente"];
-            $Cliente->Firma->FechaFin = $datos["FechaDeVencimiento"];
-            $Cliente->Firma->Status = $datos["Status"];
+            $Cliente->Nombre = $datos->NombreCliente;
+            $Cliente->RFC = $datos->RfcCliente;
+            $Cliente->Firma->FechaFin = $datos->FechaDeVencimiento;
+            $Cliente->Firma->Status = $datos->Status;
+            $Cliente->GrupoClientes = 'A';
 
             //Ciclo para recorrer los sellos
-            for($i = 2; $i < count($Sellos); $i++)
+            for($j = 2; $j < count($Sellos); $j++)
             {
                 //Corre el servicio para obtener la información del sello
-                $datos = $this->CertificadoService->ObtenerDatosCertificado($Sellos[$i]);
+                $datos = json_decode($this->CertificadoService->ObtenerDatosCertificado(file_get_contents($this->RutaDelSello . $Sellos[$j])));
 
                 //Si la rfc del cliente es igual a la del sello, significa que se puede agregar
-                if($Cliente->RFC == $datos["RfcCliente"])
+                if($Cliente->RFC == $datos->RfcCliente)
                 {
                     //Agrega los datos al sello
-                    $Cliente->Sello->FechaFin = $datos["FechaDeVencimiento"];
-                    $Cliente->Sello->Status = $datos["Status"];
+                    $Cliente->Sello->FechaFin = $datos->FechaDeVencimiento;
+                    $Cliente->Sello->Status = $datos->Status;
 
-                    //Corre el servicio del cliente para agregarlo
-                    $this->ClienteService->AgregarCliente($Cliente);
+                    try{
+                        //Corre el servicio del cliente para agregarlo
+                        $this->ClienteService->AgregarCliente($Cliente);
+
+                        $contador++;
+                    }
+                    catch(Exception $e){}
 
                     //Pone la bandera en true para indicar que se cumple con el certificado y el sello
                     $bandera = true;
-
-                    break;
                 }
             }
 
@@ -80,7 +82,7 @@ class AutoUpdateService
             }
         }
 
-        return "Se han agregado todos los clientes";
+        return "Se han agregado $contador clientes";
     }
 }
 

@@ -88,3 +88,13 @@ export function ValidarCampos(campos)
 
     return true;
 }
+
+export function MostrarVigencia(bitBooleano)
+{
+    if(bitBooleano == 1){
+        return "Vigente";
+    }
+    else{
+        return "Vencido";
+    }
+}

@@ -177,7 +177,7 @@ class UsuarioService extends Connection
     public function ActualizarUsuario(int $id, string $nombre, string $usuario, string $grupo, string $rol)
     {
         $stmt = $this->db_conection->prepare("UPDATE usuario SET 
-                    nombre_completo = ?, 
+                    nombre_completo = ?,
                     nombre_usuario = ?,
                     grupo_clientes = ?,
                     rol = ? 

@@ -1,4 +1,4 @@
-import { PermitirAcceso} from "./Metodos/MetodosSinPeticion.js";
+import { PermitirAcceso, MostrarVigencia } from "./Metodos/MetodosSinPeticion.js";
 import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
 // import { EliminarCliente } from "./Metodos/Peticiones.js";
 
@@ -33,7 +33,7 @@ document.addEventListener('click', async function(event) {
             const rfc = row.cells[0].textContent;
             const grupo = row.cells[2].textContent;
 
-            EditarCliente(rfc, grupo);
+            EditarCliente(rfc, grupo, table, url);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
@@ -60,16 +60,6 @@ document.addEventListener('click', async function(event) {
 /**************************************************************/
 /*             Métodos implementados en la página             */
 /**************************************************************/
-
-function MostrarVigencia(bitBooleano)
-{
-    if(bitBooleano == 1){
-        return "Vigente";
-    }
-    else{
-        return "Vencido";
-    }
-}
 
 function InicializarTabla(rol, grupoClientes = null)
 {

@@ -61,23 +61,28 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             sheet.getCell('G1').font = { name: 'Arial', size: 13, bold: true };
 
             // Estilos para los encabezados de las columnas
-            sheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('B1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('C1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('D1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('E1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('F1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
-            sheet.getCell('G1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6FA' } };
+            sheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('A1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('B1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('B1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('C1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('C1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('D1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('D1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('E1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('E1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('F1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('F1').font = { color: { argb: 'FFFFFF'} };
+            sheet.getCell('G1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+            sheet.getCell('G1').font = { color: { argb: 'FFFFFF'} };
 
             // Estilos para el resto de las filas
-            for(let i = 2; i <= results.length + 1; i++) {
-                sheet.getRow(i).font = { name: 'Arial', size: 12 };
-                
+            for(let i = 2; i <= results.length + 1; i++) {                
                 // Asignar colores alternados a las filas pares e impares
                 if(i % 2 === 0) {
-                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF' } }; // color claro
+                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF' } }; // color claro
                 } else {
-                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCC' } }; // color oscuro
+                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E0E0E0' } }; // color oscuro
                 }
             }
 
@@ -96,15 +101,20 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
 
 //Metodo get para probar la petición
 app.get("/test", (req, res)=>{
-    let mensaje = {
-        port: "8082",
-        server: "localhost",
-        url: "http://localhost:8082/test",
-        message: "El test se hizo correctamente",
-        method: "GET"
-    }
+    try{
+        let mensaje = {
+            port: "8082",
+            server: "localhost",
+            url: "http://localhost:8082/test",
+            message: "El test se hizo correctamente",
+            method: "GET"
+        }
 
-    res.send(mensaje);
+        res.send(mensaje);
+    }
+    catch(error){
+        res.status(500).send("Error en el servidor: " + error);
+    }
 });
 
 app.listen(serverPort, (req, res)=>{

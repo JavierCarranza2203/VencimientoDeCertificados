@@ -14,7 +14,7 @@ require_once "../Services/AutoUpdateService.php";
         //Si el status es "run"
         if($status == "run"){
             //Corre el servicio de Auto Update Service (AUS)
-            echo $AUS->AgregarClientes();
+            echo json_encode($AUS->AgregarClientes());
         }
     }
     catch(Exception $e)
