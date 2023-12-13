@@ -4,6 +4,8 @@ const mysql2 = require('mysql2');
 const ExcelJs = require('exceljs');
 const fs = require('fs/promises');
 const path = require('path');
+const moment = require('moment');
+const excelActions = require('./Metodos.js');
 
 const app = new express();
 
@@ -23,68 +25,43 @@ const connection = mysql2.createConnection({
 
 //Metodo get para obtener el archivo
 app.get('/clientes_por_vencer/excel', (req, res) => {
-    try{
+    try {
         //Consulta para mandar como query de SQL
         let consulta = "SELECT * FROM clientes_certificados";
 
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         connection.query(consulta, function(err, results, fields){
-            //Se instancia el nuevo libro de excel
-            let workbook = new ExcelJs.Workbook();
-            //Agrega una página al libro
-            const sheet = workbook.addWorksheet("Clientes por vencer este año");
+            let data = [];
 
-            //Agrega las columnas
-            sheet.columns = [
-                { header: "RFC", key: "rfc", width: 40 },
-                { header: "Nombre completo", key: "nombre", width: 40 },
-                { header: "Grupo de clientes", key: "grupo_clientes", width: 17 },
-                { header: "Estatus de la firma", key: "status_firma", width: 20 },
-                { header: "Fecha de expiración de la firma", key: "fecha_vencimiento_firma", width: 30},
-                { header: "Estatus del sello", key: "status_sello", width: 20 },
-                { header: "Fecha de expiración del sello", key: "fecha_vencimiento_sello", width: 30}
-            ];
-
-            //Agrega los renglones de acuerdo a los datos obtenidos de la consulta
             results.forEach(row => {
-                sheet.addRow([row['rfc'], row['nombre'], row['grupo_clientes'], row['status_firma'] == 1? "Vigente" : "Vencido",
-                    row['fecha_vencimiento_firma'], row['status_sello'] == 1? "Vigente" : "Vencido", row['fecha_vencimiento_sello'],]);
+                let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
+                let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+
+                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1], segmentosFirma[0]);
+                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1], segmentosSellos[0]);
+
+                data.push(row);
             });
 
-            // Estilos para los encabezados
-            sheet.getCell('A1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('B1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('C1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('D1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('E1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('F1').font = { name: 'Arial', size: 13, bold: true };
-            sheet.getCell('G1').font = { name: 'Arial', size: 13, bold: true };
+            //Se instancia el nuevo libro de excel
+            let workbook = new ExcelJs.Workbook();
 
-            // Estilos para los encabezados de las columnas
-            sheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('A1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('B1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('B1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('C1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('C1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('D1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('D1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('E1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('E1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('F1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('F1').font = { color: { argb: 'FFFFFF'} };
-            sheet.getCell('G1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-            sheet.getCell('G1').font = { color: { argb: 'FFFFFF'} };
+            //Agrega las páginas al libro
+            const sheet = workbook.addWorksheet("Clientes por vencer este año");
+            const sheetClientesA = workbook.addWorksheet("Clientes A");
+            const sheetClientesB = workbook.addWorksheet("Clientes B");
+            const sheetClientesC = workbook.addWorksheet("Clientes C");
+            
+            //Agrega los encabezados a cada una se las páginas
+            excelActions.AgregarEncabezados([sheet, sheetClientesA, sheetClientesB, sheetClientesC]);
 
-            // Estilos para el resto de las filas
-            for(let i = 2; i <= results.length + 1; i++) {                
-                // Asignar colores alternados a las filas pares e impares
-                if(i % 2 === 0) {
-                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF' } }; // color claro
-                } else {
-                    sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E0E0E0' } }; // color oscuro
-                }
-            }
+            //Agrega los renglones a la primer página
+            excelActions.AgregarRenglones(sheet, data);
+
+            //Agrega los renglones a las demás páginas separando el grupo del cliente
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesA, data, 'A');
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB, data, 'B');
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC, data, 'C');
 
             //Se guarda el excel y se manda el archivo al cliente
             workbook.xlsx.writeBuffer().then(excelBuffer => {
@@ -94,7 +71,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             });
         });
     }
-    catch(error){
+    catch(error) {
         res.status(500).send("Error en el servidor: " + error);
     }
 });
