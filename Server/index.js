@@ -59,7 +59,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         connection.query(consulta, function(err, results, fields) {
 
-            const data = serverActions.RegresarRegistrosPorVencer(results);
+            let data = serverActions.RegresarRegistrosPorVencer(results);
 
             //Se instancia el nuevo libro de excel
             let workbook = new ExcelJs.Workbook();
@@ -69,9 +69,12 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             const sheetClientesA = workbook.addWorksheet("Clientes A");
             const sheetClientesB = workbook.addWorksheet("Clientes B");
             const sheetClientesC = workbook.addWorksheet("Clientes C");
+            const sheetClientesA_Semana = workbook.addWorksheet("Clientes A esta semana");
+            const sheetClientesB_Semana = workbook.addWorksheet("Clientes B esta semana");
+            const sheetClientesC_Semana = workbook.addWorksheet("Clientes C esta semana");
             
             //Agrega los encabezados a cada una se las páginas
-            excelActions.AgregarEncabezados([sheet, sheetClientesA, sheetClientesB, sheetClientesC]);
+            excelActions.AgregarEncabezados([sheet, sheetClientesA, sheetClientesB, sheetClientesC, sheetClientesA_Semana, sheetClientesB_Semana, sheetClientesC_Semana]);
 
             //Agrega los renglones a la primer página
             excelActions.AgregarRenglones(sheet, data);
@@ -80,6 +83,13 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesA, data, 'A');
             excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB, data, 'B');
             excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC, data, 'C');
+
+            data = serverActions.FiltarRegistroPorVencerEnLaSemana(data);
+
+            //Agrega los renglones a las paginas de los clientes que se vencen en la semana
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesA_Semana, data, 'A');
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB_Semana, data, 'B');
+            excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC_Semana, data, 'C');
 
             //Se guarda el excel y se manda el archivo al cliente
             workbook.xlsx.writeBuffer().then(excelBuffer => {
@@ -96,7 +106,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
 
 //Metodo get para probar la petición
 app.get("/test", (req, res)=>{
-    try{
+    try {
         let mensaje = {
             port: "8082",
             server: "localhost",
@@ -107,11 +117,11 @@ app.get("/test", (req, res)=>{
 
         res.send(mensaje);
     }
-    catch(error){
+    catch(error) {
         res.status(500).send("Error en el servidor: " + error);
     }
 });
 
-app.listen(serverPort, (req, res)=>{
+app.listen(serverPort, (req, res)=> {
     console.log("Servidor corriendo en el puerto: " + serverPort);
 });

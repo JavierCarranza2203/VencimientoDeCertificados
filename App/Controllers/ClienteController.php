@@ -46,8 +46,12 @@ require_once "../Models/Cliente.php";
                 break;
             case 'update':
                     $Rfc = $_POST['Rfc'];
-                    $CertificadoSello = file_get_contents($_FILES['CertificadoSello']['tmp_name']);
-                    $CertificadoFirma = file_get_contents($_FILES['CertificadoFirma']['tmp_name']);
+                    $CertificadoFirma = null;
+                    $CertificadoSello = null;
+
+                    if(isset($_FILES['CertificadoSello']['tmp_name'])){ $CertificadoSello = file_get_contents($_FILES['CertificadoSello']['tmp_name']); }
+                    if(isset($_FILES['CertificadoFirma']['tmp_name'])){ $CertificadoFirma = file_get_contents($_FILES['CertificadoFirma']['tmp_name']); }
+
                     $GrupoClientes = $_POST['GrupoClientes'];
                     
                     echo $ClienteService->EditarCliente($Rfc, $CertificadoSello, $CertificadoFirma, $GrupoClientes);

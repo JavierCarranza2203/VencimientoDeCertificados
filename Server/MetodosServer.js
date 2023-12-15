@@ -19,4 +19,32 @@ function RegresarRegistrosPorVencer(results)
     return data;
 }
 
+function FiltarRegistroPorVencerEnLaSemana(results)
+{
+    let virtualData = [];
+    let data = [];
+    let fechaActual = new Date();
+
+    virtualData = RegresarRegistrosPorVencer(results);
+
+    virtualData.forEach(row => {
+        let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
+        let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+
+        console.log(segmentosFirma);
+
+        if(segmentosFirma[0] >= fechaActual.getDay() && segmentosFirma[0] <= fechaActual.getDay() + 7)
+        {
+            data.push(row);
+        }
+        else if(segmentosSellos[0] >= fechaActual.getDay() && segmentosSellos[0] <= fechaActual.getDate() + 7)
+        {
+            data.push(row);
+        }
+    });
+
+    return data;
+}
+
 module.exports.RegresarRegistrosPorVencer = RegresarRegistrosPorVencer;
+module.exports.FiltarRegistroPorVencerEnLaSemana = FiltarRegistroPorVencerEnLaSemana;

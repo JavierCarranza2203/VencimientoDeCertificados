@@ -155,54 +155,59 @@ class ClienteService extends Connection
         //Instancia del servicio de certificados
         $CertificadoService = new CertificadoService();
 
-        //Corre el servicio para obtener los datos de cada certificado. Como el método devuelve formato json, hay que decodificarlo para hacerlos objetos
-        $datosDelSello = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoSello));
-        $datosDeLaFirma = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoFirma));
-
-        //Si el RFC del sello y firma son diferentes, genera una excepción
-        if($datosDeLaFirma->RfcCliente != $datosDelSello->RfcCliente)
-        {
-            throw new Exception("Los certificados no pertenecen a la misma persona");
-        }
-        
-        //Si los estatus son false, significa que estan vencidos y genera una excepción
-        if(!$datosDeLaFirma->Status || !$datosDelSello->Status)
-        {
-            throw new Exception("Debe ingresar certificados vigentes");
-        }
-
-        if(!$stmtCliente = $this->db_conection->prepare("UPDATE `cliente` SET `grupo_clientes` = ? WHERE `rfc` = ?"))
-        {
-            throw new Exception("Error al preparar la consulta");
-        }
-        
+        $stmtCliente = $this->db_conection->prepare("UPDATE `cliente` SET `grupo_clientes` = ? WHERE `rfc` = ?");
         $stmtCliente->bind_param("ss", $grupoClientes, $rfc);
+        if(!$stmtCliente->execute()){ throw new Exception("Hubo un error al actualizar el cliente"); }
 
-        //Prepara la consulta para actualizar la firma
-        $stmtFirma = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
+        if(isset($certificadoSello))
+        {
+            //Corre el servicio para obtener los datos del certificado del sello
+            $datosDelSello = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoSello));
 
-        $tipo = "Firma";
-        $bitBooleano = $datosDeLaFirma->Status? 1:0;
-        //Agrega los parametros
-        $stmtFirma->bind_param("siss", $datosDeLaFirma->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
+            $bitBooleano = $this->ValidarVigenciaDelCertificado($datosDelSello->Status, "El sello está vencido");
+            $this->ValidarCongruencia($rfc, $datosDelSello->RfcCliente, "El sello pertenece a otra persona");
 
-        //Prepara la consulta para actualizar el sello
-        $stmtSello = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
+            $stmtSello = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
 
-        $tipo = "Sello";
-        $bitBooleano = $datosDelSello->Status? 1:0;
-        //Agrega los parametros
-        $stmtSello->bind_param("siss", $datosDelSello->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
+            $tipo = "Sello";
 
-        //Si al ejecutarse los stmt, todos devuelven true, manda un mensaje al cliente. Si no, genera una excepción
-        if($stmtCliente->execute() && $stmtFirma->execute() && $stmtSello->execute())
-        { 
-            return "Se ha actualizado el cliente con RFC: " . $rfc; 
+            //Agrega los parametros
+            $stmtSello->bind_param("siss", $datosDelSello->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
+            
+            if(!$stmtSello->execute()){ throw new Exception("Hubo un error al actualizar el sello"); }
         }
-        else
-        { 
-            throw new Exception("Hubo un error al actualizar el cliente"); 
+
+        if(isset($certificadoFirma))
+        {
+            //Corre el servicio para obtener los datos del certificado de la firma
+            $datosDeLaFirma = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoFirma));
+
+            $bitBooleano = $this->ValidarVigenciaDelCertificado($datosDeLaFirma->Status, "La firma está vencida");
+            $this->ValidarCongruencia($rfc, $datosDeLaFirma->RfcCliente, "La firma pertenece a otra persona");
+
+            //Prepara la consulta para actualizar la firma
+            $stmtFirma = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
+
+            $tipo = "Firma";
+
+            //Agrega los parametros
+            $stmtFirma->bind_param("siss", $datosDeLaFirma->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
+
+            if(!$stmtFirma->execute()){ throw new Exception("Hubo un error al actualizar la firma"); }
         }
+
+        return "Se ha actualizado el cliente con RFC: " . $rfc; 
+    }
+
+    private function ValidarCongruencia($NombrePersona, $NombrePersonaEnCertificado, $exMessage) : void
+    {
+        if($NombrePersona != $NombrePersonaEnCertificado) { throw new Exception($exMessage); }
+    }
+
+    private function ValidarVigenciaDelCertificado($status, $exMessage) : int
+    {
+        if(!$status){ throw new Exception($exMessage); }
+        else { return 1; }
     }
 }
 
