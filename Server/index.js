@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const mysql2 = require('mysql2');
 const ExcelJs = require('exceljs');
-const excelActions = require('./Metodos.js');
+const excelActions = require('./MetodosExcel.js');
+const serverActions = require('./MetodosServer.js');
 
 const app = new express();
 
@@ -37,22 +38,9 @@ app.get('/clientes_por_vencer', (req, res) => {
         }
 
         //Activa la conexión y hace la consulta para después mandar a llamar una función
-        connection.query(consulta, function(err, results, fields){
-            let data = [];
+        connection.query(consulta, function(err, results, fields) {
 
-            results.forEach(row => {
-                let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
-                let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
-
-                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
-                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
-                let fechaActual = new Date();
-
-                if(fechaFirma.getFullYear() == fechaActual.getFullYear() || fechaSello.getFullYear() == fechaActual.getFullYear())
-                {
-                    data.push(row);
-                }
-            });
+            const data = serverActions.RegresarRegistrosPorVencer(results);
 
             res.json(data);
         });
@@ -69,22 +57,9 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
         let consulta = "SELECT * FROM clientes_certificados";
 
         //Activa la conexión y hace la consulta para después mandar a llamar una función
-        connection.query(consulta, function(err, results, fields){
-            let data = [];
+        connection.query(consulta, function(err, results, fields) {
 
-            results.forEach(row => {
-                let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
-                let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
-
-                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
-                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
-                let fechaActual = new Date();
-
-                if(fechaFirma.getFullYear() == fechaActual.getFullYear() || fechaSello.getFullYear() == fechaActual.getFullYear())
-                {
-                    data.push(row);
-                }
-            });
+            const data = serverActions.RegresarRegistrosPorVencer(results);
 
             //Se instancia el nuevo libro de excel
             let workbook = new ExcelJs.Workbook();

@@ -44,16 +44,6 @@ function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
     DarEstilosARenglones(sheet, data);
 }
 
-function AgregarRenglonesPorGrupoDeClientesYFechaMaximaDeUnaSemana(sheet, data, group) {
-    data.forEach(row => {
-        if(row['grupo_clientes'] == group)
-        {
-            sheet.addRow([row['rfc'], row['nombre'], row['grupo_clientes'], row['status_firma'] == 1? "Vigente" : "Vencido",
-                row['fecha_vencimiento_firma'], row['status_sello'] == 1? "Vigente" : "Vencido", row['fecha_vencimiento_sello'],]);
-        }
-    });
-}
-
 function DarEstilosARenglones(sheet, data) {
     for(let i = 2; i <= data.length + 1; i++) {                
         // Asignar colores alternados a las filas pares e impares
@@ -68,4 +58,3 @@ function DarEstilosARenglones(sheet, data) {
 module.exports.AgregarEncabezados = AgregarEncabezados;
 module.exports.AgregarRenglones = AgregarRenglones;
 module.exports.AgregarRenglonesPorGrupoDeClientes = AgregarRenglonesPorGrupoDeClientes;
-module.exports.AgregarRenglonesPorGrupoDeClientesYFechaMaximaDeUnaSemana = AgregarRenglonesPorGrupoDeClientesYFechaMaximaDeUnaSemana;
