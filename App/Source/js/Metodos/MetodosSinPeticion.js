@@ -75,15 +75,29 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
 //Metodo para validar los campos por expresiones comunes
 export function ValidarCampos(campos)
 {
+    let i = 0;
     //Expresion común que solo permite letras
     const soloLetras = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
+    const letrasNumeros = /^[a-zA-ZÀ-ÿ0-9-.\s]{1,40}$/;
 
     //Recorre los campos recibidos por parametro y en caso de que el test falle, genera una excepcion
     campos.forEach(input => {
         if(!soloLetras.test(input.value))
         {
-            throw new Error(input.value + " no es un valor correcto");
+            if(i == 2)
+            {
+                if(!letrasNumeros.test(input.value))
+                {
+                    throw new Error("Solo se admiten números y letras en la contraseña");
+                }
+            }
+            else
+            {
+                throw new Error(input.value + " no es un valor correcto");
+            }
         }
+
+        i++;
     });
 
     return true;

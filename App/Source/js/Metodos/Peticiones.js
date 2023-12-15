@@ -424,8 +424,12 @@ export async function RunAutoUpdateService()
     {
         Swal.fire({
             title: "Mensaje de AUS",
-            text: message,
-            icon: "success"
+            html: `
+                <h2>${message["Mensaje"]}</h2>
+                <p>Agregados: ${ message["Agregados"] }</p>
+                <p>Errores: ${message["Con Errores"]}</p>
+            `,
+            icon: "info"
         });
     }
     else

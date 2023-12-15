@@ -63,15 +63,11 @@ document.addEventListener('click', async function(event) {
 
 function InicializarTabla(rol, grupoClientes = null)
 {
-    url = 'http://localhost/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
+    url = 'http://localhost:8082/clientes_por_vencer';
 
-    if(rol == "admin" || rol == "dev")
+    if(rol != "admin" && rol != "dev")
     {
-        url += "viewAll";
-    }
-    else
-    {
-        url += "view" + "&Grupo=" + grupoClientes;
+        url += "?grupo=" + grupoClientes;
     }
 
     table = new gridjs.Grid({
@@ -87,7 +83,7 @@ function InicializarTabla(rol, grupoClientes = null)
         }],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[6], MostrarVigencia(cliente[5]), cliente[4], MostrarVigencia(cliente[3])])
+            then: data => data.map(cliente => [cliente["rfc"], cliente["nombre"], cliente["grupo_clientes"], cliente["fecha_vencimiento_sello"], MostrarVigencia(cliente["status_sello"]), cliente["fecha_vencimiento_firma"], MostrarVigencia(cliente["status_firma"])])
         },
         pagination: {
             limit: 10

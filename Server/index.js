@@ -2,9 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const mysql2 = require('mysql2');
 const ExcelJs = require('exceljs');
-const fs = require('fs/promises');
-const path = require('path');
-const moment = require('moment');
 const excelActions = require('./Metodos.js');
 
 const app = new express();
@@ -23,6 +20,48 @@ const connection = mysql2.createConnection({
     database: 'db_despacho_contable'
 });
 
+//Metodo get para obtener los clientes que van a vencer el año actual
+app.get('/clientes_por_vencer', (req, res) => {
+    try {
+        let consulta = "";
+        
+        if(typeof(req.query.grupo) == 'undefined') 
+        {
+            //Consulta para mandar como query de SQL cuando accede un admin o un developer
+            consulta = "SELECT * FROM clientes_certificados";
+        }
+        else 
+        {
+            //Consulta para mandar como query cuando accede un empleado
+            consulta = `SELECT * FROM clientes_certificados WHERE grupo_clientes = '${req.query.grupo}'`;
+        }
+
+        //Activa la conexión y hace la consulta para después mandar a llamar una función
+        connection.query(consulta, function(err, results, fields){
+            let data = [];
+
+            results.forEach(row => {
+                let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
+                let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+
+                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
+                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
+                let fechaActual = new Date();
+
+                if(fechaFirma.getFullYear() == fechaActual.getFullYear() || fechaSello.getFullYear() == fechaActual.getFullYear())
+                {
+                    data.push(row);
+                }
+            });
+
+            res.json(data);
+        });
+    } catch (error) {
+        console.error("Error: ", error);
+        res.status(500).send(error.message);
+    }
+});
+
 //Metodo get para obtener el archivo
 app.get('/clientes_por_vencer/excel', (req, res) => {
     try {
@@ -37,10 +76,14 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
                 let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
                 let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
 
-                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1], segmentosFirma[0]);
-                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1], segmentosSellos[0]);
+                let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
+                let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
+                let fechaActual = new Date();
 
-                data.push(row);
+                if(fechaFirma.getFullYear() == fechaActual.getFullYear() || fechaSello.getFullYear() == fechaActual.getFullYear())
+                {
+                    data.push(row);
+                }
             });
 
             //Se instancia el nuevo libro de excel

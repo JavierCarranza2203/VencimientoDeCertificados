@@ -3,3 +3,9 @@ RG_2023*LOCALHOST
 
 Contraseña generada
 ny-ox9Kq*shopg_X
+
+¤ Listar la información de los procesos de un puerto:
+netstat -ano | findstr :NUMERO_PUERTO
+
+¤ Terminar el proceso por numero de PID
+taskkill /PID NUMERO_PID /F
