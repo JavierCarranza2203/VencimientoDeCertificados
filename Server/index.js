@@ -59,6 +59,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         connection.query(consulta, function(err, results, fields) {
 
+            //Obtiene todos los clientes que van a vencer en el año
             let data = serverActions.RegresarRegistrosPorVencer(results);
 
             //Se instancia el nuevo libro de excel
@@ -84,6 +85,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
             excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB, data, 'B');
             excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC, data, 'C');
 
+            //Filtra los clientes por semana
             data = serverActions.FiltarRegistroPorVencerEnLaSemana(data);
 
             //Agrega los renglones a las paginas de los clientes que se vencen en la semana
