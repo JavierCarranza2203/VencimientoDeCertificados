@@ -59,6 +59,11 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         connection.query(consulta, function(err, results, fields) {
 
+            if(results.length == 0) 
+            {
+                res.send({mensaje: "No hay datos para enviar"})
+            }
+
             //Obtiene todos los clientes que van a vencer en el año
             let data = serverActions.RegresarRegistrosPorVencer(results);
 
