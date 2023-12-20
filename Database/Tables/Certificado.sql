@@ -7,3 +7,4 @@ CREATE TABLE certificado(
     id_cliente VARCHAR(80),
     FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE
 );
+
