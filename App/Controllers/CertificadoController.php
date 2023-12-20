@@ -3,6 +3,10 @@
 require_once "../Services/CertificadoService.php";
     try
     {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+
         //Obtiene la extensión del certificado
         $fileExtension = pathinfo($_FILES['Certificado']['name'], PATHINFO_EXTENSION);
 

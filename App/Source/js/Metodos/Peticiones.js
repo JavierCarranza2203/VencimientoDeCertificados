@@ -416,26 +416,53 @@ export function ActualizarTablaClientes(table, url)
 
 export async function RunAutoUpdateService()
 {
-    let response = await fetch("../Controllers/AutoUpdateController.php?status=run");
+    let message;
+    await Swal.fire({
+        title: "Ingrese el grupo de clientes al que pertenece",
+        input: "text",
+        showCancelButton: true,
+        confirmButtonText: "Aceptar",
+        showLoaderOnConfirm: true,
+        preConfirm: async (group)=>
+        {
+            let grupo = group.toUpperCase();
+            
+            let response = await fetch("../Controllers/AutoUpdateController.php?status=run&&grupo=" + grupo);
 
-    let message = await response.json();
+            message = await response.json();
 
-    if(response.ok)
-    {
-        Swal.fire({
-            title: "Mensaje de AUS",
-            html: `
-                <h2>${message["Mensaje"]}</h2>
-                <p>Agregados: ${ message["Agregados"] }</p>
-                <p>Errores: ${message["Con Errores"]}</p>
-            `,
-            icon: "info"
-        });
-    }
-    else
-    {
-        throw new Error(message);
-    }
+            if(!response.ok)
+            {
+                throw new Error(message);
+            }
+        }
+    }).then((result)=>{
+        // Maneja la respuesta de la petición AJAX
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Mensaje de AUS",
+                html: `
+                    <h2>${message["Mensaje"]}</h2>
+                    <p>Agregados: ${ message["Agregados"] }</p>
+                    <p>Errores: ${message["Con Errores"]}</p>
+                    <p>Confusiones: ${message["Confusiones"]}</p>
+                `,
+                icon: "info"
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un error al insertar datos.',
+                icon: 'error'
+            });
+        }
+    });
 }
 
 /**********************************************************/

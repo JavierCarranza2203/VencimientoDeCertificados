@@ -77,6 +77,8 @@ frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
         //Llama al metodo para obtener los datos
         let data = await ObtenerDatosDelCertificado(certificado);
 
+        if(data['Tipo'] != "Firma") { throw new Error("El certificado no pertenece a una firma"); }
+
         //Llama al metodo para mostrar los datos en los inputs y recibe como parametro la funcion para obtener los datos
         MostrarDatos(
             txtNombreEnFirma, 
@@ -93,7 +95,7 @@ frmValidarCertificadoFirma.addEventListener("submit", async (e) => {
             icon: "error",
             title: "¡Hubo un error inesperado!",
             text: error,
-            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+            footer: '<label>Intente de nuevo o llame al administrador de sistemas.</label>'
         });
     }
 });
@@ -111,6 +113,8 @@ frmValidarCertificadoSello.addEventListener("submit", async (e) => {
         
         let data = await ObtenerDatosDelCertificado(certificado);
 
+        if(data['Tipo'] != "Sello"){ throw new Error("El certificado no pertenece a un sello"); }
+
         //Llama al metodo para mostrar los datos en los inputs y recibe como parametro los datos
         MostrarDatos(
             txtNombreEnSello, 
@@ -127,7 +131,7 @@ frmValidarCertificadoSello.addEventListener("submit", async (e) => {
             icon: "error",
             title: "¡Hubo un error inesperado!",
             text: error,
-            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+            footer: '<label>Intente de nuevo o llame al administrador de sistemas.</label>'
         });
     }
 });

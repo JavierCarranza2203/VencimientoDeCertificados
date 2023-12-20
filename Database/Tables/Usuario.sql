@@ -3,7 +3,7 @@ CREATE TABLE usuario(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     nombre_completo VARCHAR(80),
     nombre_usuario VARCHAR(25),
-    contrasenia VARCHAR(10),
+    contrasenia VARCHAR(15),
     grupo_clientes CHAR,
     rol VARCHAR(10)
 );

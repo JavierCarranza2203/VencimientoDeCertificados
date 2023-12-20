@@ -24,7 +24,7 @@ class AutoUpdateService
     }
 
     //Metodo para agregar los clientes
-    public function AgregarClientes()
+    public function AgregarClientes($grupo)
     {
         //Obtiene una lista de todos los directorios que hay dentro de la ruta de certificados
         $Firmas = scandir($this->RutaDeLaFirma);
@@ -39,11 +39,11 @@ class AutoUpdateService
         //Verifica si hay diferencia en la cantidad de sellos y firmas para así realizar el modo de recorrido
         if(count($Firmas) >= count($Sellos))
         {
-            return $this->RecorrerCarpetas($Firmas, $Sellos, $this->RutaDeLaFirma, $this->RutaDelSello, 'A', true);
+            return $this->RecorrerCarpetas($Firmas, $Sellos, $this->RutaDeLaFirma, $this->RutaDelSello, $grupo, true);
         }
         else
         {
-            return $this->RecorrerCarpetas($Sellos, $Firmas, $this->RutaDelSello, $this->RutaDeLaFirma, 'A', false);
+            return $this->RecorrerCarpetas($Sellos, $Firmas, $this->RutaDelSello, $this->RutaDeLaFirma, $grupo, false);
         }
     }
 
@@ -52,6 +52,8 @@ class AutoUpdateService
     {
         $contadorExitos = 0;
         $contadorErrores = 0;
+        $contadorConfusiones = 0;
+        $banderaConfusion = false;
         $IndicesEliminadosPrincipal = [];
         $IndicesEliminadosSecundaria = [];
 
@@ -64,7 +66,6 @@ class AutoUpdateService
 
             //Corre el servicio del certificado para obtener los datos
             $datos1 = json_decode($this->CertificadoService->ObtenerDatosCertificado(file_get_contents($RutaPrincipal . $Principal[$i])));
-
             //Asigna los valores al cliente
             $Cliente->Nombre = $datos1->NombreCliente;
             $Cliente->RFC = $datos1->RfcCliente;
@@ -73,66 +74,83 @@ class AutoUpdateService
             //Ciclo para recorrer los sellos
             for($j = 2; $j < count($Secundaria) + 2; $j++)
             {
-                if(isset($IndicesEliminadosSecundaria[$j])){ $j++; }
-
+                if(array_search($j, $IndicesEliminadosSecundaria)){ $j++; }
+                
                 if($j < count($Secundaria) + 2)
                 {
                     //Corre el servicio para obtener la información del sello
                     $datos = json_decode($this->CertificadoService->ObtenerDatosCertificado(file_get_contents($RutaSecundaria . $Secundaria[$j])));
 
+                    if(!$datos->Status || !$datos1->Status){ throw new Exception("Uno de los certificados está vencido"); }
+
                     //Si la rfc del cliente es igual a la del sello, significa que se puede agregar
                     if($Cliente->RFC == $datos->RfcCliente)
                     {
                         //Agrega los datos al sello
-                        if($FirmaPrimero)
+                        if($FirmaPrimero && $datos1->Tipo == "Firma" && $datos->Tipo == "Sello")
                         {
                             $Cliente->Firma->FechaFin = $datos1->FechaDeVencimiento;
                             $Cliente->Firma->Status = $datos1->Status;
                             $Cliente->Sello->FechaFin = $datos->FechaDeVencimiento;
                             $Cliente->Sello->Status = $datos->Status;
                         }
-                        else
+                        else if(!$FirmaPrimero && $datos1->Tipo == "Sello" && $datos->Tipo == "Firma")
                         {
                             $Cliente->Sello->FechaFin = $datos1->FechaDeVencimiento;
                             $Cliente->Sello->Status = $datos1->Status;
                             $Cliente->Firma->FechaFin = $datos->FechaDeVencimiento;
                             $Cliente->Firma->Status = $datos->Status;
                         }
-
-                        try {
-                            //Corre el servicio del cliente para agregarlo
-                            $this->ClienteService->AgregarCliente($Cliente);
-
-                            $contadorExitos++;
-
-                            array_push($IndicesEliminadosPrincipal, $i);
-                            array_push($IndicesEliminadosSecundaria, $j);
+                        else{
+                            $banderaConfusion = true;
+                            $contadorConfusiones++;
                         }
-                        catch(Exception $e)
-                        {
-                            array_push($IndicesEliminadosPrincipal, $i);
-                            array_push($IndicesEliminadosSecundaria, $j);
+
+                        if(!$banderaConfusion){
+                            try {
+                                //Corre el servicio del cliente para agregarlo
+                                $this->ClienteService->AgregarCliente($Cliente);
+
+                                $contadorExitos++;
+
+                                array_push($IndicesEliminadosPrincipal, $i);
+                                array_push($IndicesEliminadosSecundaria, $j);
+                            }
+                            catch(Exception $e)
+                            {
+                                if($e->getMessage() == "El cliente ya existe") {
+
+                                    array_push($IndicesEliminadosPrincipal, $i);
+                                    array_push($IndicesEliminadosSecundaria, $j);
+                                }
+                                else{
+                                    echo $e->getMessage();
+                                }
+                            }
                         }
+
+                        $banderaConfusion = false;
                     }
                 }
             }
         }
 
-        $c1 = $this->EliminarElementos($IndicesEliminadosPrincipal, $Principal);
-        $c2 = $this->EliminarElementos($IndicesEliminadosSecundaria, $Secundaria);
+        $c1 = $this->EliminarElementos($IndicesEliminadosPrincipal, $Principal, $RutaPrincipal);
+        $c2 = $this->EliminarElementos($IndicesEliminadosSecundaria, $Secundaria, $RutaSecundaria);
 
         $contadorErrores = count($c1) + count($c2);
 
         $data = [
             "Agregados" => $contadorExitos,
             "Con Errores" => $contadorErrores,
+            "Confusiones" => $contadorConfusiones,
             "Mensaje" => "Se han agregado los clientes",
         ];
 
         return $data;
     }
 
-    private function EliminarElementos($ArrayIndices, $ArrayAEliminar)
+    private function EliminarElementos($ArrayIndices, $ArrayAEliminar, $Ruta)
     {
         $ArrayElementos = [];
         $TamanioArray = count($ArrayAEliminar);
@@ -141,6 +159,7 @@ class AutoUpdateService
         {
             if(in_array($i, $ArrayIndices)) 
             {
+                unlink($Ruta . $ArrayAEliminar[$i]);
                 unset($ArrayAEliminar[$i]);
             }
             else 

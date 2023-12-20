@@ -4,6 +4,10 @@ require_once "../Services/UsuarioService.php";
 
     try
     {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+
         //Obtiene la variable de operación enviada por el método GET
         $Operacion = $_GET['Operacion'];
         //Crea una instancia del servicio de usuarios

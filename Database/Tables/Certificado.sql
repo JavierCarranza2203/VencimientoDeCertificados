@@ -4,6 +4,6 @@ CREATE TABLE certificado(
     fecha_fin VARCHAR(30),
     estatus BOOLEAN,
     tipo VARCHAR(15),
-    id_cliente VARCHAR(15),
+    id_cliente VARCHAR(80),
     FOREIGN KEY (id_cliente) REFERENCES cliente(rfc) ON DELETE CASCADE
 );
