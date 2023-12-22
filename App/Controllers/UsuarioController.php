@@ -22,7 +22,7 @@ require_once "../Services/UsuarioService.php";
                 break;
             case 'userLogged':
                     //Manda a llamar el método para obtener los datos de un usuario loggeado
-                    echo json_encode($UsuarioService->ObtenerUsuarioLogeado(00175));
+                    echo json_encode($UsuarioService->ObtenerUsuarioLogeado());
                 break;
             case 'add':
                     //Crea una instancia del usuario
@@ -41,7 +41,7 @@ require_once "../Services/UsuarioService.php";
                 break;
             case 'view':
                     //Manda a llamar el método para obtener todos los usuarios
-                    echo json_encode($UsuarioService->ObtenerTodosLosUsuarios(00175));
+                    echo json_encode($UsuarioService->ObtenerTodosLosUsuarios());
                 break;
             case 'delete':
                     echo json_encode($UsuarioService->EliminarUsuario($_GET["nombreUsuario"], 00175));
@@ -51,8 +51,6 @@ require_once "../Services/UsuarioService.php";
 
                     // Convierte el contenido del cuerpo de la solicitud (request body) en un objeto PHP
                     $requestObj = json_decode($data);
-
-                    print_r($requestObj);
 
                     echo json_encode($UsuarioService->ActualizarUsuario($requestObj->id, 
                                                                         $requestObj->nombre, 

@@ -37,7 +37,7 @@ export async function PermitirAcceso()
 
 //Este método se usa para construir un nuevo objeto cliente y posteriormente insertar a la db
 export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, txtFechaFinEnFirma, statusFirma, txtFechaFinEnSello, statusSello, bandera, grupo){
-    try{
+    try {
         //La bandera es utilizada para saber si el usuario no es admin o dev,
         //En caso de ser cualquiera de los dos, pide el grupo al que pertenece el nuevo cliente
         if(bandera == true)

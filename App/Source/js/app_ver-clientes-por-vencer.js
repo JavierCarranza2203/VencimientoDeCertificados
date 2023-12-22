@@ -63,7 +63,7 @@ document.addEventListener('click', async function(event) {
 
 function InicializarTabla(rol, grupoClientes = null)
 {
-    url = 'http://localhost:8082/clientes_por_vencer';
+    url = 'http://192.168.1.144:8082/clientes_por_vencer';
 
     if(rol != "admin" && rol != "dev")
     {

@@ -242,7 +242,7 @@ export function ActualizarTablaUsuarios(table){
             }
         }],
         server: {
-            url: 'http://localhost/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
+            url: 'http://192.168.1.144/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
             then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
         }
     }).forceRender();
@@ -418,14 +418,16 @@ export async function RunAutoUpdateService()
 {
     let message;
     await Swal.fire({
-        title: "Ingrese el grupo de clientes al que pertenece",
-        input: "text",
+        title: "Mensaje de AUS",
+        html:
+            '<label for="txtGrupo" class="form__label">Ingrese el grupo de clientes para agregar:</label><br>' +
+            `<input id="txtGrupo" class="double-form-container__form-input" placeholder="Ejemplo: A, B o C" readonly>`,
         showCancelButton: true,
         confirmButtonText: "Aceptar",
         showLoaderOnConfirm: true,
-        preConfirm: async (group)=>
+        preConfirm: async ()=>
         {
-            let grupo = group.toUpperCase();
+            let grupo = Swal.getPopup().querySelector('#txtGrupo').value.toUpperCase();
             
             let response = await fetch("../Controllers/AutoUpdateController.php?status=run&&grupo=" + grupo);
 

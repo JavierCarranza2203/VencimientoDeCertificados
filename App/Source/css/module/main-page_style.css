@@ -10,6 +10,8 @@
 /* Importacion de los estilos para las tarjetas */
 @import url("components/card_style.css");
 
+@import url("components/double-form_style.css");
+
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{
     width: 50px;

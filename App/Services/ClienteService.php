@@ -26,10 +26,12 @@ class ClienteService extends Connection
             {
                 if(!$this->AgregarCertificado($c->Firma->FechaFin, $c->Firma->Status, $c->RFC, "Firma"))
                 {
+                    $this->EliminarCliente($c->RFC, $this->codigoDeAccesso);
                     throw new Exception("Hubo un error al agregar la firma");
                 }
                 else if(!$this->AgregarCertificado($c->Sello->FechaFin, $c->Sello->Status, $c->RFC, "Sello"))
                 {
+                    $this->EliminarCliente($c->RFC, $this->codigoDeAccesso);
                     throw new Exception("Hubo un error al agregar el sello");
                 }
                 else
@@ -51,14 +53,7 @@ class ClienteService extends Connection
 
         $stmt->bind_param("ssss", $fechaVencimiento, $status, $tipo, $rfcCliente);
 
-        if($stmt->execute())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $stmt->execute();
     }
 
     //Método privado para buscar un cliente
@@ -106,7 +101,7 @@ class ClienteService extends Connection
         }
     }
 
-    //Este método sirve para buscar los clientes por grupoo
+    //Este método sirve para buscar los clientes por grupoo 
     public function ObtenerTodosLosClientes(string $grupoClientes)
     {
         $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados WHERE grupo_clientes = ?");

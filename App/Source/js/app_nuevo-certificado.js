@@ -1,6 +1,5 @@
 import { ObtenerDatosDelCertificado } from "./Metodos/Peticiones.js";
 import { PermitirAcceso, RecibirDatosDelNuevoCliente } from "./Metodos/MetodosSinPeticion.js";
-import { Cliente } from "./Clases/Cliente.js";
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */

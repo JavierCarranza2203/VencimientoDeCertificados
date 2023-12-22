@@ -16,7 +16,7 @@ class Usuario
         $this->Rol = "Desconocido";
     }
 
-    public function CompararPassword(string $pw)
+    public function CompararPassword(string $pw) : bool
     {
         return $this->Password === $pw;
     }

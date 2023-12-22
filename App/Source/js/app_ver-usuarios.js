@@ -78,7 +78,7 @@ function InicializarTabla(){
             }
         }],
         server: {
-            url: 'http://localhost/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
+            url: 'http://192.168.1.144/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
             then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
         },
         pagination: {

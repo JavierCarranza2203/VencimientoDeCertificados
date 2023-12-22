@@ -23,7 +23,7 @@ class CertificadoService
             'FechaDeVencimiento' => (date('d-m-Y', $cert_info['validTo_time_t'])),
             'RfcCliente' => $cert_info['subject']['x500UniqueIdentifier'],
             'Status' => (strtotime(date('d-m-Y', $cert_info['validTo_time_t']))) > time(),
-            'Tipo' => $this->ValidarCertificado($cert_info)? "Firma" : "Sello"
+            'Tipo' => $this->ValidarCertificado($cert_info)
         ];
 
         //Regresa el JSON
@@ -32,34 +32,20 @@ class CertificadoService
         return $jsonDatos;
     }
 
-    public static function GuardarArchivo($grupoCliente, $tipo, $archivo, $urlTemp) : string
+    private function ValidarCertificado($certificado) : string
     {
-        $ruta = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Pruebas\\Certificados\\" + 
-                            strtoupper($tipo) + "\\Clientes" + strtoupper($grupoCliente);
-
-        $url_target = str_replace('\\', '/', $ruta) . '/' . $archivo;
-
-        if (move_uploaded_file($urlTemp, $url_target)) {
-            return "El archivo " . htmlspecialchars(basename($archivo)) . " ha sido cargado con éxito.";
-        } 
-        else {
-            throw new Exception("Hubo un error al subir el archivo");
-        }
-    }
-
-    private function ValidarCertificado($certificado) : bool
-    {
-        if($this->isFIEL($certificado)) { return true; }
-        else if($this->isCSD($certificado)) { return false; }
+        if($this->isFIEL($certificado)) { return "Firma"; }
+        else if($this->isCSD($certificado)) { return "Sello"; }
         else { throw new Exception("El certificado no pertenece a un sello o una firma"); }
     }
 
-    private function isCSD($cert) {
+    private function isCSD($cert) : bool
+    {
         return $cert['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation';
     }
 
-    private function isFIEL($cert) {
-        // return $cert['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation, Data Encipherment, Key Agreement [nsCertType], S/MIME [extendedKeyUsage], TLS Web Client Authentication';
+    private function isFIEL($cert) : bool
+    {
         return $cert['extensions']['keyUsage'] == 'Digital Signature, Non Repudiation, Data Encipherment, Key Agreement';
     }
 }

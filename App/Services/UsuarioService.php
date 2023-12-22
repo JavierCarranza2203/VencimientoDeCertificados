@@ -49,7 +49,7 @@ class UsuarioService extends Connection
     }
 
     //Método para obtener el usuario actual en sesión
-    public function ObtenerUsuarioLogeado(int $codigoDeAccesso) : Usuario
+    public function ObtenerUsuarioLogeado() : Usuario
     {
         session_start();
         if(isset($_SESSION['nombre_usuario']) && $_SESSION['nombre_usuario'] != null)
@@ -154,7 +154,7 @@ class UsuarioService extends Connection
     }
 
     //Método para obtener todos los usuarios
-    public function ObtenerTodosLosUsuarios(int $codigoDeAccesso)
+    public function ObtenerTodosLosUsuarios()
     {
         $stmt = $this->db_conection->prepare("SELECT id, nombre_completo, nombre_usuario, grupo_clientes, rol FROM usuario");
 
