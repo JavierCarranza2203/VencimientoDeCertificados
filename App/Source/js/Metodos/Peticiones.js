@@ -421,13 +421,15 @@ export async function RunAutoUpdateService()
         title: "Mensaje de AUS",
         html:
             '<label for="txtGrupo" class="form__label">Ingrese el grupo de clientes para agregar:</label><br>' +
-            `<input id="txtGrupo" class="double-form-container__form-input" placeholder="Ejemplo: A, B o C" readonly>`,
+            `<input id="txtGrupo" class="double-form-container__form-input" placeholder="Ejemplo: A, B o C">`,
         showCancelButton: true,
         confirmButtonText: "Aceptar",
         showLoaderOnConfirm: true,
         preConfirm: async ()=>
         {
             let grupo = Swal.getPopup().querySelector('#txtGrupo').value.toUpperCase();
+
+            if(grupo != 'A' && grupo != 'B' && grupo != 'C'){ throw new Error("El grupo no es válido."); }
             
             let response = await fetch("../Controllers/AutoUpdateController.php?status=run&&grupo=" + grupo);
 

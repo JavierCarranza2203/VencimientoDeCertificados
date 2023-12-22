@@ -8,7 +8,7 @@ const ArrayInputs = [txtNombreCompleto, txtNombreUsuario, txtContrasenia];
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
-/**********************************************************/
+/**********************************************************/   
 
 window.addEventListener("load", ()=>{
     const acceso = window.location.search;

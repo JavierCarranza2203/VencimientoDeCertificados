@@ -14,7 +14,7 @@ class Connection
         $this->db_conection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
         //Genera un error si algo salió mal
-        if ($this->db_conection->connect_error) 
+        if ($this->db_conection->connect_error)
         {
             throw new Exception("Hubo un error al conectar al servidor: " . $this->db_conection->connect_error);
         }

@@ -16,3 +16,7 @@
 .logo-container__img{
     width: 50px;
 }
+
+.double-form-container__form-input{
+    outline: none;
+}

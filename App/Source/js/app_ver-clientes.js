@@ -1,6 +1,5 @@
 import { PermitirAcceso, MostrarVigencia } from "./Metodos/MetodosSinPeticion.js";
 import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
-// import { EliminarCliente } from "./Metodos/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -87,7 +86,8 @@ function InicializarTabla(rol, grupoClientes = null)
         }],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[6], MostrarVigencia(cliente[5]), cliente[4], MostrarVigencia(cliente[3])])
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[6], 
+                MostrarVigencia(cliente[5]), cliente[4], MostrarVigencia(cliente[3])])
         },
         pagination: {
             limit: 10
