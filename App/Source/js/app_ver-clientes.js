@@ -62,7 +62,7 @@ document.addEventListener('click', async function(event) {
 
 function InicializarTabla(rol, grupoClientes = null)
 {
-    url = 'http://192.168.1.144/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
+    url = 'https://asesoriasrg.com/VencimientoDeCertificados/App/Controllers/ClienteController.php?Operacion=';
 
     if(rol == "admin" || rol == "dev")
     {
