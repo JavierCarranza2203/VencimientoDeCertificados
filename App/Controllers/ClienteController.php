@@ -12,7 +12,7 @@ require_once "../Models/Cliente.php";
         $ClienteService = new ClienteService();
         $Operacion = $_GET['Operacion'];
 
-        //Este switch sirve de router para correr el método del servicio que se
+        //Este switch sirve de router para correr el método del servicio que se requiere
         switch($Operacion)
         {
             case 'view':

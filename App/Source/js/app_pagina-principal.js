@@ -85,6 +85,14 @@ document.getElementById("btnAllCustomers").addEventListener("click", ()=>{
     location.href = "ver-clientes.html";
 });
 
+document.getElementById("btnDocumentControl").addEventListener("click", ()=> {
+    location.href = "control-de-certificados.html";
+});
+
+document.getElementById("btnRelacionDeGastosEIngresos").addEventListener("click", ()=> {
+    location.href = "generar-relacion.html";
+});
+
 /*************************************************************/
 /*             Eventos de los controles del html             */
 /*************************************************************/

@@ -17,7 +17,7 @@
 /* Las adaptamos al modo oscuro */
 @media (prefers-color-scheme: dark) {
     :root {
-        --negro: #ececec;
+        --negro: #944848;
     }
 }
 /* Opcional */
@@ -92,11 +92,11 @@ blockquote:before, blockquote:after, q:before, q:after {
 /* Configuramos el texto que seleccionamos */
 ::-moz-selection {
     background-color: var(--negro);
-    color: var(--blanco);
+    color: #fff;
 }
 ::selection {
     background-color: var(--negro);
-    color: var(--blanco);
+    color: #fff;
 }
 
 /* Nivelamos problemas de tipografías y colocación de formularios */

@@ -242,7 +242,7 @@ export function ActualizarTablaUsuarios(table){
             }
         }],
         server: {
-            url: 'http://192.168.1.144/VencimientoDeCertificados/App/Controllers/UsuarioController.php?Operacion=view',
+            url: '../Controllers/UsuarioController.php?Operacion=view',
             then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
         }
     }).forceRender();
@@ -338,7 +338,6 @@ export async function EditarCliente(rfc, grupo, tabla, url){
                 '<option value="A">Clientes A</option>' +
                 '<option value="B">Clientes B</option>' +
                 '<option value="C">Clientes C</option>' +
-                '<option value="S">Puede ver todos</option>' +
             '</select><br>',
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
@@ -471,4 +470,35 @@ export async function RunAutoUpdateService()
 
 /**********************************************************/
 /*                Auto Update Service Request             */
+/**********************************************************/
+
+/**********************************************************/
+/*       Método para generar relaciones de excel          */
+/**********************************************************/
+
+export async function GenerarRelacionDeGastos(archivo){
+    //Genera una instancia de la clase FormData
+    const formData = new FormData();
+
+    //Agrega el campo "Certificado" al formdata y asigna el valor
+    formData.append("ReporteDeGastos", archivo);
+
+    //Realiza la petición al controlador del certificado
+    const response = await fetch("http://localhost:8082/generar_relacion_de_gastos", {
+        method: "POST",
+        body: formData,
+    });
+
+    //Si la petición responde con estado 200, regresa los datos del certificado
+    if(response.ok)
+    {
+        return await response.json();
+    }
+    else {
+        throw new Error(await response.json());
+    }
+}
+
+/**********************************************************/
+/*       Método para generar relaciones de excel          */
 /**********************************************************/

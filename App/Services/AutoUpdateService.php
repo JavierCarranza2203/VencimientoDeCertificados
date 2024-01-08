@@ -7,7 +7,7 @@ require_once "../Models/Cliente.php";
 class AutoUpdateService
 {
     //Rutas e instancias necesarias para correr el servicio
-    private string $FolderRoute = "C:\\xampp\\htdocs\\VencimientoDeCertificados\\Test\\";
+    private string $FolderRoute = "C:\\xampp\\htdocs\\Test\\";
     private string $RutaDelSello;
     private string $RutaDeLaFirma;
     private CertificadoService $CertificadoService;

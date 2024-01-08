@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RG | Mis Clientes</title>
+
+    <!--======== Título ========-->
+    <title>RG | Agregar nuevo cliente</title>
 
     <!--======== Icono principal ========-->
     <link rel="icon" href="../Utilities/LOGO RG.jpg" type="image/x-icon">
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/module/all-users_style.css">
+    <link rel="stylesheet" href="../Source/css/module/generate-report_style.css">
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
+
 
     <!--======== Archivos js ========-->
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Bloqueador de contenido en caso de que no se haya iniciado sesión -->
-    <div id="blocker" class="content-blocker"></div>
-
-    <!-- Header -->
     <header class="header">
         <div class="logo-container">
             <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
@@ -30,9 +29,7 @@
             </div>
         </div>
 
-        <h2 class="header__title">Certificados por vencer</h2>
-        
-        <button type="button" id="btnGenerarExcel" class="header__navbar-item"><i class="fa-regular fa-file-excel"></i> Generar excel</button>
+        <h2 class="header__title">Relación de gastos</h2>
 
         <nav class="header__navbar">
             <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
@@ -40,19 +37,21 @@
         </nav>
     </header>
 
-    <!-- div que solo sirve para que se acomode en el grid -->
-    <div></div>
+    <form method="POST" id="frmGenerarRelacionDeGastos" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
+        <h3 class="double-form-container__form-title">Ingrese el archivo de Excel</h3>
+        <div></div>
+        <input type="file" name="archivoGastos" id="archivoGastos" class="double-form-container__form-input">
 
-    <!-- Contenedor de la tabla -->
-    <main class="table-client-container">
-        <div id="wrapper"></div>
-    </main>
+        <button type="submit" class="double-form-container__form-button">Ver datos</button>
+    </form>
+
+    <div class="table" id="table"></div>
 
     <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="../Source/js/app_generar-relacion.js"></script>
     <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-    <script type="module" src="../Source/js/app_ver-clientes-por-vencer.js"></script>
-    <script type="module" src="../Source/js/btnLogout.js"></script>
-    <script type="module" src="../Source/js/btnGenerarExcel.js"></script>
+    <!-- <script type="module" src="../Source/js/app_nuevo-usuario.js"></script> -->
+    <!-- <script type="module" src="../Source/js/btnLogout.js"></script> -->
 </body>
 </html>

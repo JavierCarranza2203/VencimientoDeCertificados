@@ -75,7 +75,7 @@ function InicializarTabla(rol, grupoClientes = null)
 
     table = new gridjs.Grid({
         search: true,
-        columns: ["RFC", "Nombre", "Grupo", "Clave CIEC", "Régimen fiscal", "Status del sello", "Status de la firma", {
+        columns: ["Nombre del cliente", "Grupo", "Vigencia del sello", "Vigencia de la firma", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
@@ -86,8 +86,7 @@ function InicializarTabla(rol, grupoClientes = null)
         }],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], 
-                cliente[8], MostrarVigencia(cliente[6]), MostrarVigencia(cliente[4])])
+            then: data => data.map(cliente => [cliente[1], cliente[2], cliente[7], cliente[5]])
         },
         pagination: {
             limit: 10

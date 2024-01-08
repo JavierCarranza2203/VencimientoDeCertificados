@@ -6,3 +6,5 @@ Server/node_modules
 Server/package-lock.json
 Server/package.json
 Database/note.txt
+Database/Constancias
+uploads/

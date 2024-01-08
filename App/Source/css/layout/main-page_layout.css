@@ -1,9 +1,7 @@
 body
 {
     display: grid;
+    grid-template-rows: 70px repeat(3, 350px);
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 70px repeat(2, 1fr);
-    grid-template-areas: "header header header"
-                        ". . ."
-                        ". . .";
+    grid-template-areas: "header header header";
 }

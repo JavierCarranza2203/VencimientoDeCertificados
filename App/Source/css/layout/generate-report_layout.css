@@ -1,0 +1,27 @@
+body{
+    display: grid;
+    grid-template-rows: 70px 120px 1fr;
+    grid-template-areas: "header"
+                        "form1"
+                        "table";
+}
+
+.table{
+    grid-area: table;
+    padding-right: 20px;
+    margin-top: 20px;
+    padding-left: 20px;
+    font-size: 0.85em;
+    max-width: calc(100vw - 20px) !important;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    max-height: calc(100vh - 190px);
+}
+
+.table th{
+    min-width: max-content !important;
+}
+
+.table tr td{
+    vertical-align: middle;
+}

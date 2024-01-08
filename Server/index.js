@@ -2,8 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const mysql2 = require('mysql2');
 const ExcelJs = require('exceljs');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const excelActions = require('./MetodosExcel.js');
 const serverActions = require('./MetodosServer.js');
+const clase = require('./Factura.js');
 
 const app = new express();
 
@@ -129,6 +132,138 @@ app.get("/test", (req, res)=>{
     }
 });
 
+app.post("/leer_archivo_excel", upload.single("ReporteDeGastos"), async (req, res) => {
+    const filePath = req.file.path;
+
+    // const Relacion = new clase.Relacion(data);
+
+        // const sheetResumen = workbook.addWorksheet("RESUMEN");
+
+        // excelActions.AsignarAnchoACeldas(sheetResumen);
+        // let fechaActual = new Date().getFullYear();
+
+        // sheetResumen.mergeCells('A1:N1');
+        // sheetResumen.mergeCells('A2:N2');
+        // sheetResumen.getCell('A2').value = "GASTOS MES DE " + fechaActual;
+        // sheetResumen.getCell('A2').font = { bold:true };
+        // sheetResumen.addRow();
+
+        // sheetResumen.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+
+        // sheetResumen.getRow(4).eachCell(cell => {
+        //     cell.font = { bold: true };
+        // });
+
+        // Relacion.Datos.forEach(row => {
+        //     sheetResumen.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
+        //         row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
+        // });
+
+        // const sheetGastos = workbook.addWorksheet("GASTOS");
+
+        // excelActions.AsignarAnchoACeldas(sheetGastos);
+
+        // sheetGastos.mergeCells('A1:N1');
+        // sheetGastos.mergeCells('A2:N2');
+        // sheetGastos.getCell('A2').value = "GASTOS MES DE " + fechaActual;
+        // sheetGastos.getCell('A2').font = { bold:true };
+        // sheetGastos.addRow();
+
+        // sheetGastos.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+
+        // sheetGastos.getRow(4).eachCell(cell => {
+        //     cell.font = { bold: true };
+        // });
+
+        // Relacion.Datos.forEach(row => {
+        //     sheetGastos.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
+        //         row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
+        // });
+
+        // sheetGastos.addRow(['', '', '', '', '', '', 'Total de gastos:', Relacion.CalcularSubTotal(), 
+        //     Relacion.CalcularSumaRetencionIsr(), Relacion.CalcularSumaRetIva(), Relacion.CalcularSumaIeps(),
+        //     Relacion.CalcularSumaIva8(), Relacion.CalcularSumaIva16(), Relacion.CalcularSumaTotal()]);
+
+
+        // workbook.xlsx.writeBuffer().then(excelBuffer => {
+        //     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        //     res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+        //     res.send(excelBuffer);
+        // });
+
+        // console.log(Relacion.CalcularSubTotal());
+        // console.log(Relacion.CalcularSumaTotal());
+});
+
+app.post('/generar_relacion_de_gastos', upload.single("ReporteDeGastos"), async (req, res) => {
+    const filePath = req.file.path;
+
+    try {
+        const workbook = new ExcelJs.Workbook();
+        await workbook.xlsx.readFile(filePath);
+
+        const sheet = workbook.worksheets[0];
+
+        const rowCount = sheet.rowCount;
+
+        let data = [];
+
+        for (let i = 2; i <= rowCount; i++) {
+            const row = sheet.getRow(i);
+            let rowData = {};
+
+            rowData.Numero = i - 2;
+            rowData.Tipo = row.getCell('D').value;
+            rowData.Fecha = row.getCell('E').value;
+            rowData.Fecha = row.getCell('E').value;
+            rowData.Serie = row.getCell('I').value;
+            rowData.Folio = row.getCell('J').value;
+            rowData.RfcEmisor = row.getCell('M').value;
+            rowData.NombreEmisor = row.getCell('N').value;
+            rowData.Descuento = row.getCell('V').value;
+            rowData.SubTotal = excelActions.CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
+            rowData.RetIsr = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
+            rowData.RetIva = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
+            rowData.Ieps = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
+            rowData.Iva8 = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
+            rowData.Iva16 = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
+            rowData.Total = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
+            rowData.Concepto = row.getCell('AO').value;
+
+            if(rowData.NombreEmisor != null)
+            {
+                data.push(rowData);
+                
+            }
+        }
+
+        data.sort(function(a, b) {
+            if (a.NombreEmisor < b.NombreEmisor) {
+                return -1;
+            }
+            if (a.NombreEmisor > b.NombreEmisor) {
+                return 1;
+            }
+            return 0;
+        });
+
+
+        res.json(data);
+
+    } catch (error) {
+        res.status(500).json({
+        success: false,
+        message: 'Error al leer el archivo de Excel',
+        error: error.message,
+        });
+    }
+});
+
 app.listen(serverPort, (req, res)=> {
     console.log("Servidor corriendo en el puerto: " + serverPort);
 });
+
+process.on('unhandledRejection', (error, promise) => {
+    console.log(' Oh Lord! We forgot to handle a promise rejection here: ', promise);
+    console.log(' The error was: ', error );
+})

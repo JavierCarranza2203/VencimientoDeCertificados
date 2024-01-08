@@ -1,0 +1,38 @@
+@import url("../base/reset-syle.css");
+
+@import url("../layout/generate-report_layout.css");
+
+/* Importacion de los estilos del header */
+@import url("components/header_style.css");
+
+/* Importacion de los estilos del form */
+@import url("components/double-form_style.css");
+
+/* Importacion de los estilos de la nota */
+@import url("components/note_style.css");
+
+/* Modificacion del tamaño de la imagen del logo */
+.logo-container__img{
+    width: 50px;
+}
+
+.double-form-container__form{
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 1fr 1fr;
+    max-width: 100vw;
+    width: 450px;
+    margin: 20px 20px;
+    height: 100px;
+}
+
+.double-form-container__form-title{
+    margin-bottom: 0;
+}
+
+.acciones{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    gap: 0px;
+}
