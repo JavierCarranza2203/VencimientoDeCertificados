@@ -126,3 +126,12 @@ export function MostrarVigencia(bitBooleano)
         return "Vencido";
     }
 }
+
+export function FormatearCadena(cadena) {
+    return cadena.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        thousand: '.', 
+        decimal: ','
+    });
+}

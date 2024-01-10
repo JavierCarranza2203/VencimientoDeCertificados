@@ -36,3 +36,22 @@
     align-content: center;
     gap: 0px;
 }
+
+.row--elimated{
+    font-weight: bold;
+}
+
+.buttons-container{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btn{
+    padding: 2px 10px;
+    border-radius: 5px;
+    border: 1px solid #999;
+}
+
+.btn:hover{
+    background-color: #adadad;
+}

@@ -2,6 +2,7 @@ export class Relacion
 {
     constructor(data){
         this.Datos = data;
+        this.Respaldo = [...data];
     }
 
     CalcularSubTotal() {
@@ -72,5 +73,27 @@ export class Relacion
         });
 
         return suma;
+    }
+
+    RestarCantidad(numero){
+        let indiceAEliminar = -1;
+    
+        this.Datos.forEach((dato, index) => {
+            if(dato.Numero == numero){
+                indiceAEliminar = index;
+            }
+        });
+
+        if(indiceAEliminar != -1){
+            this.Datos.splice(indiceAEliminar, 1);
+        }
+    }
+
+    RestaurarCantidad(numero){
+        this.Respaldo.forEach((dato) => {
+            if(dato.Numero == numero){
+                this.Datos.push(dato);
+            }
+        });
     }
 }

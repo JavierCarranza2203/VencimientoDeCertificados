@@ -14,8 +14,6 @@ class CertificadoService
             throw new Exception("No se ha podido leer el certificado");
         }
 
-        // print_r($cert_info);
-
         //Pone los datos del certificado en un array asociativo
         $datosCertificado = [
             'NombreCliente' => $cert_info['subject']['CN'],

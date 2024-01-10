@@ -45,10 +45,8 @@ function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
                 status_firma: row["status_firma"]? "Vigente" : "Vencida",
                 fecha_vencimiento_firma: row["fecha_vencimiento_firma"],
                 status_sello: row["status_firma"]? "Vigente" : "Vencido",
-                fecha_vencimiento_sello: row["fecha_vencimiento_firma"]
+                fecha_vencimiento_sello: row["fecha_vencimiento_sello"]
             };
-
-            console.log(newRow);
 
             let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
             let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
@@ -62,8 +60,6 @@ function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
             {
                 newRow["status_sello"] = "Por vencer";
             }
-
-            console.log(newRow);
 
             sheet.addRow([newRow['rfc'], newRow['nombre'], newRow['grupo_clientes'], newRow['status_firma'],
                 newRow['fecha_vencimiento_firma'], newRow['status_sello'], newRow['fecha_vencimiento_sello']]);
@@ -81,20 +77,6 @@ function DarEstilosARenglones(sheet, data) {
         } else {
             sheet.getRow(i).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E0E0E0' } }; // color oscuro
         }
-    }
-}
-
-function FormatearCadena(cadena) {
-    if(cadena != 0 || cadena != '0') {
-        return cadena.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-            thousand: '.', 
-            decimal: ','
-        });
-    }
-    else {
-        throw new Error("Debe tener un valor");
     }
 }
 
@@ -139,10 +121,19 @@ function CalcularValorParaMostrar(tipo, valor){
     }
 }
 
+function FormatearCadena(cadena) {
+    return cadena.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        thousand: '.', 
+        decimal: ','
+    });
+}
+
 module.exports.AgregarEncabezados = AgregarEncabezados;
 module.exports.AgregarRenglones = AgregarRenglones;
 module.exports.AgregarRenglonesPorGrupoDeClientes = AgregarRenglonesPorGrupoDeClientes;
-module.exports.FormatearCadena = FormatearCadena;
 module.exports.AsignarAnchoACeldas = AsignarAnchoACeldas;
 module.exports.CalcularSubTotal = CalcularSubTotal;
 module.exports.CalcularValorParaMostrar = CalcularValorParaMostrar;
+module.exports.FormatearCadena = FormatearCadena;

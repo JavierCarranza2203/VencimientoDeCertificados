@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--======== Título ========-->
-    <title>RG | Agregar nuevo cliente</title>
+    <title>RG | Generar relación de gastos</title>
 
     <!--======== Icono principal ========-->
     <link rel="icon" href="../Utilities/LOGO RG.jpg" type="image/x-icon">
@@ -44,6 +44,20 @@
 
         <button type="submit" class="double-form-container__form-button">Ver datos</button>
     </form>
+
+    <section class="info-container">
+        <div id="lblSubTotal">Sub Total: $0.00</div>
+        <div id="lblIva8">IVA 8%: $0.00</div>
+        <div id="lblRetIva">Ret. IVA: $0.00</div>
+        <div id="lblIeps">IEPS: $0.00</div>
+        <div id="lblTotal">Total: $0.00</div>
+        <div id="lblIva16">IVA: 16%: $0.00</div>
+        <div id="lblRetIsr">Ret. ISR: $0.00</div>
+        <div class="buttons-container">
+            <button type="button" class="btn" id="btnGenerarExcel"><i class="fa-regular fa-file-excel"></i></button>
+            <button type="button" class="btn" id="btnAgregarGasto"><i class="fa-solid fa-cart-plus"></i></button>
+        </div>
+    </section>
 
     <div class="table" id="table"></div>
 

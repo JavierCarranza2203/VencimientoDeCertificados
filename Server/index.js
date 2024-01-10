@@ -10,6 +10,8 @@ const clase = require('./Factura.js');
 
 const app = new express();
 
+app.use(express.json());
+
 //Variable para el puerto en el que se abre el servidor
 const serverPort = 8082;
 
@@ -132,70 +134,68 @@ app.get("/test", (req, res)=>{
     }
 });
 
-app.post("/leer_archivo_excel", upload.single("ReporteDeGastos"), async (req, res) => {
-    const filePath = req.file.path;
+app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
+    const data = req.body
 
-    // const Relacion = new clase.Relacion(data);
+    const workbook = new ExcelJs.Workbook();
+    const Relacion = new clase.Relacion(data);
 
-        // const sheetResumen = workbook.addWorksheet("RESUMEN");
+    const sheetResumen = workbook.addWorksheet("RESUMEN");
 
-        // excelActions.AsignarAnchoACeldas(sheetResumen);
-        // let fechaActual = new Date().getFullYear();
+    excelActions.AsignarAnchoACeldas(sheetResumen);
+    let fechaActual = new Date().getFullYear();
 
-        // sheetResumen.mergeCells('A1:N1');
-        // sheetResumen.mergeCells('A2:N2');
-        // sheetResumen.getCell('A2').value = "GASTOS MES DE " + fechaActual;
-        // sheetResumen.getCell('A2').font = { bold:true };
-        // sheetResumen.addRow();
+    sheetResumen.mergeCells('A1:N1');
+    sheetResumen.mergeCells('A2:N2');
+    sheetResumen.getCell('A2').value = "GASTOS MES DE " + fechaActual;
+    sheetResumen.getCell('A2').font = { bold:true };
+    sheetResumen.addRow();
 
-        // sheetResumen.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+    sheetResumen.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
 
-        // sheetResumen.getRow(4).eachCell(cell => {
-        //     cell.font = { bold: true };
-        // });
+    sheetResumen.getRow(4).eachCell(cell => {
+        cell.font = { bold: true };
+    });
 
-        // Relacion.Datos.forEach(row => {
-        //     sheetResumen.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
-        //         row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
-        // });
+    Relacion.Datos.forEach(row => {
+        sheetResumen.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
+            row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
+    });
 
-        // const sheetGastos = workbook.addWorksheet("GASTOS");
+    const sheetGastos = workbook.addWorksheet("GASTOS");
 
-        // excelActions.AsignarAnchoACeldas(sheetGastos);
+    excelActions.AsignarAnchoACeldas(sheetGastos);
 
-        // sheetGastos.mergeCells('A1:N1');
-        // sheetGastos.mergeCells('A2:N2');
-        // sheetGastos.getCell('A2').value = "GASTOS MES DE " + fechaActual;
-        // sheetGastos.getCell('A2').font = { bold:true };
-        // sheetGastos.addRow();
+    sheetGastos.mergeCells('A1:N1');
+    sheetGastos.mergeCells('A2:N2');
+    sheetGastos.getCell('A2').value = "GASTOS MES DE " + fechaActual;
+    sheetGastos.getCell('A2').font = { bold:true };
+    sheetGastos.addRow();
 
-        // sheetGastos.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+    sheetGastos.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
 
-        // sheetGastos.getRow(4).eachCell(cell => {
-        //     cell.font = { bold: true };
-        // });
+    sheetGastos.getRow(4).eachCell(cell => {
+        cell.font = { bold: true };
+    });
 
-        // Relacion.Datos.forEach(row => {
-        //     sheetGastos.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
-        //         row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
-        // });
+    Relacion.Datos.forEach(row => {
+        sheetGastos.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
+            row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
+    });
 
-        // sheetGastos.addRow(['', '', '', '', '', '', 'Total de gastos:', Relacion.CalcularSubTotal(), 
-        //     Relacion.CalcularSumaRetencionIsr(), Relacion.CalcularSumaRetIva(), Relacion.CalcularSumaIeps(),
-        //     Relacion.CalcularSumaIva8(), Relacion.CalcularSumaIva16(), Relacion.CalcularSumaTotal()]);
+    sheetGastos.addRow(['', '', '', '', '', '', 'Total de gastos:', Relacion.CalcularSubTotal(), 
+        Relacion.CalcularSumaRetencionIsr(), Relacion.CalcularSumaRetIva(), Relacion.CalcularSumaIeps(),
+        Relacion.CalcularSumaIva8(), Relacion.CalcularSumaIva16(), Relacion.CalcularSumaTotal()]);
 
 
-        // workbook.xlsx.writeBuffer().then(excelBuffer => {
-        //     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        //     res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
-        //     res.send(excelBuffer);
-        // });
-
-        // console.log(Relacion.CalcularSubTotal());
-        // console.log(Relacion.CalcularSumaTotal());
+    workbook.xlsx.writeBuffer().then(excelBuffer => {
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+        res.send(excelBuffer);
+    });
 });
 
-app.post('/generar_relacion_de_gastos', upload.single("ReporteDeGastos"), async (req, res) => {
+app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, res) => {
     const filePath = req.file.path;
 
     try {
