@@ -3,6 +3,7 @@ export class Relacion
     constructor(data){
         this.Datos = data;
         this.Respaldo = [...data];
+        this.DatosEliminados = [];
     }
 
     CalcularSubTotal() {

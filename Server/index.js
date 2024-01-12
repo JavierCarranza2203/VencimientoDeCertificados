@@ -9,6 +9,7 @@ const serverActions = require('./MetodosServer.js');
 const clase = require('./Factura.js');
 
 const app = new express();
+let LibroDeGastos;
 
 app.use(express.json());
 
@@ -17,6 +18,10 @@ const serverPort = 8082;
 
 //Para permitir el acceso desde cualquier server
 app.use(cors());
+app.use((req, res, next)=>{
+    req.workbook = LibroDeGastos;
+    next();
+});
 
 //Crea la conexión para ingresar a la base de datos
 const connection = mysql2.createConnection({
@@ -55,7 +60,7 @@ app.get('/clientes_por_vencer', (req, res) => {
     }
 });
 
-//Metodo get para obtener el archivo
+//Metodo get para obtener el archivo con la listo de los clientes
 app.get('/clientes_por_vencer/excel', (req, res) => {
     try {
         //Consulta para mandar como query de SQL
@@ -116,7 +121,7 @@ app.get('/clientes_por_vencer/excel', (req, res) => {
     }
 });
 
-//Metodo get para probar la petición
+//Metodo get para probar la conexión del server
 app.get("/test", (req, res)=>{
     try {
         let mensaje = {
@@ -137,61 +142,24 @@ app.get("/test", (req, res)=>{
 app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
     const data = req.body
 
-    const workbook = new ExcelJs.Workbook();
-    const Relacion = new clase.Relacion(data);
+    const workbook = req.workbook;
 
     const sheetResumen = workbook.addWorksheet("RESUMEN");
 
-    excelActions.AsignarAnchoACeldas(sheetResumen);
-    let fechaActual = new Date().getFullYear();
+    excelActions.LlenarHojaDeRelacionDeGastos(sheetResumen, data[0])
 
-    sheetResumen.mergeCells('A1:N1');
-    sheetResumen.mergeCells('A2:N2');
-    sheetResumen.getCell('A2').value = "GASTOS MES DE " + fechaActual;
-    sheetResumen.getCell('A2').font = { bold:true };
-    sheetResumen.addRow();
-
-    sheetResumen.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
-
-    sheetResumen.getRow(4).eachCell(cell => {
-        cell.font = { bold: true };
-    });
-
-    Relacion.Datos.forEach(row => {
-        sheetResumen.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
-            row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
-    });
+    sheetResumen.protect("SistemasRG");
 
     const sheetGastos = workbook.addWorksheet("GASTOS");
 
-    excelActions.AsignarAnchoACeldas(sheetGastos);
-
-    sheetGastos.mergeCells('A1:N1');
-    sheetGastos.mergeCells('A2:N2');
-    sheetGastos.getCell('A2').value = "GASTOS MES DE " + fechaActual;
-    sheetGastos.getCell('A2').font = { bold:true };
-    sheetGastos.addRow();
-
-    sheetGastos.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
-
-    sheetGastos.getRow(4).eachCell(cell => {
-        cell.font = { bold: true };
-    });
-
-    Relacion.Datos.forEach(row => {
-        sheetGastos.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, excelActions.FormatearCadena(row.SubTotal), row.RetIsr == 0? "-" : row.RetIsr, row.RetIva == 0? "-" : row.RetIva,
-            row.Ieps == 0? "-" : row.RetIeps, row.Iva8 == 0? "-" : row.Iva8, row.Iva16 == 0? "-" : row.Iva16, excelActions.FormatearCadena(row.Total)]);
-    });
-
-    sheetGastos.addRow(['', '', '', '', '', '', 'Total de gastos:', Relacion.CalcularSubTotal(), 
-        Relacion.CalcularSumaRetencionIsr(), Relacion.CalcularSumaRetIva(), Relacion.CalcularSumaIeps(),
-        Relacion.CalcularSumaIva8(), Relacion.CalcularSumaIva16(), Relacion.CalcularSumaTotal()]);
-
+    excelActions.LlenarHojaDeRelacionDeGastos(sheetGastos, data[1], true);
 
     workbook.xlsx.writeBuffer().then(excelBuffer => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
         res.send(excelBuffer);
+
+        req.workbook = null;
     });
 });
 
@@ -201,6 +169,8 @@ app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, r
     try {
         const workbook = new ExcelJs.Workbook();
         await workbook.xlsx.readFile(filePath);
+
+        LibroDeGastos = workbook;
 
         const sheet = workbook.worksheets[0];
 
@@ -233,7 +203,6 @@ app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, r
             if(rowData.NombreEmisor != null)
             {
                 data.push(rowData);
-                
             }
         }
 

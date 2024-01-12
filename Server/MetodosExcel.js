@@ -1,3 +1,5 @@
+const clase = require('./Factura.js');
+
 function AgregarEncabezados(ArraySheet) {
     ArraySheet.forEach(sheet => {
         sheet.columns = [
@@ -130,10 +132,87 @@ function FormatearCadena(cadena) {
     });
 }
 
+function AsignarFormatoDeCelda(hoja, numero){
+    const subTotalCell = hoja.getCell('H' + numero);
+    subTotalCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const retIsrCell = hoja.getCell('I' + numero);
+    retIsrCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const retIvaCell = hoja.getCell('J' + numero);
+    retIvaCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const IepsCell = hoja.getCell('K' + numero);
+    IepsCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const Iva8Cell = hoja.getCell('L' + numero);
+    Iva8Cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const Iva16Cell = hoja.getCell('M' + numero);
+    Iva16Cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+
+    const totalCell = hoja.getCell('N' + numero);
+    totalCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+}
+
+function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false){
+    const Relacion = new clase.Relacion(data);
+
+    AsignarAnchoACeldas(hoja);
+    let fechaActual = new Date().getFullYear();
+
+    hoja.mergeCells('A1:N1');
+    hoja.mergeCells('A2:N2');
+    hoja.getCell('A2').value = "GASTOS MES DE " + fechaActual;
+    hoja.getCell('A2').font = { bold:true };
+    hoja.getCell('B2').alignment = { horizontal: 'center' };
+    hoja.addRow();
+
+    hoja.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+
+    hoja.getRow(4).eachCell(cell => {
+        cell.font = { bold: true };
+        cell.alignment = { horizontal: 'center' };
+    });
+
+    Relacion.Datos.forEach(row => {
+        AsignarFormatoDeCelda(hoja, hoja.lastRow.number);
+
+        hoja.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, row.SubTotal, row.RetIsr, row.RetIva,
+            row.Ieps, row.Iva8, row.Iva16, row.Total]);
+    });
+
+    const numero = hoja.lastRow.number;
+
+    AsignarFormatoDeCelda(hoja, numero);
+
+    if(banderaSumatorias) {
+        hoja.addRow(['', '', '', '', '', '', 'TOTAL DE GASTOS:', {formula: `SUM(H5:${"H" + numero})`}, 
+            {formula: `SUM(I5:${"I" + numero})`}, {formula: `SUM(J5:${"J" + numero})`}, {formula: `SUM(K5:${"K" + numero})`},
+            {formula: `SUM(L5:${"L" + numero})`}, {formula: `SUM(M5:${"M" + numero})`}, {formula: `SUM(N5:${"N" + numero})`}]);
+
+        let i = 1;
+        hoja.getRow(hoja.lastRow.number).eachCell(cell => {
+            if(i == 7){
+                cell.font = { bold: true };
+                cell.alignment = { horizontal: 'right' };
+                cell.border = {
+                    top: { style:'double', color: {argb:'00000000'} },
+                    bottom: { style:'double', color: {argb:'00000000'} }
+                };
+                cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+            }
+            else{
+                i++;
+            }
+        });
+    }
+}
+
 module.exports.AgregarEncabezados = AgregarEncabezados;
 module.exports.AgregarRenglones = AgregarRenglones;
 module.exports.AgregarRenglonesPorGrupoDeClientes = AgregarRenglonesPorGrupoDeClientes;
-module.exports.AsignarAnchoACeldas = AsignarAnchoACeldas;
 module.exports.CalcularSubTotal = CalcularSubTotal;
 module.exports.CalcularValorParaMostrar = CalcularValorParaMostrar;
 module.exports.FormatearCadena = FormatearCadena;
+module.exports.LlenarHojaDeRelacionDeGastos = LlenarHojaDeRelacionDeGastos;

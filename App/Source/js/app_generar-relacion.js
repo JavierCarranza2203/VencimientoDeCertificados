@@ -1,4 +1,4 @@
-import { GenerarRelacionDeGastos } from "./Metodos/Peticiones.js";
+import { LeerArchivoDeExcel } from "./Metodos/Peticiones.js";
 import { Relacion } from "./Clases/Factura.js";
 import { FormatearCadena } from "./Metodos/MetodosSinPeticion.js";
 
@@ -22,8 +22,35 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
         const archivoGastos = document.getElementById("archivoGastos").files[0];
 
         if(!archivoGastos){ throw new Error("Ingrese un archivo"); }
+
+        Swal.fire({
+            title: "¡El archivo se ha subido!",
+            text: "Espere mientras se procesan los datos",
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+                const timer = Swal.getPopup().querySelector("b");
+                timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log("Cerrado por el timer");
+                }
+            });
         
-        miRelacion = new Relacion(await GenerarRelacionDeGastos(archivoGastos));
+        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
+
+        Swal.fire({
+            title: "¡Los datos se han procesado!",
+            text: "Ya puede generar su relación de gastos",
+            icon: "success",
+            confirmButtonText: "OK",
+        });
 
         table = new gridjs.Grid({
             columns: [{name: "Número"}, "Fecha", "RFC Emisor", "Nombre Emisor", "Sub Total", "Ret. ISR", "Ret. IVA", "IEPS", "IVA 8%", "IVA 16%", "Total", "Concepto", {
@@ -96,13 +123,38 @@ document.addEventListener('click', async function(event) {
 document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
     try
     {
-        let response = await fetch(`http://localhost:8082/leer_archivo_excel`, 
+        tableContainer.innerHTML = "";
+        let timerInterval;
+
+        Swal.fire({
+        title: "El archivo se está generando",
+        text: "Espere por favor",
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("Cerrado por el timer");
+            }
+        });
+
+        let Datos = [miRelacion.Respaldo, miRelacion.Datos, miRelacion.DatosEliminados];
+        
+        let response = await fetch(`http://localhost:8082/generar_relacion_de_gastos`, 
         { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(miRelacion.Datos)
+            body: JSON.stringify(Datos)
         });
 
         if(response.ok)
@@ -113,6 +165,13 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
             a.href = url;
             a.download = 'RELACION DE GASTOS';
             a.click();
+
+            Swal.fire({
+                title: "¡El archivo se ha generado!",
+                text: "Puede encontrarlo en la carpeta de descargas",
+                icon: "success",
+                confirmButtonText: "OK",
+            });
         }
         else{
             let errorMessage = await response.json();

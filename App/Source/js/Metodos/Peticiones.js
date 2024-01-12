@@ -476,7 +476,7 @@ export async function RunAutoUpdateService()
 /*       Método para generar relaciones de excel          */
 /**********************************************************/
 
-export async function GenerarRelacionDeGastos(archivo){
+export async function LeerArchivoDeExcel(archivo){
     //Genera una instancia de la clase FormData
     const formData = new FormData();
 
@@ -484,7 +484,7 @@ export async function GenerarRelacionDeGastos(archivo){
     formData.append("ReporteDeGastos", archivo);
 
     //Realiza la petición al controlador del certificado
-    const response = await fetch("http://localhost:8082/generar_relacion_de_gastos", {
+    const response = await fetch("http://localhost:8082/leer_archivo_gastos", {
         method: "POST",
         body: formData,
     });
