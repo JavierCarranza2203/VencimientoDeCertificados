@@ -2,6 +2,7 @@ App/Config/config.php
 Test/Certificados
 Test/Reportes
 Test/Sellos
+Test/Relaciones
 Server/node_modules
 Server/package-lock.json
 Server/package.json

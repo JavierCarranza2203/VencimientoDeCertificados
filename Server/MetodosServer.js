@@ -1,19 +1,28 @@
 function RegresarRegistrosPorVencer(results)
 {
     let data = [];
+    let segmentosFirma, segmentosSellos, fechaFirma, fechaSello, fechaActual = new Date(), bandera;
 
     results.forEach(row => {
-        let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
-        let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+        bandera = false; //Sirve para saber si podemos meter el registro al arreglo "data"
 
-        let fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
-        let fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
-        let fechaActual = new Date();
-
-        if(fechaFirma.getFullYear() == fechaActual.getFullYear() || fechaSello.getFullYear() == fechaActual.getFullYear())
+        if(row['fecha_vencimiento_firma'] != "" && row['fecha_vencimiento_firma'] != null)
         {
-            data.push(row);
+            segmentosFirma = row['fecha_vencimiento_firma'].split("-");
+            fechaFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
+
+            if(fechaFirma.getFullYear() == fechaActual.getFullYear()){ bandera = true; }
         }
+
+        if(row['fecha_vencimiento_sello'] != "" && row['fecha_vencimiento_sello'] != null) 
+        {
+            segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+            fechaSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
+
+            if(fechaSello.getFullYear() == fechaActual.getFullYear()){ bandera = true; }
+        }
+
+        if(bandera){ data.push(row); }
     });
 
     return data;
@@ -21,24 +30,42 @@ function RegresarRegistrosPorVencer(results)
 
 function FiltarRegistroPorVencerEnLaSemana(results)
 {
-    let virtualData = [];
-    let data = [];
-    let fechaActual = new Date();
+    let virtualData = [], data = [], fechaActual = new Date(), fechaActualMasDosSemanas = new Date(), segmentosFirma, segmentosSellos, bandera = false;
+
+    fechaActualMasDosSemanas.setDate(fechaActualMasDosSemanas.getDate() + 14);
 
     virtualData = RegresarRegistrosPorVencer(results);
 
     virtualData.forEach(row => {
-        let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
-        let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+        bandera = false;
 
-        if(segmentosFirma[0] >= fechaActual.getDay() && segmentosFirma[0] <= fechaActual.getDay() + 7 && segmentosFirma[1] == fechaActual.getMonth())
+        if(row['fecha_vencimiento_firma'] != "" && row['fecha_vencimiento_firma'] != null)
         {
-            data.push(row);
+            segmentosFirma = row['fecha_vencimiento_firma'].split("-");
+            let fechaVencimientoFirma = new Date(segmentosFirma[2], segmentosFirma[1] - 1, segmentosFirma[0]);
+
+            if(fechaVencimientoFirma >= fechaActual && fechaVencimientoFirma <= fechaActualMasDosSemanas)
+            { 
+                row['status_firma'] = "Por vencer";
+                bandera = true; 
+            }
+            else{ row['status_firma'] = "Vigente"; }
         }
-        else if(segmentosSellos[0] >= fechaActual.getDay() && segmentosSellos[0] <= fechaActual.getDate() + 7 && segmentosSellos[1] == fechaActual.getMonth())
+
+        if(row['fecha_vencimiento_sello'] != "" && row['fecha_vencimiento_sello'] != null) 
         {
-            data.push(row);
+            segmentosSellos = row['fecha_vencimiento_sello'].split("-");
+            let fechaVencimientoSello = new Date(segmentosSellos[2], segmentosSellos[1] - 1, segmentosSellos[0]);
+
+            if(fechaVencimientoSello >= fechaActual && fechaVencimientoSello <= fechaActualMasDosSemanas)
+            {   
+                row['status_sello'] = "Por vencer";
+                bandera = true; 
+            }
+            else{ row['status_sello'] = "Vigente"; }
         }
+
+        if(bandera){ data.push(row); }
     });
 
     return data;

@@ -35,8 +35,6 @@ function AgregarRenglones(sheet, data) {
 }
 
 function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
-    let fechaActual = new Date();
-
     data.forEach(row => {
         if(row['grupo_clientes'] == group)
         {
@@ -44,24 +42,11 @@ function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
                 rfc: row["rfc"],
                 nombre: row["nombre"],
                 grupo_clientes: row["grupo_clientes"],
-                status_firma: row["status_firma"]? "Vigente" : "Vencida",
+                status_firma: row["status_firma"],
                 fecha_vencimiento_firma: row["fecha_vencimiento_firma"],
-                status_sello: row["status_firma"]? "Vigente" : "Vencido",
+                status_sello: row["status_sello"],
                 fecha_vencimiento_sello: row["fecha_vencimiento_sello"]
             };
-
-            let segmentosFirma = row['fecha_vencimiento_firma'].split("-");
-            let segmentosSellos = row['fecha_vencimiento_sello'].split("-");
-
-            if(segmentosFirma[0] >= fechaActual.getDay() && segmentosFirma[0] <= fechaActual.getDay() + 7 && segmentosFirma[1] == fechaActual.getMonth())
-            {
-                newRow["status_firma"] = "Por vencer";
-            }
-            
-            if(segmentosSellos[0] >= fechaActual.getDay() && segmentosSellos[0] <= fechaActual.getDate() + 7 && segmentosSellos[1] == fechaActual.getMonth())
-            {
-                newRow["status_sello"] = "Por vencer";
-            }
 
             sheet.addRow([newRow['rfc'], newRow['nombre'], newRow['grupo_clientes'], newRow['status_firma'],
                 newRow['fecha_vencimiento_firma'], newRow['status_sello'], newRow['fecha_vencimiento_sello']]);
@@ -132,30 +117,16 @@ function FormatearCadena(cadena) {
     });
 }
 
-function AsignarFormatoDeCelda(hoja, numero){
-    const subTotalCell = hoja.getCell('H' + numero);
-    subTotalCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+function AsignarFormatoDeCelda(hoja, ultimoNumeroDeRenglon) {
+    const arrayColumnas = ['H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
-    const retIsrCell = hoja.getCell('I' + numero);
-    retIsrCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-
-    const retIvaCell = hoja.getCell('J' + numero);
-    retIvaCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-
-    const IepsCell = hoja.getCell('K' + numero);
-    IepsCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-
-    const Iva8Cell = hoja.getCell('L' + numero);
-    Iva8Cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-
-    const Iva16Cell = hoja.getCell('M' + numero);
-    Iva16Cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-
-    const totalCell = hoja.getCell('N' + numero);
-    totalCell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+    arrayColumnas.forEach(columna => {
+        let cell = hoja.getCell(columna + ultimoNumeroDeRenglon);
+        cell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+    })
 }
 
-function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false){
+function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false) {
     const Relacion = new clase.Relacion(data);
 
     AsignarAnchoACeldas(hoja);
@@ -168,7 +139,7 @@ function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false){
     hoja.getCell('B2').alignment = { horizontal: 'center' };
     hoja.addRow();
 
-    hoja.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total']);
+    hoja.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total', '', "Concepto"]);
 
     hoja.getRow(4).eachCell(cell => {
         cell.font = { bold: true };
@@ -179,7 +150,7 @@ function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false){
         AsignarFormatoDeCelda(hoja, hoja.lastRow.number);
 
         hoja.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, row.SubTotal, row.RetIsr, row.RetIva,
-            row.Ieps, row.Iva8, row.Iva16, row.Total]);
+            row.Ieps, row.Iva8, row.Iva16, row.Total, '', row.Concepto]);
     });
 
     const numero = hoja.lastRow.number;
@@ -187,26 +158,51 @@ function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false){
     AsignarFormatoDeCelda(hoja, numero);
 
     if(banderaSumatorias) {
-        hoja.addRow(['', '', '', '', '', '', 'TOTAL DE GASTOS:', {formula: `SUM(H5:${"H" + numero})`}, 
-            {formula: `SUM(I5:${"I" + numero})`}, {formula: `SUM(J5:${"J" + numero})`}, {formula: `SUM(K5:${"K" + numero})`},
-            {formula: `SUM(L5:${"L" + numero})`}, {formula: `SUM(M5:${"M" + numero})`}, {formula: `SUM(N5:${"N" + numero})`}]);
+        hoja.addRow(['', '', '', '', '', '', 'TOTAL DE GASTOS:', { formula: `SUM(H5:${"H" + numero})` }, 
+            { formula: `SUM(I5:${"I" + numero})` }, { formula: `SUM(J5:${"J" + numero})`}, {formula: `SUM(K5:${"K" + numero})` },
+            { formula: `SUM(L5:${"L" + numero})` }, { formula: `SUM(M5:${"M" + numero})`}, {formula: `SUM(N5:${"N" + numero})` }]);
 
         let i = 1;
         hoja.getRow(hoja.lastRow.number).eachCell(cell => {
-            if(i == 7){
+            if(i == 7) {
                 cell.font = { bold: true };
                 cell.alignment = { horizontal: 'right' };
                 cell.border = {
-                    top: { style:'double', color: {argb:'00000000'} },
-                    bottom: { style:'double', color: {argb:'00000000'} }
+                    top: { style:'double', color: { argb:'00000000' } },
+                    bottom: { style:'double', color: { argb:'00000000' } }
                 };
-                cell.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+                cell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
             }
-            else{
+            else {
                 i++;
             }
         });
     }
+}
+
+function LlenarFormulasDiot(celda, valor, esNegrita = false, formatoDeCelda = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-') {
+    celda.value = valor;
+    celda.numFmt = formatoDeCelda;
+    celda.font = { bold: esNegrita }
+}
+
+function AgregarTotalesDiot(celdaTexto, celdaValor, valorCeldaTexto, formulaCeldaValor){
+    celdaTexto.value = valorCeldaTexto;
+    celdaTexto.font = { bold: true };
+    celdaTexto.alignment = { horizontal: 'right' };
+
+    celdaValor.value = formulaCeldaValor;
+    celdaValor.border = {
+        top: { style:'thin', color: { argb:'00000000' } },
+        bottom: { style:'double', color: { argb:'00000000' } }
+    };
+    celdaValor.font = { bold: true };
+    celdaValor.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb:'00FF00' },
+    };
+    celdaValor.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
 }
 
 module.exports.AgregarEncabezados = AgregarEncabezados;
@@ -216,3 +212,5 @@ module.exports.CalcularSubTotal = CalcularSubTotal;
 module.exports.CalcularValorParaMostrar = CalcularValorParaMostrar;
 module.exports.FormatearCadena = FormatearCadena;
 module.exports.LlenarHojaDeRelacionDeGastos = LlenarHojaDeRelacionDeGastos;
+module.exports.LlenarFormulasDiot = LlenarFormulasDiot;
+module.exports.AgregarTotalesDiot = AgregarTotalesDiot;

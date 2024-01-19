@@ -11,11 +11,21 @@ document.getElementById("btnGenerarExcel").addEventListener('click', async ()=>{
             a.href = url;
             a.download = 'Reporte de firmas y sellos por vencer';
             a.click();
+
+            Swal.fire({
+                title: "¡El archivo se ha generado!",
+                text: "Puede encontrarlo en la carpeta de descargas",
+                icon: "success",
+                confirmButtonText: "OK",
+            });
         }
         else{
-            let errorMessage = await response.json();
-
-            throw new Error(errorMessage);
+            Swal.fire({
+                icon: "error",
+                title: "¡Hubo un error inesperado!",
+                text: "No se puede generar el archivo",
+                footer: '<label>Llame al administrador de sistemas.</label>'
+            });
         }
     }
     catch(error){

@@ -29,13 +29,9 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
-                const timer = Swal.getPopup().querySelector("b");
-                timerInterval = setInterval(() => {
-                timer.textContent = `${Swal.getTimerLeft()}`;
-                }, 100);
             },
             willClose: () => {
-                clearInterval(timerInterval);
+                
             }
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer) {
@@ -96,7 +92,6 @@ document.addEventListener('click', async function(event) {
 
             if(elemento.checked)
             {
-
                 miRelacion.RestarCantidad(row.cells[0].textContent);
                 row.classList.add("row--elimated")
             }
@@ -124,7 +119,6 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
     try
     {
         tableContainer.innerHTML = "";
-        let timerInterval;
 
         Swal.fire({
         title: "El archivo se está generando",
@@ -132,21 +126,13 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
         timerProgressBar: true,
         didOpen: () => {
             Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        }).then((result) => {
+        }}).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer) {
                 console.log("Cerrado por el timer");
             }
         });
 
-        let Datos = [miRelacion.Respaldo, miRelacion.Datos, miRelacion.DatosEliminados];
+        let Datos = [miRelacion.Respaldo, miRelacion.Datos];
         
         let response = await fetch(`http://localhost:8082/generar_relacion_de_gastos`, 
         { 
@@ -173,10 +159,10 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
                 confirmButtonText: "OK",
             });
         }
-        else{
-            let errorMessage = await response.json();
-
-            throw new Error(errorMessage);
+        else {
+            let mensaje = await response.json();
+            console.log(mensaje)
+            throw new Error(mensaje.error);
         }
     }
     catch(error){
@@ -189,8 +175,7 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
     }
 });
 
-function MostrarSumatorias()
-{
+function MostrarSumatorias() {
     lblSubTotal.textContent = "Sub Total: $" + FormatearCadena(miRelacion.CalcularSubTotal());
     lblRetIsr.textContent = "Ret. ISR: $" + FormatearCadena(miRelacion.CalcularSumaRetencionIsr());
     lblRetIva.textContent = "Ret. IVA: $" + FormatearCadena(miRelacion.CalcularSumaRetIva());

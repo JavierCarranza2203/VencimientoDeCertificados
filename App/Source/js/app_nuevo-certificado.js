@@ -10,6 +10,8 @@ window.addEventListener("load", ()=>{
     PermitirAcceso().then(res => {
         grupo = res["GrupoClientes"];
 
+        console.log(res["Rol"]);
+
         if(res["Rol"] != "empleado")
         {
             bandera = true;
@@ -144,6 +146,7 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
         {
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
+                console.log(bandera)
                 break;
             case 2:
                 if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value)
@@ -152,6 +155,8 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 }
 
                 CambiarPaginaFormulario(statusSello);
+
+                console.log(bandera);
 
                 await RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, 
                         txtFechaFinEnFirma, statusFirma, txtFechaFinEnSello, statusSello, bandera, grupo);

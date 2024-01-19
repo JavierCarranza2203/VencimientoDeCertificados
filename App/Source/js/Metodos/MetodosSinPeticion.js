@@ -54,20 +54,6 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
                 }
             });
         }
-        else
-        {
-            await Swal.fire({
-                title: "Ingrese el grupo de clientes al que pertenece",
-                input: "text",
-                showCancelButton: true,
-                confirmButtonText: "Aceptar",
-                showLoaderOnConfirm: true,
-                preConfirm: (group)=>
-                {
-                    grupo = group.toUpperCase();
-                }
-            });
-        }
 
         let NuevoCliente = new Cliente();
 
