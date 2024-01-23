@@ -18,12 +18,15 @@ require_once 'Sello.php';
         public Firma $Firma;
 
         //Constructor
-        public function __construct()
+        public function __construct(string $nombre, string $rfc, string $grupoClientes, string $fechaFinSello, bool $statusSello, string $fechaFinFirma, bool $statusFirma)
         {
-            $this->Nombre = "Desconocido";
-            $this->RFC = "Desconocido";
-            $this->Sello = new Sello();
-            $this->Firma = new Firma();
+            $this->Nombre = $nombre;
+            $this->RFC = $rfc;
+            $this->Sello->FechaFin = $fechaFinSello;
+            $this->Sello->Status = $statusSello;
+            $this->Firma->FechaFin = $fechaFinFirma;
+            $this->Firma->Status = $statusFirma;
+            $this->GrupoClientes = $grupoClientes;
         }
     }
 

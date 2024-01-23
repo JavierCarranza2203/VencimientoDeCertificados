@@ -54,7 +54,7 @@ class UsuarioService extends Connection
         session_start();
         if(isset($_SESSION['nombre_usuario']) && $_SESSION['nombre_usuario'] != null)
         {
-            $miUsuario = new Usuario("Desconocida");
+            $miUsuario = new Usuario();
 
             $miUsuario->NombreUsuario = $_SESSION['nombre_usuario'];
             $miUsuario->Rol = $_SESSION['rol_usuario'];
@@ -102,11 +102,11 @@ class UsuarioService extends Connection
                 $stmt = $this->db_conection->prepare("DELETE FROM usuario WHERE nombre_usuario = ?");
                 $stmt->bind_param("s", $nombre_antiguo_usuario);
 
-                if($stmt->execute())
+                if($stmt->execute()) 
                 {
                     return "Se ha eliminado a " . $nombre_antiguo_usuario;
                 }
-                else
+                else 
                 {
                     throw new Exception("Hubo un error al eliminar el usuario");
                 }
@@ -132,22 +132,17 @@ class UsuarioService extends Connection
         $resultado = $stmt->execute();
         $resultado = $stmt->get_result();
 
-        if($resultado->num_rows > 0)
+        if($resultado->num_rows > 0) 
         {
             $usuarioVirtual = $resultado->fetch_assoc();
 
-            $miUsuario = new Usuario($usuarioVirtual["contrasenia"]);
-
-            $miUsuario->NombreCompleto = $usuarioVirtual["nombre_completo"];
-            $miUsuario->NombreUsuario = $usuarioVirtual["nombre_usuario"];
-            $miUsuario->Rol = $usuarioVirtual["rol"];
-            $miUsuario->GrupoClientes = $usuarioVirtual["grupo_clientes"];
+            $miUsuario = new Usuario($usuarioVirtual["nombre_completo"], $usuarioVirtual["nombre_usuario"], $usuarioVirtual["contrasenia"], $usuarioVirtual["rol"], $usuarioVirtual["grupo_clientes"]);
 
             $usuarioVirtual = null;
 
             return $miUsuario;
         }
-        else
+        else 
         {
             return null;
         }
@@ -162,7 +157,8 @@ class UsuarioService extends Connection
 
         $resultado = $stmt->get_result();
 
-        if ($resultado->num_rows > 0) {
+        if ($resultado->num_rows > 0) 
+        {
 
             $resultado = $resultado->fetch_all();
 

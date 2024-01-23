@@ -1,6 +1,5 @@
 import { PermitirAcceso, MostrarVigencia } from "./Metodos/MetodosSinPeticion.js";
 import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
-// import { EliminarCliente } from "./Metodos/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -26,7 +25,7 @@ window.addEventListener("load", async ()=> {
 /*************************************************************/
 
 document.addEventListener('click', async function(event) {
-    try{
+    try {
         if (event.target.classList.contains('fa-edit')) 
         {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;

@@ -3,7 +3,6 @@ import { Relacion } from "./Clases/Factura.js";
 import { FormatearCadena } from "./Metodos/MetodosSinPeticion.js";
 
 let tableContainer = document.getElementById("table");
-let table;
 let miRelacion;
 
 const lblSubTotal = document.getElementById("lblSubTotal");
@@ -29,11 +28,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
-            },
-            willClose: () => {
-                
-            }
-            }).then((result) => {
+            }}).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer) {
                     console.log("Cerrado por el timer");
                 }

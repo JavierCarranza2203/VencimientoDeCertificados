@@ -67,14 +67,7 @@ class ClienteService extends Connection
 
         $resultado = $stmt->get_result();
 
-        if($resultado->num_rows > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $resultado->num_rows > 0;
     }
 
     //Método para eliminar un cliente
@@ -112,8 +105,8 @@ class ClienteService extends Connection
 
         $resultado = $stmt->get_result();
 
-        if ($resultado->num_rows > 0) {
-
+        if ($resultado->num_rows > 0)
+        {
             $resultado = $resultado->fetch_all();
 
             return $resultado;
@@ -133,8 +126,8 @@ class ClienteService extends Connection
 
         $resultado = $stmt->get_result();
 
-        if ($resultado->num_rows > 0) {
-
+        if($resultado->num_rows > 0)
+        {
             $resultado = $resultado->fetch_all();
 
             return $resultado;

@@ -5,11 +5,12 @@ class CertificadoService
     public function ObtenerDatosCertificado($rcContent) : string
     {
         //Convierte el contenido del archivo a binario
-        $encoded = "-----BEGIN CERTIFICATE-----\n".base64_encode($rcContent)."\n-----END CERTIFICATE-----";
+        $encoded = "-----BEGIN CERTIFICATE-----\n".base64_encode(file_get_contents($rcContent))."\n-----END CERTIFICATE-----";
 
         //Obtiene las propiedades del certificado
         $cert_info = openssl_x509_parse($encoded);
 
+        //Como el método "openssl_x509_parse" devuelve false en caso de que haya fallado algo, evaluamos ese valor
         if($cert_info === false) {
             throw new Exception("No se ha podido leer el certificado");
         }

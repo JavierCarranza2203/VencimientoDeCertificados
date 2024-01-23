@@ -1,4 +1,4 @@
-class Relacion
+export class Relacion
 {
     constructor(data){
         this.Datos = data;
@@ -74,5 +74,3 @@ class Relacion
         return suma;
     }
 }
-
-module.exports.Relacion = Relacion;

@@ -1,4 +1,4 @@
-function RegresarRegistrosPorVencer(results)
+export function RegresarRegistrosPorVencer(results)
 {
     let data = [];
     let segmentosFirma, segmentosSellos, fechaFirma, fechaSello, fechaActual = new Date(), bandera;
@@ -28,7 +28,7 @@ function RegresarRegistrosPorVencer(results)
     return data;
 }
 
-function FiltarRegistroPorVencerEnLaSemana(results)
+export function FiltarRegistroPorVencerEnLaSemana(results)
 {
     let virtualData = [], data = [], fechaActual = new Date(), fechaActualMasDosSemanas = new Date(), segmentosFirma, segmentosSellos, bandera = false;
 
@@ -70,6 +70,3 @@ function FiltarRegistroPorVencerEnLaSemana(results)
 
     return data;
 }
-
-module.exports.RegresarRegistrosPorVencer = RegresarRegistrosPorVencer;
-module.exports.FiltarRegistroPorVencerEnLaSemana = FiltarRegistroPorVencerEnLaSemana;

@@ -1,4 +1,4 @@
-import { PermitirAcceso, MostrarVigencia } from "./Metodos/MetodosSinPeticion.js";
+import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
 import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");

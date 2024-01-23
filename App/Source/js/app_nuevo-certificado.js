@@ -149,8 +149,7 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 console.log(bandera)
                 break;
             case 2:
-                if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value)
-                {
+                if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value) {
                     throw new Error("Los certificados no son de la misma persona");
                 }
 

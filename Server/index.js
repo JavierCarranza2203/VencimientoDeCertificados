@@ -1,12 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const mysql2 = require('mysql2/promise');
-const ExcelJs = require('exceljs');
-const multer = require('multer');
+import express from 'express';
+import cors from 'cors';
+import { createPool } from 'mysql2/promise';
+import ExcelJS from 'exceljs';
+import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
-const excelActions = require('./MetodosExcel.js');
-const serverActions = require('./MetodosServer.js');
-const clase = require('./Factura.js');
+import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
+import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 
 const app = new express();
 let LibroDeGastos;
@@ -19,19 +18,21 @@ const serverPort = 8082;
 //Para permitir el acceso desde cualquier server
 app.use(cors());
 
+//Crea una variable para almacenar un archivo en caché
 app.use((req, res, next)=>{
     req.workbook = LibroDeGastos;
     next();
 });
 
-const pool = mysql2.createPool({
+//Conexión a la base de datos
+const pool = createPool({
     host: 'localhost',
     user: 'root',
     password: 'RG_2023*LOCALHOST',
     database: 'db_despacho_contable',
     waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
+    connectionLimit: 20,
+    queueLimit: 2,
 });
 
 //Metodo get para obtener los clientes que van a vencer el año actual
@@ -39,13 +40,11 @@ app.get('/clientes_por_vencer', async(req, res) => {
     try {
         let consulta = "";
         
-        if(typeof(req.query.grupo) == 'undefined') 
-        {
+        if(typeof(req.query.grupo) == 'undefined') {
             //Consulta para mandar como query de SQL cuando accede un admin o un developer
             consulta = "SELECT * FROM clientes_certificados";
         }
-        else 
-        {
+        else {
             //Consulta para mandar como query cuando accede un empleado
             consulta = `SELECT * FROM clientes_certificados WHERE grupo_clientes = '${req.query.grupo}'`;
         }
@@ -53,7 +52,7 @@ app.get('/clientes_por_vencer', async(req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         const [rows, fields] = await pool.query(consulta);
 
-        const data = serverActions.RegresarRegistrosPorVencer(rows);
+        const data = RegresarRegistrosPorVencer(rows);
 
         res.json(data);
     } catch (error) {
@@ -71,44 +70,34 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         const [results, fields] = await pool.query(consulta);
 
-        if(results.length == 0) 
-        {
+        if(results.length == 0) {
             res.send({mensaje: "No hay datos para enviar"})
         }
 
         //Obtiene todos los clientes que van a vencer en el año
-        let data = serverActions.RegresarRegistrosPorVencer(results);
+        let data = RegresarRegistrosPorVencer(results);
 
         //Se instancia el nuevo libro de excel
-        let workbook = new ExcelJs.Workbook();
+        let workbook = new ExcelJS.Workbook();
 
-        //Agrega las páginas al libro
-        // const sheet = workbook.addWorksheet("Clientes por vencer este año");
-        // const sheetClientesA = workbook.addWorksheet("Clientes A");
-        // const sheetClientesB = workbook.addWorksheet("Clientes B");
-        // const sheetClientesC = workbook.addWorksheet("Clientes C");
         const sheetClientesA_Semana = workbook.addWorksheet("Clientes A en dos semanas");
         const sheetClientesB_Semana = workbook.addWorksheet("Clientes B en dos semanas");
         const sheetClientesC_Semana = workbook.addWorksheet("Clientes C en dos semanas");
         
         //Agrega los encabezados a cada una se las páginas
-        excelActions.AgregarEncabezados([/*sheet, sheetClientesA, sheetClientesB, sheetClientesC,*/ sheetClientesA_Semana, sheetClientesB_Semana, sheetClientesC_Semana]);
-
-        //Agrega los renglones a la primer página
-        // excelActions.AgregarRenglones(sheet, data);
-
-        //Agrega los renglones a las demás páginas separando el grupo del cliente
-        // excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesA, data, 'A');
-        // excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB, data, 'B');
-        // excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC, data, 'C');
+        AgregarEncabezados([sheetClientesA_Semana, sheetClientesB_Semana, sheetClientesC_Semana]);
 
         //Filtra los clientes por semana
-        data = serverActions.FiltarRegistroPorVencerEnLaSemana(data);
+        data = FiltarRegistroPorVencerEnLaSemana(data);
+
+        if(data.length == 0) {
+            res.send({mensaje: "No hay datos para enviar"})
+        }
 
         //Agrega los renglones a las paginas de los clientes que se vencen en la semana
-        excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesA_Semana, data, 'A');
-        excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesB_Semana, data, 'B');
-        excelActions.AgregarRenglonesPorGrupoDeClientes(sheetClientesC_Semana, data, 'C');
+        AgregarRenglonesPorGrupoDeClientes(sheetClientesA_Semana, data, 'A');
+        AgregarRenglonesPorGrupoDeClientes(sheetClientesB_Semana, data, 'B');
+        AgregarRenglonesPorGrupoDeClientes(sheetClientesC_Semana, data, 'C');
 
         //Se guarda el excel y se manda el archivo al cliente
         workbook.xlsx.writeBuffer().then(excelBuffer => {
@@ -140,58 +129,46 @@ app.get("/test", (req, res)=>{
     }
 });
 
+//Método para generar el archivo de excel con la relación de gastos
 app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
     try {
+        //Obtiene los datos del body
         const data = req.body
 
+        //Accede al libro de excel previamente almacenado en caché
         const workbook = req.workbook;
 
+        //Agrega la hoja con el nombre "RESUMEN"
         const sheetResumen = workbook.addWorksheet("RESUMEN");
 
-        excelActions.LlenarHojaDeRelacionDeGastos(sheetResumen, data[0])
+        //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
+        LlenarHojaDeRelacionDeGastos(sheetResumen, data[0])
 
+        //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
         sheetResumen.protect("SistemasRG");
 
+        //Agrega la hoja "GASTOS"
         const sheetGastos = workbook.addWorksheet("GASTOS");
 
-        excelActions.LlenarHojaDeRelacionDeGastos(sheetGastos, data[1], true);
+        LlenarHojaDeRelacionDeGastos(sheetGastos, data[1], true);
 
+        //Agrega la hoja "DIOT"
         const sheetDiot = workbook.addWorksheet("DIOT");
 
+        //Asigna el tamaño de las columnas
         sheetDiot.getColumn('A').width = 3;
         sheetDiot.getColumn('B').width = 25.14;
-        sheetDiot.getColumn('C').width = 0;
-        sheetDiot.getColumn('D').width = 0;
-        sheetDiot.getColumn('E').width = 0;
-        sheetDiot.getColumn('F').width = 0;
-        sheetDiot.getColumn('G').width = 20;
-        sheetDiot.getColumn('H').width = 0;
-        sheetDiot.getColumn('I').width = 0;
-        sheetDiot.getColumn('J').width = 0;
-        sheetDiot.getColumn('K').width = 0;
-        sheetDiot.getColumn('L').width = 20;
-        sheetDiot.getColumn('M').width = 0;
-        sheetDiot.getColumn('N').width = 0;
-        sheetDiot.getColumn('O').width = 0;
-        sheetDiot.getColumn('P').width = 0;
-        sheetDiot.getColumn('Q').width = 0;
-        sheetDiot.getColumn('R').width = 0;
-        sheetDiot.getColumn('S').width = 0;
-        sheetDiot.getColumn('T').width = 20;
-        sheetDiot.getColumn('U').width = 20;
-        sheetDiot.getColumn('V').width = 0;
-        sheetDiot.getColumn('W').width = 0;
-        sheetDiot.getColumn('X').width = 0;
-        sheetDiot.getColumn('Y').width = 13;
-        sheetDiot.getColumn('Z').width = 13;
-        sheetDiot.getColumn('AA').width = 13;
-        sheetDiot.getColumn('AB').width = 5;
-        sheetDiot.getColumn('AC').width = 5;
-        sheetDiot.getColumn('AD').width = 13;
 
+        AsignarAnchoAColumnas(sheetDiot, ['C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'V', 'W', 'X'], 0);
+        AsignarAnchoAColumnas(sheetDiot, ['AB', 'AC'], 5);
+        AsignarAnchoAColumnas(sheetDiot, ['Y', 'Z', 'AA', 'AD'], 13);
+        AsignarAnchoAColumnas(sheetDiot, ['G', 'L', 'T', 'U'], 20);
+
+        //Combina las celdas
         sheetDiot.mergeCells('B1:AD1');
         sheetDiot.mergeCells('B2:AD2');
 
+        //Asigna el texto a las celdas para que sirvan como encabezados
         sheetDiot.getCell('B4').value = "RFC EMISOR";
         sheetDiot.getCell('G4').value = "SUBTOTAL 16%";
         sheetDiot.getCell('L4').value = "SUBTOTAL 8%";
@@ -202,6 +179,7 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
         sheetDiot.getCell('AA4').value = "RET. IVA";
         sheetDiot.getCell('AD4').value = "DIFERENCIAS";
 
+        //Array con la letras de las columnas de los headers
         const columnasDiot = ['B', 'G', 'L', 'T', 'U', 'Y', 'Z', 'AA', 'AD'];
 
         for(let i = 0; i < columnasDiot.length; i++){
@@ -209,21 +187,23 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
             sheetDiot.getCell(columnasDiot[i] + '4').alignment = { horizontal: 'center' };
         }
 
+        //Array con las columnas que llevan información
         const arrayColumnas = ['B', 'G', 'L', 'T', 'AD', 'U', 'Y', 'Z', 'AA', 'AB', 'AC'];
         let columnaEncontrada = true, celda;
 
+        //Ciclo para recorrer las 78 filas que manejan los contadores
         for(let i = 5; i <= 78; i++){
             arrayColumnas.forEach(columna => {
                 celda = sheetDiot.getCell(columna + i);
                 
-                columna == 'B'? excelActions.LlenarFormulasDiot(celda, null, true, '') : 
-                columna == 'G'? excelActions.LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Z' + i } / ${ 0.16 }, 0)` }) : 
-                columna == 'L'? excelActions.LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Y' + i } / ${ 0.08 }, 0)` }) : 
-                columna == 'T'? excelActions.LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'U' + i } - ${ 'G' + i } - ${ 'L' + i }, 0)` }) : 
-                columna == 'AD'? excelActions.LlenarFormulasDiot(celda, { formula: `=+${ 'U' + i }-${ 'G' + i }-${ 'L' + i }-${ 'T' + i }` }) : columnaEncontrada = false;
+                columna == 'B'? LlenarFormulasDiot(celda, null, true, '') : 
+                columna == 'G'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Z' + i } / ${ 0.16 }, 0)` }) : 
+                columna == 'L'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Y' + i } / ${ 0.08 }, 0)` }) : 
+                columna == 'T'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'U' + i } - ${ 'G' + i } - ${ 'L' + i }, 0)` }) : 
+                columna == 'AD'? LlenarFormulasDiot(celda, { formula: `=+${ 'U' + i }-${ 'G' + i }-${ 'L' + i }-${ 'T' + i }` }) : columnaEncontrada = false;
 
                 if(!columnaEncontrada){
-                    excelActions.LlenarFormulasDiot(celda, null, true);
+                    LlenarFormulasDiot(celda, null, true);
                 }
 
                 columnaEncontrada = true;
@@ -232,7 +212,7 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
 
         for(let i = 1; i <= arrayColumnas.length - 3; i++){
             celda = sheetDiot.getCell(arrayColumnas[i] + 79);
-            excelActions.LlenarFormulasDiot(celda, { formula: `SUM(${ arrayColumnas[i] + 5 } : ${ arrayColumnas[i] + 78 })` }, true)
+            LlenarFormulasDiot(celda, { formula: `SUM(${ arrayColumnas[i] + 5 } : ${ arrayColumnas[i] + 78 })` }, true)
 
             celda.border = {
                 top: { style:'thin', color: { argb:'00000000' } },
@@ -240,9 +220,9 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
             };
         }
 
-        excelActions.AgregarTotalesDiot(sheetDiot.getCell('G81'), sheetDiot.getCell('L81'), "TOTAL SUBTOTAL", { formula: `SUM(G79:T79)` });
-        excelActions.AgregarTotalesDiot(sheetDiot.getCell('T81'), sheetDiot.getCell('U81'), "TOTAL IVA", { formula: `SUM(Y79:Z79)` });
-        excelActions.AgregarTotalesDiot(sheetDiot.getCell('Y81'), sheetDiot.getCell('Z81'), "TOTAL RET.", { formula: `=+AA79` });
+        AgregarTotalesDiot(sheetDiot.getCell('G81'), sheetDiot.getCell('L81'), "TOTAL SUBTOTAL", { formula: `SUM(G79:T79)` });
+        AgregarTotalesDiot(sheetDiot.getCell('T81'), sheetDiot.getCell('U81'), "TOTAL IVA", { formula: `SUM(Y79:Z79)` });
+        AgregarTotalesDiot(sheetDiot.getCell('Y81'), sheetDiot.getCell('Z81'), "TOTAL RET.", { formula: `=+AA79` });
 
         workbook.xlsx.writeBuffer().then(excelBuffer => {
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -261,11 +241,12 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
     }
 });
 
+//Método para leer el archivo de con la información de los XML emitidos en el SAT
 app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, res) => {
     const filePath = req.file.path;
 
     try {
-        const workbook = new ExcelJs.Workbook();
+        const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(filePath);
 
         LibroDeGastos = workbook;
@@ -284,19 +265,18 @@ app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, r
             rowData.Numero = i - 2;
             rowData.Tipo = row.getCell('D').value;
             rowData.Fecha = row.getCell('E').value;
-            rowData.Fecha = row.getCell('E').value;
             rowData.Serie = row.getCell('I').value;
             rowData.Folio = row.getCell('J').value;
             rowData.RfcEmisor = row.getCell('M').value;
             rowData.NombreEmisor = row.getCell('N').value;
             rowData.Descuento = row.getCell('V').value;
-            rowData.SubTotal = excelActions.CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
-            rowData.RetIsr = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
-            rowData.RetIva = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
-            rowData.Ieps = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
-            rowData.Iva8 = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
-            rowData.Iva16 = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
-            rowData.Total = excelActions.CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
+            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
+            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
+            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
+            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
+            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
+            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
+            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
             rowData.Concepto = row.getCell('AO').value;
 
             if(rowData.NombreEmisor != null)
@@ -327,15 +307,14 @@ app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, r
     }
 });
 
-app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async (req, res) =>{
-    
-}); 
-
+//Inicia el servidor
 app.listen(serverPort, (req, res)=> {
     console.log("Servidor corriendo en el puerto: " + serverPort);
 });
 
+//Sirve para manejar excepciones no controladas por alguna razón y que el servidor no se apague.
 process.on('unhandledRejection', (error, promise) => {
-    console.log(' Oh Lord! We forgot to handle a promise rejection here: ', promise);
-    console.log(' The error was: ', error );
+    console.log('Error en este código: ', promise);
+    console.log("==================================");
+    console.log('El error fué: ', error );
 })

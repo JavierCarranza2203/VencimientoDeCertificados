@@ -1,10 +1,8 @@
 <?php
-
 require_once "../Services/ClienteService.php";
 require_once "../Models/Cliente.php";
 
-    try
-    {
+    try {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
@@ -13,8 +11,7 @@ require_once "../Models/Cliente.php";
         $Operacion = $_GET['Operacion'];
 
         //Este switch sirve de router para correr el método del servicio que se requiere
-        switch($Operacion)
-        {
+        switch($Operacion) {
             case 'view':
                     //Manda a llamar el método de obtener todos los clientes por grupo
                     echo json_encode($ClienteService->ObtenerTodosLosClientes($_GET['Grupo']));
@@ -25,22 +22,19 @@ require_once "../Models/Cliente.php";
                 break;
             case 'add':
                     // Obtén el contenido del cuerpo de la solicitud (request body)
-                    $data = file_get_contents('php://input');
+                    $datosRecibidos = file_get_contents('php://input');
 
                     // Convierte el contenido del cuerpo de la solicitud (request body) en un objeto PHP
-                    $requestObj = json_decode($data);
+                    $datosDelCliente = json_decode($datosRecibidos);
 
                     //Crea una nueva instancia del cliente
-                    $NuevoCliente = new Cliente();
-                    $NuevoCliente->Nombre = $requestObj->_strNombre;
-                    $NuevoCliente->GrupoClientes = $requestObj->_chrGrupo;
-                    $NuevoCliente->RFC = $requestObj->_strRfc;
-
-                    $NuevoCliente->Sello->FechaFin = $requestObj->Sello->_dtmFechaVencimiento;
-                    $NuevoCliente->Sello->Status = $requestObj->Sello->_blnStatus;
-
-                    $NuevoCliente->Firma->FechaFin = $requestObj->Firma->_dtmFechaVencimiento;
-                    $NuevoCliente->Firma->Status = $requestObj->Firma->_blnStatus;
+                    $NuevoCliente = new Cliente($datosDelCliente->_strNombre, 
+                                                $datosDelCliente->_strRfc, 
+                                                $datosDelCliente->_chrGrupo, 
+                                                $datosDelCliente->Sello->_dtmFechaVencimiento,
+                                                $datosDelCliente->Sello->_blnStatus,
+                                                $datosDelCliente->Firma->_dtmFechaVencimiento,
+                                                $datosDelCliente->Firma->_blnStatus);
 
                     //Manda a llamar el método de agregar cliente
                     echo json_encode($ClienteService->AgregarCliente($NuevoCliente));
