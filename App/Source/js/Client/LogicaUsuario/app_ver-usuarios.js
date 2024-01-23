@@ -1,18 +1,19 @@
-import { PermitirAcceso, MostrarVigencia } from "./Metodos/MetodosSinPeticion.js";
-import { EliminarCliente, EditarCliente } from "./Metodos/Peticiones.js";
+import { PermitirAcceso } from "../../Metodos/MetodosSinPeticion.js";
+import { ActualizarUsuario, EliminarUsuario } from "../../Metodos/Peticiones.js";
 
-const tableContainer = document.getElementById("wrapper");
 let table;
-let url;
+let tableContainer = document.getElementById("wrapper");
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
 /**********************************************************/
 
-//NOTA: Ademas, aqui se cargan los clientes en la tabla usando grid.js
+//NOTA: Además, aquí se cargan los usuarios en la tabla usando grid.js
 window.addEventListener("load", async ()=> {
     PermitirAcceso().then(res => {
-        InicializarTabla(res["Rol"], res["GrupoClientes"]);
+        if(res["Rol"] == "admin" || res["Rol"] == "dev"){
+            InicializarTabla();
+        }
     });
 });
 
@@ -29,16 +30,20 @@ document.addEventListener('click', async function(event) {
         if (event.target.classList.contains('fa-edit')) 
         {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
-            const rfc = row.cells[0].textContent;
-            const grupo = row.cells[2].textContent;
+            const id = row.cells[0].textContent;
+            const nombre = row.cells[1].textContent;
+            const nombreUsuario = row.cells[2].textContent;
+            const grupo = row.cells[3].textContent;
+            const rol = row.cells[4].textContent;
 
-            EditarCliente(rfc, grupo, table, url);
+            ActualizarUsuario(id, nombre, nombreUsuario, grupo, rol, table);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
-            const rfc = row.cells[0].textContent;
 
-            EliminarCliente(rfc, table, url);
+            const nombreUsuario = row.cells[2].textContent;
+
+            EliminarUsuario(nombreUsuario, table)
         }
     }
     catch(error)
@@ -60,22 +65,10 @@ document.addEventListener('click', async function(event) {
 /*             Métodos implementados en la página             */
 /**************************************************************/
 
-function InicializarTabla(rol, grupoClientes = null)
-{
-    url = '../Controllers/ClienteController.php?Operacion=';
-
-    if(rol == "admin" || rol == "dev")
-    {
-        url += "viewAll";
-    }
-    else
-    {
-        url += "view" + "&Grupo=" + grupoClientes;
-    }
-
+function InicializarTabla(){
     table = new gridjs.Grid({
         search: true,
-        columns: ["RFC", "Nombre", "Grupo", "Clave CIEC", "Régimen fiscal", "Status del sello", "Status de la firma", {
+        columns: ["ID", "Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
@@ -85,9 +78,8 @@ function InicializarTabla(rol, grupoClientes = null)
             }
         }],
         server: {
-            url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], 
-                cliente[8], MostrarVigencia(cliente[6]), MostrarVigencia(cliente[4])])
+            url: '../Controllers/UsuarioController.php?Operacion=view',
+            then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
         },
         pagination: {
             limit: 10

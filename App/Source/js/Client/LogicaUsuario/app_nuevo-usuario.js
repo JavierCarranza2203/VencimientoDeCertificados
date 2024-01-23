@@ -1,5 +1,5 @@
-import { PermitirAcceso, ValidarCampos } from "./Metodos/MetodosSinPeticion.js";
-import { AgregarNuevoUsuario} from "./Metodos/Peticiones.js";
+import { PermitirAcceso, ValidarCampos } from "../../Functions/MetodosSinPeticion.js";
+import { AgregarNuevoUsuario} from "../../Functions/Peticiones.js";
 
 const txtNombreCompleto = document.getElementById("txtNombreCompleto");
 const txtNombreUsuario = document.getElementById("txtNombreUsuario");

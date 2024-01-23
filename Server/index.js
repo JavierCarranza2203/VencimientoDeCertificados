@@ -129,6 +129,72 @@ app.get("/test", (req, res)=>{
     }
 });
 
+//Método para leer el archivo de con la información de los XML emitidos en el SAT
+app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => {
+    const filePath = req.file.path;
+
+    try {
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.readFile(filePath);
+
+        LibroDeGastos = workbook;
+
+        const sheet = workbook.worksheets[0];
+        sheet.name = "DATOS"
+
+        const rowCount = sheet.rowCount;
+
+        let data = [];
+
+        for (let i = 2; i <= rowCount; i++) {
+            const row = sheet.getRow(i);
+            let rowData = {};
+
+            rowData.Numero = i - 2;
+            rowData.Tipo = row.getCell('D').value;
+            rowData.Fecha = row.getCell('E').value;
+            rowData.Serie = row.getCell('I').value;
+            rowData.Folio = row.getCell('J').value;
+            rowData.RfcEmisor = row.getCell('M').value;
+            rowData.NombreEmisor = row.getCell('N').value;
+            rowData.Descuento = row.getCell('V').value;
+            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
+            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
+            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
+            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
+            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
+            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
+            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
+            rowData.Concepto = row.getCell('AO').value;
+
+            if(rowData.NombreEmisor != null)
+            {
+                data.push(rowData);
+            }
+        }
+
+        data.sort(function(a, b) {
+            if (a.NombreEmisor < b.NombreEmisor) {
+                return -1;
+            }
+            if (a.NombreEmisor > b.NombreEmisor) {
+                return 1;
+            }
+            return 0;
+        });
+
+
+        res.json(data);
+
+    } catch (error) {
+        res.status(500).json({
+        success: false,
+        message: 'Error al leer el archivo de Excel',
+        error: error.message,
+        });
+    }
+});
+
 //Método para generar el archivo de excel con la relación de gastos
 app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
     try {
@@ -241,69 +307,42 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
     }
 });
 
-//Método para leer el archivo de con la información de los XML emitidos en el SAT
-app.post('/leer_archivo_gastos', upload.single("ReporteDeGastos"), async (req, res) => {
-    const filePath = req.file.path;
-
+app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async(req, res)=>{
     try {
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.readFile(filePath);
+        //Obtiene los datos del body
+        const data = req.body
 
-        LibroDeGastos = workbook;
+        //Accede al libro de excel previamente almacenado en caché
+        const workbook = req.workbook;
 
-        const sheet = workbook.worksheets[0];
-        sheet.name = "DATOS"
+        //Agrega la hoja con el nombre "RESUMEN"
+        const HojaResumen = workbook.addWorksheet("RESUMEN");
 
-        const rowCount = sheet.rowCount;
+        //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
+        LlenarHojaDeRelacionDeGastos(HojaResumen, data[0])
 
-        let data = [];
+        //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
+        HojaResumen.protect("SistemasRG");
 
-        for (let i = 2; i <= rowCount; i++) {
-            const row = sheet.getRow(i);
-            let rowData = {};
+        //Agrega la hoja "GASTOS"
+        const HojaGastos = workbook.addWorksheet("GASTOS");
 
-            rowData.Numero = i - 2;
-            rowData.Tipo = row.getCell('D').value;
-            rowData.Fecha = row.getCell('E').value;
-            rowData.Serie = row.getCell('I').value;
-            rowData.Folio = row.getCell('J').value;
-            rowData.RfcEmisor = row.getCell('M').value;
-            rowData.NombreEmisor = row.getCell('N').value;
-            rowData.Descuento = row.getCell('V').value;
-            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
-            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
-            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
-            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
-            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
-            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
-            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
-            rowData.Concepto = row.getCell('AO').value;
+        LlenarHojaDeRelacionDeGastos(HojaGastos, data[1], true);
 
-            if(rowData.NombreEmisor != null)
-            {
-                data.push(rowData);
-            }
-        }
+        workbook.xlsx.writeBuffer().then(excelBuffer => {
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+            res.send(excelBuffer);
 
-        data.sort(function(a, b) {
-            if (a.NombreEmisor < b.NombreEmisor) {
-                return -1;
-            }
-            if (a.NombreEmisor > b.NombreEmisor) {
-                return 1;
-            }
-            return 0;
+            req.workbook = null;
         });
-
-
-        res.json(data);
-
-    } catch (error) {
+    }
+    catch(error) {
         res.status(500).json({
-        success: false,
-        message: 'Error al leer el archivo de Excel',
-        error: error.message,
-        });
+            success: false,
+            message: 'Error al generar el archivo',
+            error: error.message,
+            });
     }
 });
 

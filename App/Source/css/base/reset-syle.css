@@ -100,7 +100,7 @@ blockquote:before, blockquote:after, q:before, q:after {
 }
 
 /* Nivelamos problemas de tipografías y colocación de formularios */
-form, input:not(.chkNoConsiderar), textarea, select, button, label {
+form, input, textarea, select, button, label {
     font-family: inherit;
     font-size: inherit;
     -webkit-hyphens: auto;

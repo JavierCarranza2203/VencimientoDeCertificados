@@ -1,5 +1,5 @@
-import { Cliente } from "../Clases/Cliente.js";
-import { Usuario } from "../Clases/Usuario.js";
+import { Cliente } from "../Classes/Cliente.js";
+import { Usuario } from "../Classes/Usuario.js";
 import { AgregarCliente, ValidarUsuarioLogeado } from "./Peticiones.js";
 
 //Método que realiza la llamada al método de validar sesión

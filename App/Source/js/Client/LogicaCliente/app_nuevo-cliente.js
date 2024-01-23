@@ -1,5 +1,5 @@
-import { ObtenerDatosDelCertificado } from "./Metodos/Peticiones.js";
-import { PermitirAcceso, RecibirDatosDelNuevoCliente } from "./Metodos/MetodosSinPeticion.js";
+import { ObtenerDatosDelCertificado } from "../../Functions/Peticiones.js";
+import { PermitirAcceso, RecibirDatosDelNuevoCliente } from "../../Functions/MetodosSinPeticion.js";
 
 /**********************************************************/
 /* Llamando al método para permitir el acceso a la página */
@@ -9,8 +9,6 @@ let grupo, bandera = false;
 window.addEventListener("load", ()=>{
     PermitirAcceso().then(res => {
         grupo = res["GrupoClientes"];
-
-        console.log(res["Rol"]);
 
         if(res["Rol"] != "empleado")
         {

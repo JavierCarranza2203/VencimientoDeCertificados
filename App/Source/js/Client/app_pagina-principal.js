@@ -1,5 +1,5 @@
-import { PermitirAcceso } from "./Metodos/MetodosSinPeticion.js";
-import { RunAutoUpdateService } from "./Metodos/Peticiones.js";
+import { PermitirAcceso } from "../Functions/MetodosSinPeticion.js";
+import { RunAutoUpdateService } from "../Functions/Peticiones.js";
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -78,7 +78,7 @@ document.getElementById("btnWarningCustomers").addEventListener("click", ()=>{
 });
 
 document.getElementById("btnNewCustomer").addEventListener("click", ()=>{
-    location.href = "nuevo-certificado.html";
+    location.href = "nuevo-cliente.html";
 });
 
 document.getElementById("btnAllCustomers").addEventListener("click", ()=>{

@@ -1,4 +1,4 @@
-import { IniciarSesion } from "./Metodos/Peticiones.js";
+import { IniciarSesion } from "../../Functions/Peticiones.js";
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */

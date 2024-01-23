@@ -1,6 +1,6 @@
-import { LeerArchivoDeExcel } from "./Metodos/Peticiones.js";
-import { Relacion } from "./Clases/Factura.js";
-import { FormatearCadena } from "./Metodos/MetodosSinPeticion.js";
+import { LeerArchivoDeExcel } from "../../Metodos/Peticiones.js";
+import { Relacion } from "../../Clases/Factura.js";
+import { FormatearCadena } from "../../Metodos/MetodosSinPeticion.js";
 
 let tableContainer = document.getElementById("table");
 let miRelacion;

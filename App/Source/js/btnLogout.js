@@ -1,4 +1,4 @@
-import { CerrarSesion } from "./Metodos/Peticiones.js";
+import { CerrarSesion } from "./Functions/Peticiones.js";
 
 document.getElementById("btnLogout").addEventListener("click", async ()=>{
     if(await CerrarSesion())
