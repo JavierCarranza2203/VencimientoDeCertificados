@@ -1,5 +1,5 @@
-import { PermitirAcceso } from "../../Metodos/MetodosSinPeticion.js";
-import { ActualizarUsuario, EliminarUsuario } from "../../Metodos/Peticiones.js";
+import { PermitirAcceso } from "../../Functions/MetodosSinPeticion.js";
+import { ActualizarUsuario, EliminarUsuario } from "../../Functions/Peticiones.js";
 
 let table;
 let tableContainer = document.getElementById("wrapper");

@@ -1,5 +1,5 @@
 -- Active: 1701900326404@@127.0.0.1@3306@test
 CREATE TABLE clave_ciec(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    contrasenia VARCHAR(10) 
+    contrasenia VARCHAR(10)
 );
