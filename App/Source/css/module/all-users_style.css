@@ -4,34 +4,14 @@
 /* Layout de la pagina de todos los clientes */
 @import url("../layout/all-users_layout.css");
 
+/* Tema de la página de todos los clientes */
+@import url("../theme/all-users_style.css");
 
 /* Estilos del header */
 @import url("components/header_style.css");
 
 /* Estilos para el form de actualizar */
 @import url("components/double-form_style.css");
-
-.gridjs-pages{
-    display: flex;
-}
-
-.logo-container__img{
-    width: 50px;
-}
-
-.acciones{
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.acciones > i:first-child{
-    color: rgb(11, 0, 168);
-}
-
-.acciones > i:last-child{
-    color: rgb(172, 0, 0);
-}
 
 #btnGenerarExcel{
     position: absolute;

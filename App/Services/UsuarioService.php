@@ -17,22 +17,27 @@ class UsuarioService extends Connection
     //Método para iniciar sesion
     public function IniciarSesion(string $nu, string $pw) : string
     {
+        //Busca el nombre de usuario en la base de datos y como regresa un objeto Usuario o null, guardamos el valor en una variable
         $miUsuario = $this->BuscarUsuario($nu);
 
-        if($miUsuario == null)
+        if($miUsuario == null) //Evalua si el resultado fué nulo para generar una excepción
         {
             throw new Exception("El nombre de usuario no es correcto");
         }
 
+        //Llama al método "CompararPassword" recibiendo por parametro la contraseña recibida en la firma de este método (IniciarSesion)
         if($miUsuario->CompararPassword($pw))
         {
+            //Si el resultado de la operación anterior es true, inicia la sesión
             session_start();
 
+            //Y guarda los datos necesarios en variables dedicadas a la sesión
             $_SESSION['nombre_completo'] = $miUsuario->NombreCompleto;
             $_SESSION['nombre_usuario'] = $miUsuario->NombreUsuario;
             $_SESSION['rol_usuario'] = $miUsuario->Rol;
             $_SESSION['grupo_clientes_usuario'] = $miUsuario->GrupoClientes;
 
+            //Regresa el mensaje de éxito
             return "Se ha iniciado sesión";
         }
         else
@@ -157,15 +162,12 @@ class UsuarioService extends Connection
 
         $resultado = $stmt->get_result();
 
-        if ($resultado->num_rows > 0) 
-        {
-
+        if ($resultado->num_rows > 0) {
             $resultado = $resultado->fetch_all();
 
             return $resultado;
         } 
-        else 
-        {
+        else {
             throw new Exception("No hay registros"); 
         }
     }
@@ -181,12 +183,10 @@ class UsuarioService extends Connection
         
         $stmt->bind_param("ssss", $nombre, $usuario, $grupo, $rol);
 
-        if($stmt->execute())
-        {
+        if($stmt->execute()) {
             return "Se actualizó el usuario correctamente";
         }
-        else
-        {
+        else {
             throw new Exception("No se pudo actualizar el usuario");
         }
     }

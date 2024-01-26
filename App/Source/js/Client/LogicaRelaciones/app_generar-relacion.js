@@ -14,8 +14,7 @@ const lblIva16 = document.getElementById("lblIva16");
 const lblTotal = document.getElementById("lblTotal");
 
 document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit", async(e) => {
-    try
-    {
+    try {
         e.preventDefault();
 
         const archivoGastos = document.getElementById("archivoGastos").files[0];
@@ -79,19 +78,16 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
 });
 
 document.addEventListener('click', async function(event) {
-    try{
+    try {
         const elemento = event.target;
-        if (elemento.classList.contains('chkNoConsiderar')) 
-        {
+        if (elemento.classList.contains('chkNoConsiderar')) {
             const row = elemento.parentElement.parentElement.parentElement.parentElement;
 
-            if(elemento.checked)
-            {
+            if(elemento.checked) {
                 miRelacion.RestarCantidad(row.cells[0].textContent);
                 row.classList.add("row--elimated")
             }
-            else
-            {
+            else {
                 miRelacion.RestaurarCantidad(row.cells[0].textContent);
                 row.classList.remove("row--elimated")
             }
@@ -99,8 +95,7 @@ document.addEventListener('click', async function(event) {
             MostrarSumatorias();
         }
     }
-    catch(error)
-    {
+    catch(error) {
         Swal.fire({
             icon: "error",
             title: "¡Hubo un error inesperado!",
@@ -111,8 +106,7 @@ document.addEventListener('click', async function(event) {
 });
 
 document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
-    try
-    {
+    try {
         tableContainer.innerHTML = "";
 
         Swal.fire({
@@ -129,8 +123,7 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
 
         let Datos = [miRelacion.Respaldo, miRelacion.Datos];
         
-        let response = await fetch(`http://localhost:8082/generar_relacion_de_gastos`, 
-        { 
+        let response = await fetch(`https://localhost:8082/generar_relacion_de_gastos`, { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -138,8 +131,7 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
             body: JSON.stringify(Datos)
         });
 
-        if(response.ok)
-        {
+        if(response.ok) {
             let blob = await response.blob();
             let url = window.URL.createObjectURL(blob);
             let a = document.createElement('a');
@@ -160,7 +152,7 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
             throw new Error(mensaje.error);
         }
     }
-    catch(error){
+    catch(error) {
         Swal.fire({
             icon: "error",
             title: "¡Hubo un error inesperado!",

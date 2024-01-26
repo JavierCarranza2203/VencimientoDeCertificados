@@ -10,8 +10,7 @@ window.addEventListener("load", ()=>{
     PermitirAcceso().then(res => {
         grupo = res["GrupoClientes"];
 
-        if(res["Rol"] != "empleado")
-        {
+        if(res["Rol"] != "empleado") {
             bandera = true;
         }
     });
@@ -144,16 +143,13 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
         {
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
-                console.log(bandera)
                 break;
             case 2:
+                CambiarPaginaFormulario(statusSello);
+
                 if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value) {
                     throw new Error("Los certificados no son de la misma persona");
                 }
-
-                CambiarPaginaFormulario(statusSello);
-
-                console.log(bandera);
 
                 await RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, 
                         txtFechaFinEnFirma, statusFirma, txtFechaFinEnSello, statusSello, bandera, grupo);
@@ -176,14 +172,14 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
 });
 
 document.getElementById("btnAnterior").addEventListener("click", ()=> {
-    if(numeroClicks == 1){
+    if(numeroClicks == 1) {
         contenedorFirma.classList.remove("double-form-container__form--next");
         nivel2.classList.remove("progress-bar__levels-container-level--complete");
     }
-    else if(numeroClicks == 2){
+    else if(numeroClicks == 2) {
         contenedorSello.classList.remove("double-form-container__form--next");
     }
-    else{
+    else {
         numeroClicks++;
     }
     
@@ -199,8 +195,7 @@ document.getElementById("btnAnterior").addEventListener("click", ()=> {
 /**************************************************************/
 
 //Recibe los inputs para poner los datos del array recibido por parametro
-function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data)
-{
+function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data) {
     nombre.value = data['NombreCliente'];
     rfc.value = data['RfcCliente'];
     fechaTramite.value = data['FechaDeTramite'];
@@ -215,14 +210,12 @@ function MostrarDatos(nombre, rfc, fechaTramite, fechaVencimiento, status, data)
     icon.classList.add("fa-circle");
 
     //Dependiendo si el status es true o false, agrega los datos correspondientes
-    if (data['Status']) 
-    {
+    if (data['Status']) {
         icon.classList.add("double-form-container__form-status--active");
         status.appendChild(icon);
         status.appendChild(document.createTextNode(" Vigente"));
     } 
-    else 
-    {
+    else {
         icon.classList.add("double-form-container__form-status--inactive");
         status.appendChild(icon);
         status.appendChild(document.createTextNode(" Vencido"));
@@ -234,8 +227,7 @@ function CambiarPaginaFormulario(status, contenedorActual = null, siguienteNivel
     if(status.textContent == ""){ throw new Error('Ingrese un archivo o haga click en "Ver datos"'); }
     else if(status.textContent !== " Vigente"){ throw new Error("Ingrese un certificado vigente"); }
 
-    if(siguienteNivel != null)
-    {
+    if(siguienteNivel != null) {
         contenedorActual.classList.add("double-form-container__form--next");
         siguienteNivel.classList.add("progress-bar__levels-container-level--complete");
     }

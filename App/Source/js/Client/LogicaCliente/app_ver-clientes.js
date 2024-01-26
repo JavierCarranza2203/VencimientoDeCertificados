@@ -1,5 +1,5 @@
 import { PermitirAcceso, MostrarVigencia } from "../../Functions/MetodosSinPeticion.js";
-import { EliminarCliente, EditarCliente } from "../../Functions/Peticiones.js";
+import { EliminarCliente, EditarDatosDelCliente } from "../../Functions/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -25,24 +25,21 @@ window.addEventListener("load", async ()=> {
 /*************************************************************/
 
 document.addEventListener('click', async function(event) {
-    try{
-        if (event.target.classList.contains('fa-edit')) 
-        {
+    try {
+        if (event.target.classList.contains('fa-edit')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
-            const grupo = row.cells[2].textContent;
 
-            EditarCliente(rfc, grupo, table, url);
+            // EditarDatosDelCliente(rfc, table, url);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
 
-            EliminarCliente(rfc, table, url);
+            // EliminarCliente(rfc, table, url);
         }
     }
-    catch(error)
-    {
+    catch(error) {
         Swal.fire({
             icon: "error",
             title: "¡Hubo un error inesperado!",
@@ -60,16 +57,13 @@ document.addEventListener('click', async function(event) {
 /*             Métodos implementados en la página             */
 /**************************************************************/
 
-function InicializarTabla(rol, grupoClientes = null)
-{
+function InicializarTabla(rol, grupoClientes = null) {
     url = '../Controllers/ClienteController.php?Operacion=';
 
-    if(rol == "admin" || rol == "dev")
-    {
+    if(rol == "admin" || rol == "dev") {
         url += "viewAll";
     }
-    else
-    {
+    else {
         url += "view" + "&Grupo=" + grupoClientes;
     }
 

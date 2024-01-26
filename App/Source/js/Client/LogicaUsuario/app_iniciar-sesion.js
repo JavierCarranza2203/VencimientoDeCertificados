@@ -17,9 +17,8 @@ let muestraContrasenia = false;
 /*************************************************************/
 
 //Captura el evento submit del formulario
-document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)=>{
-    try
-    {
+document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)=> {
+    try {
         //Cancela el evento submit
         e.preventDefault();
 
@@ -28,8 +27,7 @@ document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)
         let Contrasenia = txtPassword.value;
 
         //Si ambas variables están vacías, genera un error
-        if(NombreDeUsuario == "" || Contrasenia == "")
-        {
+        if(NombreDeUsuario == "" || Contrasenia == "") {
             throw new Error("Por favor, llene los campos");
         }
 
@@ -42,7 +40,7 @@ document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)
             confirmButtonText: "OK",
         })
 
-        setTimeout(()=>{
+        setTimeout(()=> {
             location.href = "App/Views/pagina-principal.html"
         }, 1000)
     }
@@ -61,14 +59,12 @@ document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)
 btnShowPassword.addEventListener("click", ()=>{
     muestraContrasenia = !muestraContrasenia;
 
-    if(muestraContrasenia)
-    {
+    if(muestraContrasenia) {
         txtPassword.type = "text";
         btnShowPassword.classList.remove("fa-eye");
         btnShowPassword.classList.add("fa-eye-slash");
     }
-    else
-    {
+    else {
         txtPassword.type = "password";
         btnShowPassword.classList.add("fa-eye");
         btnShowPassword.classList.remove("fa-eye-slash");
@@ -83,14 +79,11 @@ document.getElementById("btnCrearCuenta").addEventListener("click", ()=>{
         showCancelButton: true,
         confirmButtonText: "Validar código",
         showLoaderOnConfirm: true,
-        preConfirm: (code)=>
-        {
-            if(code === "RG2023")
-            {
+        preConfirm: (code)=> {
+            if(code === "RG2023") {
                 location.href = "App/Views/nuevo-usuario.html?access_code=true";
             }
-            else
-            {
+            else {
                 Swal.showValidationMessage(`
                     El código es incorrecto
                 `);

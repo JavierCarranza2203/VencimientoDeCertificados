@@ -10,10 +10,10 @@ abstract class Certificado
     public bool $Status;
 
     //Constructor
-    public function __construct()
+    public function __construct(string $fechaFin, bool $status)
     {
-        $this->FechaFin = "Desconocida";
-        $this->Status = false;
+        $this->FechaFin = $fechaFin;
+        $this->Status = $status;
     }
 }
 

@@ -147,6 +147,7 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
+        backdrop: false,
         preConfirm: () => {
             // Obtiene los valores de los campos de entrada
             const nombre = Swal.getPopup().querySelector('#swal-input1').value;
@@ -320,7 +321,7 @@ export async function EliminarCliente(rfc, tabla, url){
     });
 }
 
-export async function EditarCliente(rfc, grupo, tabla, url){
+export async function EditarCertificadosDelCliente(rfc, tabla, url){
     Swal.fire({
         title: 'Modificar cliente',
         html:
@@ -331,31 +332,24 @@ export async function EditarCliente(rfc, grupo, tabla, url){
             `<input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input"><br>` +
 
             '<label for="certificadoFiel" class="form__label">Ingrese certificado de la firma:</label>' +
-            `<input type="file" name="certificadoFiel" id="certificadoFiel" class="double-form-container__form-input"><br>` +
-
-            '<label for="cmbGrupoClientes" class="form__label">Ingrese grupo del cliente:</label>' + 
-            '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
-                '<option value="A">Clientes A</option>' +
-                '<option value="B">Clientes B</option>' +
-                '<option value="C">Clientes C</option>' +
-            '</select><br>',
+            `<input type="file" name="certificadoFiel" id="certificadoFiel" class="double-form-container__form-input"><br>`,
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
+        backdrop: false,
         preConfirm: () => {
             // Obtiene los valores de los campos de entrada
             const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
             const CertificadoSello = Swal.getPopup().querySelector('#certificadoSello').files[0];
             const CertificadoFirma = Swal.getPopup().querySelector('#certificadoFiel').files[0];
-            const GrupoClientes = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
 
+            if(CertificadoSello == null && CertificadoFirma == null) { throw new Error("Debe ingresar por lo menos un dato"); }
             let datos = new FormData();
             datos.append("Rfc", Rfc);
             datos.append("CertificadoSello", CertificadoSello);
             datos.append("CertificadoFirma", CertificadoFirma);
-            datos.append("GrupoClientes", GrupoClientes);
 
-            fetch('../Controllers/ClienteController.php?Operacion=update', {
+            fetch('../Controllers/ClienteController.php?Operacion=updateCertificates', {
                 method: 'POST',
                 body: datos,
             });
@@ -383,24 +377,96 @@ export async function EditarCliente(rfc, grupo, tabla, url){
                 icon: 'error'
             });
         }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
+    });
+}
+
+export async function EditarDatosDelCliente(rfc, clave, tabla, url){
+    Swal.fire({
+        title: 'Modificar cliente',
+        html:
+            '<label for="txtRfc" class="form__label">RFC del cliente a editar:</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+
+            '<label for="certificadoSello" class="form__label">Ingrese certificado del sello:</label>' +
+            `<input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input"><br>` +
+
+            '<label for="txtRfc" class="form__label">Ingrese la nueva clave CIEC:</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="Clave CIEC"><br>`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        backdrop: false,
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
+            const CertificadoSello = Swal.getPopup().querySelector('#certificadoSello').files[0];
+            const CertificadoFirma = Swal.getPopup().querySelector('#certificadoFiel').files[0];
+
+            if(CertificadoSello == null && CertificadoFirma == null) { throw new Error("Debe ingresar por lo menos un dato"); }
+            let datos = new FormData();
+            datos.append("Rfc", Rfc);
+            datos.append("CertificadoSello", CertificadoSello);
+            datos.append("CertificadoFirma", CertificadoFirma);
+
+            fetch('../Controllers/ClienteController.php?Operacion=updateCertificates', {
+                method: 'POST',
+                body: datos,
+            });
+        }
+    }).then((result) => {
+        // Maneja la respuesta de la petición AJAX
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Datos insertados correctamente.',
+                icon: 'success'
+            });
+
+            ActualizarTablaClientes(tabla, url);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un error al insertar datos.',
+                icon: 'error'
+            });
+        }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
     });
 }
 
 export function ActualizarTablaClientes(table, url)
 {
     table.updateConfig({
-        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma", {
+        columns: ["Nombre", "Grupo", "Vigencia del sello", "Vigencia de la firma", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash"></i>`;
 
-                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
+                return gridjs.html(`<div class="acciones">${editarIcono}</div>`);
             }
         }],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], MostrarVigencia(cliente[3]), cliente[6], MostrarVigencia(cliente[5])])
+            then: data => data.map(cliente => [cliente[1], cliente[2], cliente[7], cliente[5]])
         }
     }).forceRender();
 }
@@ -424,6 +490,7 @@ export async function RunAutoUpdateService()
         showCancelButton: true,
         confirmButtonText: "Aceptar",
         showLoaderOnConfirm: true,
+        backdrop: false,
         preConfirm: async ()=>
         {
             let grupo = Swal.getPopup().querySelector('#txtGrupo').value.toUpperCase();
@@ -484,7 +551,7 @@ export async function LeerArchivoDeExcel(archivo){
     formData.append("ReporteDeGastos", archivo);
 
     //Realiza la petición al controlador del certificado
-    const response = await fetch("http://localhost:8082/leer_archivo_gastos", {
+    const response = await fetch("http://localhost:8082/leer_archivo", {
         method: "POST",
         body: formData,
     });

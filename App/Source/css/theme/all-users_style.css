@@ -1,0 +1,7 @@
+div.acciones > i.fa-edit{
+    color: rgb(11, 0, 168);
+}
+
+div.acciones > i.fa-trash{
+    color: rgb(172, 0, 0);
+}

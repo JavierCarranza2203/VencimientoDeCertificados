@@ -7,8 +7,8 @@
 //Duplica este archivo y nombralo como "config.php" 
 //Después reemplaza el segundo parámetro de cada constante por los valores que necesites
 
-//                nombre de la variable          tu valor
-//Ejemplo: define(       'DB_HOST',            'localhost')
+//                nombre de la variable                    tu valor
+//Ejemplo: define(       'DB_HOST',            'localhost, 192.168.1.50, etc.')
 
 // define('DB_HOST', 'your-host');
 

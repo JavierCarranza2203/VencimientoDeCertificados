@@ -1,5 +1,5 @@
 import { PermitirAcceso } from "../../Functions/MetodosSinPeticion.js";
-import { EliminarCliente, EditarCliente } from "../../Functions/Peticiones.js";
+import { EditarCertificadosDelCliente } from "../../Functions/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -30,15 +30,8 @@ document.addEventListener('click', async function(event) {
         {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
-            const grupo = row.cells[2].textContent;
 
-            EditarCliente(rfc, grupo, table, url);
-        }
-        else if (event.target.classList.contains('fa-trash')) {
-            const row = event.target.parentElement.parentElement.parentElement.parentElement;
-            const rfc = row.cells[0].textContent;
-
-            EliminarCliente(rfc, table, url);
+            EditarCertificadosDelCliente(rfc, table, url);
         }
     }
     catch(error)
@@ -64,12 +57,10 @@ function InicializarTabla(rol, grupoClientes = null)
 {
     url = '../Controllers/ClienteController.php?Operacion=';
 
-    if(rol == "admin" || rol == "dev")
-    {
+    if(rol == "admin" || rol == "dev") {
         url += "viewAll";
     }
-    else
-    {
+    else {
         url += "view" + "&Grupo=" + grupoClientes;
     }
 
@@ -79,9 +70,8 @@ function InicializarTabla(rol, grupoClientes = null)
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
-                const eliminarIcono = `<i class="fas fa-trash"></i>`;
 
-                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
+                return gridjs.html(`<div class="acciones">${editarIcono}</div>`);
             }
         }],
         server: {

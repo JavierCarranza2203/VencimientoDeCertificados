@@ -6,3 +6,17 @@ body{
                 "header header header"
                 "menu double-form-container ."
 }
+
+div.acciones{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.gridjs-pages{
+    display: flex;
+}
+
+header.header > div.logo-container > img.logo-container__img{
+    width: 50px;
+}

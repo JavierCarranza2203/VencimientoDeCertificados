@@ -76,23 +76,23 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
 export function ValidarCampos(campos)
 {
     let i = 0;
-    //Expresion común que solo permite letras
+    //Expresion regular que solo permite letras
     const soloLetras = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
+    //Expresión regular que permite números y letras
     const letrasNumeros = /^[a-zA-ZÀ-ÿ0-9-.\s]{1,40}$/;
 
     //Recorre los campos recibidos por parametro y en caso de que el test falle, genera una excepcion
     campos.forEach(input => {
-        if(!soloLetras.test(input.value))
-        {
-            if(i == 2)
-            {
+        if(!soloLetras.test(input.value)) {
+            //Como el textbox para la contraseña está en el indice 2 del arreglo de textbox, probamos con la expresión para letras y números
+            if(i == 2) {
                 if(!letrasNumeros.test(input.value))
                 {
                     throw new Error("Solo se admiten números y letras en la contraseña");
                 }
             }
-            else
-            {
+            else {
+                //El espacio antes de la palabra "no" se puso a proposito para que no saliera el valor del input pegado a la palabra antes mencionada
                 throw new Error(input.value + " no es un valor correcto");
             }
         }
@@ -103,8 +103,9 @@ export function ValidarCampos(campos)
     return true;
 }
 
-export function MostrarVigencia(bitBooleano)
-{
+//Como en la base de datos maneja los valores booleanos guardando un 1 o un 0, este método nos permite
+//mostrarle al usuario un mensaje que pueda entender (Vigente cuando es 1 o vencido cuando es 0)
+export function MostrarVigencia(bitBooleano) {
     if(bitBooleano == 1){
         return "Vigente";
     }
@@ -113,6 +114,7 @@ export function MostrarVigencia(bitBooleano)
     }
 }
 
+//Este método muestra los números como formato de decimales. Ejemplo: 1234 lo muestra como 1,234.00
 export function FormatearCadena(cadena) {
     return cadena.toLocaleString('en-US', {
         minimumFractionDigits: 2,

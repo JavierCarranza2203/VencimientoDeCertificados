@@ -307,6 +307,7 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
     }
 });
 
+//Método para generar el archivo de excel de la relación de ingresos
 app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async(req, res)=>{
     try {
         //Obtiene los datos del body

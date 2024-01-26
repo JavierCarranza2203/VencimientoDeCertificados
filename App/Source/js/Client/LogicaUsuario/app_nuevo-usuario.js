@@ -13,12 +13,10 @@ const ArrayInputs = [txtNombreCompleto, txtNombreUsuario, txtContrasenia];
 window.addEventListener("load", ()=>{
     const acceso = window.location.search;
 
-    if(!acceso)
-    {
+    if(!acceso) {
         PermitirAcceso();
     }
-    else
-    {
+    else {
         document.getElementById("blocker").classList.add("content-blocker--hidden");
     }
 });
@@ -34,6 +32,12 @@ window.addEventListener("load", ()=>{
 document.getElementById("btnAgregarUsuario").addEventListener("click", async ()=>{
     try
     {
+        //Recorre el arreglo con los textbox para evaluar si estan vacíos, en caso de que si, genera un error
+        ArrayInputs.forEach(input => {
+            if(input.value == "") { throw new Error("Debe llenar todos los campos"); }
+        });
+
+        //Despues llama al método para evaluar el valor y validar que no se pongan números, caracteres especiales, etc.
         ValidarCampos(ArrayInputs);
 
         let data = await AgregarNuevoUsuario(

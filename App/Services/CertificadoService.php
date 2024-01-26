@@ -25,27 +25,21 @@ class CertificadoService
             'Tipo' => $this->ValidarCertificado($cert_info)
         ];
 
-        //Regresa el JSON
-        $jsonDatos = json_encode($datosCertificado); 
-
-        return $jsonDatos;
+        return json_encode($datosCertificado);
     }
 
+    //Método para validar si el certificado es un sello o firma
     private function ValidarCertificado($certificado) : string
     {
-        if($this->isFIEL($certificado)) { return "Firma"; }
-        else if($this->isCSD($certificado)) { return "Sello"; }
-        else { throw new Exception("El certificado no pertenece a un sello o una firma"); }
-    }
-
-    private function isCSD($cert) : bool
-    {
-        return $cert['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation';
-    }
-
-    private function isFIEL($cert) : bool
-    {
-        return $cert['extensions']['keyUsage'] == 'Digital Signature, Non Repudiation, Data Encipherment, Key Agreement';
+        if($certificado['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation, Data Encipherment, Key Agreement') { 
+            return "Firma"; 
+        }
+        else if($certificado['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation') { 
+            return "Sello"; 
+        }
+        else { 
+            throw new Exception("El certificado no pertenece a un sello o una firma"); 
+        }
     }
 }
 

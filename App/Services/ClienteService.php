@@ -9,21 +9,29 @@ class ClienteService extends Connection
     //Código de acceso (Se requiere para operaciones críticas como borrar usuarios)
     private int $codigoDeAccesso = 00175;
 
+/*********************************************************/
+/*             Métodos para agregar clientes             */
+/*********************************************************/
+
     //Método que agrega al nuevo cliente
-    public function AgregarCliente(Cliente $c) : string
-    {
+    public function AgregarCliente(Cliente $c) : string {
+        //Llama al método para buscar si la RFC del cliente existe
         if($this->BuscarCliente($c->RFC))
         {
             throw new Exception("El cliente ya existe");
         }
         else
         {
+            //Prepara la consulta
             $stmt = $this->db_conection->prepare("INSERT INTO cliente (rfc, nombre, grupo_clientes) VALUES (?, ?, ?)");
 
+            //Asigna los parametros al stament
             $stmt->bind_param("sss", $c->RFC, $c->Nombre, $c->GrupoClientes);
 
+            //Ejecuta el stmt
             if($stmt->execute())
             {
+                //Llama al método para agregar el certificado y si regresa falso, elimina el cliente y genera una excepción
                 if(!$this->AgregarCertificado($c->Firma->FechaFin, $c->Firma->Status, $c->RFC, "Firma"))
                 {
                     $this->EliminarCliente($c->RFC, $this->codigoDeAccesso);
@@ -36,50 +44,201 @@ class ClienteService extends Connection
                 }
                 else
                 {
-                    return("El cliente se ha agregado correctamente");
+                    return("El cliente se ha agregado correctamente"); //Regresa un mensaje de éxito
                 }
             }
             else
             {
-                throw new Exception("Hubo un error al agregar el cliente");
+                throw new Exception("Hubo un error al agregar el cliente"); //En caso de que el stmt no se ejecute, regresa un error
             }
         }
     }
 
     //Método para agregar los certificados. Es privado ya que se manda a llamar desde AgregarCliente
-    private function AgregarCertificado(string $fechaVencimiento, bool $status, string $rfcCliente, string $tipo) : bool
-    {
+    private function AgregarCertificado(string $fechaVencimiento, bool $status, string $rfcCliente, string $tipo) : bool {
+        //Prepara la consulta
         $stmt = $this->db_conection->prepare("INSERT INTO certificado (fecha_fin, estatus, tipo, id_cliente) VALUES (?, ?, ?, ?)");
 
+        //Asigna los parametros para insertar en la db
         $stmt->bind_param("ssss", $fechaVencimiento, $status, $tipo, $rfcCliente);
 
+        //Ejecuta el stmt y como el método "execute" regresa un bool, regresamos ese valor
         return $stmt->execute();
     }
 
-    //Método privado para buscar un cliente
-    private function BuscarCliente(string $rfc) : bool
-    {
-        $stmt = $this->db_conection->prepare("SELECT * FROM cliente WHERE rfc = ?");
+/*********************************************************/
+/*             Métodos para agregar clientes             */
+/*********************************************************/
 
-        $stmt->bind_param("s", $rfc);
+/***********************************************************/
+/*             Métodos de consulta de clientes             */
+/***********************************************************/
 
+    //Este método sirve para buscar los clientes por grupoo 
+    public function ObtenerTodosLosClientes(string $grupoClientes) : array {
+        //Prepara la consulta
+        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados WHERE grupo_clientes = ?");
+
+        //Asigna los valores que van a ser utilizados en la consulta
+        $stmt->bind_param("s", $grupoClientes);
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    //Este método es para regresar TODOS los clientes sin importar el grupo al que pertenecen
+    public function ObtenerTodosLosClientes_Admin() : array {
+        //Prepara la consulta
+        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados");
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    //Ejecuta las consultas SELECT y regresa el resultado
+    private function EjecutarStamentDeQuerySelect(mysqli_stmt $stmt) : array {
+        //Ejecuta la consulta
         $stmt->execute();
 
+        //Obtiene el resultado
         $resultado = $stmt->get_result();
 
+        //Evalua si el resultado es mayor a 0
+        if($resultado->num_rows > 0) {
+            $resultado = $resultado->fetch_all();
+
+            return $resultado;
+        } 
+        else {
+            throw new Exception("No hay registros"); 
+        }
+    }
+
+/***********************************************************/
+/*             Métodos de consulta de clientes             */
+/***********************************************************/
+
+/*******************************************************/
+/*             Métodos para editar clientes            */
+/*******************************************************/
+
+    //Método para editar los clientes
+    public function EditarDatosCliente(string $rfc, string $grupo, string | int $claveCiec, string $regimenFiscal) : string {
+        if(isset($rfc) && is_string($rfc))
+        {
+            if(is_string($claveCiec)) {
+                $stmtCliente = $this->db_conection->prepare("UPDATE `cliente` SET `grupo_clientes` = ? WHERE `id_clave_ciec` = ?");
+
+                $stmtCliente->bind_param("ss", $claveCiec, $rfc);
+
+                if(!$stmtCliente->execute()){ throw new Exception("Hubo un error al actualizar el cliente"); }
+            }
+
+            $this->EditarCampoCliente($grupo, $rfc, "UPDATE `cliente` SET `grupo_clientes` = ? WHERE `rfc` = ?");
+            $this->EditarCampoCliente($claveCiec, $rfc, "UPDATE `cliente` SET `grupo_clientes` = ? WHERE `id_clave_ciec` = ?");
+            $this->EditarCampoCliente($regimenFiscal, $rfc, "UPDATE `cliente` SET `clave_regimen` = ? WHERE `rfc` = ?");
+
+            return "Se ha actualizado al cliente con RFC: " + $rfc;
+        }
+        else {
+            throw new Exception('El rfc debe ser una cadena de texto');
+        }
+    }
+
+    //Método para editar 1 campo
+    private function EditarCampoCliente(string | int $nuevoValor, string $rfc, string $consulta) : void {
+        if(isset($nuevoValor) && (is_string($nuevoValor) || is_int($nuevoValor))) {
+            $stmtCliente = $this->db_conection->prepare($consulta);
+
+            $stmtCliente->bind_param("ss", $nuevoValor, $rfc);
+
+            if(!$stmtCliente->execute()){ throw new Exception("Hubo un error al actualizar el cliente"); }
+        }
+        else {
+            throw new Exception("Hay un error con los datos");
+        }
+    }
+
+    //Método que edita los certificados del cliente
+    public function EditarCertificados(string $rfc, $certificadoSello, $certificadoFirma) : string {
+        $this->EditarCertificado($certificadoSello, "El sello está vencido", $rfc, "El sello pertenece a otra persona", "Hubo un error al actualizar el sello");
+
+        $this->EditarCertificado($certificadoFirma, "La firma está vencida", $rfc, "La firma pertenece a otra persona", "Hubo un error al actualizar la firma");
+
+        return "Se ha actualizado el cliente con RFC: " . $rfc; 
+    }
+
+    //Método que edita 1 certificado
+    private function EditarCertificado($certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
+        if(isset($certificado)) {
+            $CertificadoService = new CertificadoService();
+
+            $datosDelCertificado = json_decode($CertificadoService->ObtenerDatosCertificado($certificado));
+
+            $bitBooleano = $this->ValidarVigenciaDelCertificado($datosDelCertificado->Status, $mensajeVencimiento);
+            $this->ValidarCongruencia($rfc, $datosDelCertificado->RfcCliente, $mensajeDeIdentidad);
+
+            $stmt = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
+
+            $stmt->bind_param("siss", $datosDelCertificado->FechaDeVencimiento, $bitBooleano, $rfc, $datosDelCertificado->Tipo);
+
+            if(!$stmt->execute()) { throw new Exception($mensajeDeErrorAlActualizar); }
+        }
+    }
+
+/*******************************************************/
+/*             Métodos para editar clientes            */
+/*******************************************************/
+
+/**************************************/
+/*             Validaciones           */
+/**************************************/
+
+    //Método para validar si el certificado es de la persona misma persona
+    //NOTA PARA MI: Piensa otro nombre para el método porque este no está tan chido 25/01/2024
+    private function ValidarCongruencia($RfcPersona, $RfcPersonaEnCertificado, $exMessage) : void {
+        if($RfcPersona != $RfcPersonaEnCertificado) { throw new Exception($exMessage); }
+    }
+
+    //Método para validar si el certificado es vigente
+    private function ValidarVigenciaDelCertificado($status, $exMessage) : int { //NOTA: Recibe el mensaje para distingir si el CSD es el vencido o la FIEL
+        if(!$status){ throw new Exception($exMessage); }
+        else { return 1; }
+    }
+
+/**************************************/
+/*             Validaciones           */
+/**************************************/
+
+    //Método privado para buscar un cliente
+    private function BuscarCliente(string $rfc) : bool {
+        //Prepara la consulta
+        $stmt = $this->db_conection->prepare("SELECT * FROM cliente WHERE rfc = ?");
+
+        //Asigna el parametro
+        $stmt->bind_param("s", $rfc);
+
+        //Ejecuta el stmt
+        $stmt->execute();
+
+        //Obtiene el resultado de la consulta
+        $resultado = $stmt->get_result();
+
+        //Regresa el resultado de la operación: ¿El número de renglones del resultado es mayor a 0?
         return $resultado->num_rows > 0;
     }
 
     //Método para eliminar un cliente
-    public function EliminarCliente(string $rfc_cliente_antiguo, int $codigoDeAccesso) : string
-    {
-        if($codigoDeAccesso == $this->codigoDeAccesso)
-        {
-            if($this->BuscarCliente($rfc_cliente_antiguo) == true)
+    public function EliminarCliente(string $rfc_cliente_antiguo, int $codigoDeAccesso) : string {
+        //Evalua si el código proporcioado en el parametro es igual al definido antes
+        if($codigoDeAccesso == $this->codigoDeAccesso) {
+            //Evalua si el cliente existe
+            if($this->BuscarCliente($rfc_cliente_antiguo))
             {
+                //Si es asi, prepara la consulta
                 $stmt = $this->db_conection->prepare("DELETE FROM cliente WHERE rfc = ?");
+                //Asigna los parametros
                 $stmt->bind_param("s", $rfc_cliente_antiguo);
 
+                //Y ejecuta el stmt evaluando el valor regresado
                 if($stmt->execute()){ return "Se ha eliminado el cliente con el RFC: " . $rfc_cliente_antiguo; }
                 else{ throw new Exception("Hubo un error al eliminar el cliente"); }
             }
@@ -88,115 +247,9 @@ class ClienteService extends Connection
                 throw new Exception("El cliente no existe");
             }
         }
-        else
-        {
+        else {
             throw new Exception("Código de acceso incorrecto");
         }
     }
-
-    //Este método sirve para buscar los clientes por grupoo 
-    public function ObtenerTodosLosClientes(string $grupoClientes)
-    {
-        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados WHERE grupo_clientes = ?");
-
-        $stmt->bind_param("s", $grupoClientes);
-
-        $stmt->execute();
-
-        $resultado = $stmt->get_result();
-
-        if ($resultado->num_rows > 0)
-        {
-            $resultado = $resultado->fetch_all();
-
-            return $resultado;
-        } 
-        else 
-        {
-            throw new Exception("No hay registros"); 
-        }
-    }
-
-    //Este método es para regresar TODOS los clientes sin importar el grupo al que pertenecen
-    public function ObtenerTodosLosClientes_Admin()
-    {
-        $stmt = $this->db_conection->prepare("SELECT * FROM clientes_certificados");
-
-        $stmt->execute();
-
-        $resultado = $stmt->get_result();
-
-        if($resultado->num_rows > 0)
-        {
-            $resultado = $resultado->fetch_all();
-
-            return $resultado;
-        } 
-        else 
-        {
-            throw new Exception("No hay registros"); 
-        }
-    }
-
-    public function EditarCliente(string $rfc, $certificadoSello, $certificadoFirma, string $grupoClientes)
-    {
-        //Instancia del servicio de certificados
-        $CertificadoService = new CertificadoService();
-
-        $stmtCliente = $this->db_conection->prepare("UPDATE `cliente` SET `grupo_clientes` = ? WHERE `rfc` = ?");
-        $stmtCliente->bind_param("ss", $grupoClientes, $rfc);
-        if(!$stmtCliente->execute()){ throw new Exception("Hubo un error al actualizar el cliente"); }
-
-        if(isset($certificadoSello))
-        {
-            //Corre el servicio para obtener los datos del certificado del sello
-            $datosDelSello = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoSello));
-
-            $bitBooleano = $this->ValidarVigenciaDelCertificado($datosDelSello->Status, "El sello está vencido");
-            $this->ValidarCongruencia($rfc, $datosDelSello->RfcCliente, "El sello pertenece a otra persona");
-
-            $stmtSello = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
-
-            $tipo = "Sello";
-
-            //Agrega los parametros
-            $stmtSello->bind_param("siss", $datosDelSello->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
-            
-            if(!$stmtSello->execute()){ throw new Exception("Hubo un error al actualizar el sello"); }
-        }
-
-        if(isset($certificadoFirma))
-        {
-            //Corre el servicio para obtener los datos del certificado de la firma
-            $datosDeLaFirma = json_decode($CertificadoService->ObtenerDatosCertificado($certificadoFirma));
-
-            $bitBooleano = $this->ValidarVigenciaDelCertificado($datosDeLaFirma->Status, "La firma está vencida");
-            $this->ValidarCongruencia($rfc, $datosDeLaFirma->RfcCliente, "La firma pertenece a otra persona");
-
-            //Prepara la consulta para actualizar la firma
-            $stmtFirma = $this->db_conection->prepare("UPDATE `certificado` SET `fecha_fin` = ?, `estatus` = ? WHERE `id_cliente` = ? AND `tipo` = ?");
-
-            $tipo = "Firma";
-
-            //Agrega los parametros
-            $stmtFirma->bind_param("siss", $datosDeLaFirma->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
-
-            if(!$stmtFirma->execute()){ throw new Exception("Hubo un error al actualizar la firma"); }
-        }
-
-        return "Se ha actualizado el cliente con RFC: " . $rfc; 
-    }
-
-    private function ValidarCongruencia($NombrePersona, $NombrePersonaEnCertificado, $exMessage) : void
-    {
-        if($NombrePersona != $NombrePersonaEnCertificado) { throw new Exception($exMessage); }
-    }
-
-    private function ValidarVigenciaDelCertificado($status, $exMessage) : int
-    {
-        if(!$status){ throw new Exception($exMessage); }
-        else { return 1; }
-    }
 }
-
 ?>

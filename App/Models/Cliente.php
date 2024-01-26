@@ -22,10 +22,8 @@ require_once 'Sello.php';
         {
             $this->Nombre = $nombre;
             $this->RFC = $rfc;
-            $this->Sello->FechaFin = $fechaFinSello;
-            $this->Sello->Status = $statusSello;
-            $this->Firma->FechaFin = $fechaFinFirma;
-            $this->Firma->Status = $statusFirma;
+            $this->Sello = new Sello($fechaFinSello, $statusSello);
+            $this->Firma = new Firma($fechaFinFirma, $statusFirma);
             $this->GrupoClientes = $grupoClientes;
         }
     }

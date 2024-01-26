@@ -31,23 +31,20 @@ window.addEventListener("load", async()=>{
 
             btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
-        else if(res["Rol"] == "dev")
-        {
-            btnNewUser.addEventListener("click", ()=>{
+        else if(res["Rol"] == "dev") {
+            btnNewUser.addEventListener("click", ()=> {
                 location.href = "nuevo-usuario.html";
             });
             
-            btnAllUsers.addEventListener("click", ()=>{
+            btnAllUsers.addEventListener("click", ()=> {
                 location.href = "ver-usuarios.html";
             });
 
-            btnAutoUpdateService.addEventListener("click", ()=>{
-                try
-                {
+            btnAutoUpdateService.addEventListener("click", ()=> {
+                try {
                     RunAutoUpdateService();
                 }
-                catch(error)
-                {
+                catch(error) {
                     Swal.fire({
                         icon: "error",
                         title: "¡Hubo un error inesperado!",
@@ -57,7 +54,7 @@ window.addEventListener("load", async()=>{
                 }
             });
         }
-        else{
+        else {
             btnNewUser.classList.add("content-blocker--hidden");
             btnAllUsers.classList.add("content-blocker--hidden");
             btnAutoUpdateService.classList.add("content-blocker--hidden");
