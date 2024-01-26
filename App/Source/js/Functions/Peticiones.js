@@ -543,7 +543,7 @@ export async function RunAutoUpdateService()
 /*       Método para generar relaciones de excel          */
 /**********************************************************/
 
-export async function LeerArchivoDeExcel(archivo){
+export async function LeerArchivoDeExcel(archivo) {
     //Genera una instancia de la clase FormData
     const formData = new FormData();
 

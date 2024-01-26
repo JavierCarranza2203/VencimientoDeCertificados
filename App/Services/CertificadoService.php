@@ -2,7 +2,7 @@
 
 class CertificadoService 
 {
-    public function ObtenerDatosCertificado($rcContent) : string
+    public function ObtenerDatosCertificado(string $rcContent) : string
     {
         //Convierte el contenido del archivo a binario
         $encoded = "-----BEGIN CERTIFICATE-----\n".base64_encode(file_get_contents($rcContent))."\n-----END CERTIFICATE-----";
@@ -29,7 +29,7 @@ class CertificadoService
     }
 
     //Método para validar si el certificado es un sello o firma
-    private function ValidarCertificado($certificado) : string
+    private function ValidarCertificado(array $certificado) : string
     {
         if($certificado['extensions']['keyUsage'] === 'Digital Signature, Non Repudiation, Data Encipherment, Key Agreement') { 
             return "Firma"; 

@@ -1,7 +1,6 @@
 import { PermitirAcceso, MostrarVigencia } from "../../Functions/MetodosSinPeticion.js";
 
 const tableContainer = document.getElementById("wrapper");
-let table;
 let url;
 
 /**********************************************************/

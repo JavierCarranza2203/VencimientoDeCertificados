@@ -1,5 +1,5 @@
 import { LeerArchivoDeExcel } from "../../Functions/Peticiones.js";
-import { Relacion } from "../../Classes/Factura.js";
+import { Relacion } from "../../Classes/Factura.ts";
 import { FormatearCadena } from "../../Functions/MetodosSinPeticion.js";
 
 let tableContainer = document.getElementById("table");

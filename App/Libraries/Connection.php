@@ -5,7 +5,7 @@ require_once '../Config/config.php';
 class Connection
 {
     //Variable protegida para la conección
-    protected $db_conection;
+    protected mysqli $db_conection;
 
     //En el constructor de la clase, inicializa la conexión a la base de datos
     public function __construct()

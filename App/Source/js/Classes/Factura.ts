@@ -1,12 +1,14 @@
 export class Relacion
 {
-    constructor(data){
+    public Datos : Array<Object>;
+    public Respaldo : Array<Object>;
+
+    constructor(data : Array<Object>){
         this.Datos = data;
         this.Respaldo = [...data];
-        this.DatosEliminados;
     }
 
-    CalcularSubTotal() {
+    public CalcularSubTotal() : number {
         let suma = 0;
 
         this.Datos.forEach(dato => {

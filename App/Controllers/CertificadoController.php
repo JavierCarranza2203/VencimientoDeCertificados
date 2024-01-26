@@ -24,7 +24,6 @@ require_once "../Services/CertificadoService.php";
         } 
         else {
             // Manejo de error si no se recibió el archivo
-            header("HTTP/1.1 400 Bad Request");
             throw new Exception("No se recibió el archivo");
         }
     }

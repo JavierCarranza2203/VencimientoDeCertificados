@@ -16,12 +16,10 @@ class ClienteService extends Connection
     //Método que agrega al nuevo cliente
     public function AgregarCliente(Cliente $c) : string {
         //Llama al método para buscar si la RFC del cliente existe
-        if($this->BuscarCliente($c->RFC))
-        {
+        if($this->BuscarCliente($c->RFC)) {
             throw new Exception("El cliente ya existe");
         }
-        else
-        {
+        else {
             //Prepara la consulta
             $stmt = $this->db_conection->prepare("INSERT INTO cliente (rfc, nombre, grupo_clientes) VALUES (?, ?, ?)");
 
@@ -29,8 +27,7 @@ class ClienteService extends Connection
             $stmt->bind_param("sss", $c->RFC, $c->Nombre, $c->GrupoClientes);
 
             //Ejecuta el stmt
-            if($stmt->execute())
-            {
+            if($stmt->execute()) {
                 //Llama al método para agregar el certificado y si regresa falso, elimina el cliente y genera una excepción
                 if(!$this->AgregarCertificado($c->Firma->FechaFin, $c->Firma->Status, $c->RFC, "Firma"))
                 {
@@ -47,8 +44,7 @@ class ClienteService extends Connection
                     return("El cliente se ha agregado correctamente"); //Regresa un mensaje de éxito
                 }
             }
-            else
-            {
+            else {
                 throw new Exception("Hubo un error al agregar el cliente"); //En caso de que el stmt no se ejecute, regresa un error
             }
         }
@@ -158,7 +154,7 @@ class ClienteService extends Connection
     }
 
     //Método que edita los certificados del cliente
-    public function EditarCertificados(string $rfc, $certificadoSello, $certificadoFirma) : string {
+    public function EditarCertificados(string $rfc, string $certificadoSello, string $certificadoFirma) : string {
         $this->EditarCertificado($certificadoSello, "El sello está vencido", $rfc, "El sello pertenece a otra persona", "Hubo un error al actualizar el sello");
 
         $this->EditarCertificado($certificadoFirma, "La firma está vencida", $rfc, "La firma pertenece a otra persona", "Hubo un error al actualizar la firma");
@@ -167,7 +163,7 @@ class ClienteService extends Connection
     }
 
     //Método que edita 1 certificado
-    private function EditarCertificado($certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
+    private function EditarCertificado(string $certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
         if(isset($certificado)) {
             $CertificadoService = new CertificadoService();
 
@@ -194,12 +190,12 @@ class ClienteService extends Connection
 
     //Método para validar si el certificado es de la persona misma persona
     //NOTA PARA MI: Piensa otro nombre para el método porque este no está tan chido 25/01/2024
-    private function ValidarCongruencia($RfcPersona, $RfcPersonaEnCertificado, $exMessage) : void {
+    private function ValidarCongruencia(string $RfcPersona, string $RfcPersonaEnCertificado, string $exMessage) : void {
         if($RfcPersona != $RfcPersonaEnCertificado) { throw new Exception($exMessage); }
     }
 
     //Método para validar si el certificado es vigente
-    private function ValidarVigenciaDelCertificado($status, $exMessage) : int { //NOTA: Recibe el mensaje para distingir si el CSD es el vencido o la FIEL
+    private function ValidarVigenciaDelCertificado(bool $status, string $exMessage) : int { //NOTA: Recibe el mensaje para distingir si el CSD es el vencido o la FIEL
         if(!$status){ throw new Exception($exMessage); }
         else { return 1; }
     }

@@ -154,7 +154,7 @@ class UsuarioService extends Connection
     }
 
     //Método para obtener todos los usuarios
-    public function ObtenerTodosLosUsuarios()
+    public function ObtenerTodosLosUsuarios() : array
     {
         $stmt = $this->db_conection->prepare("SELECT id, nombre_completo, nombre_usuario, grupo_clientes, rol FROM usuario");
 
@@ -163,16 +163,21 @@ class UsuarioService extends Connection
         $resultado = $stmt->get_result();
 
         if ($resultado->num_rows > 0) {
-            $resultado = $resultado->fetch_all();
+            $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
 
-            return $resultado;
+            $Usuarios = [];
+            foreach($resultado as $usuario){
+                array_push($Usuarios, new Usuario($usuario["nombre_completo"], $usuario["nombre_usuario"], "", $usuario ["rol"], $usuario["grupo_clientes"]));
+            }
+
+            return $Usuarios;
         } 
         else {
-            throw new Exception("No hay registros"); 
+            throw new Exception("No hay registros");
         }
     }
 
-    public function ActualizarUsuario(int $id, string $nombre, string $usuario, string $grupo, string $rol)
+    public function ActualizarUsuario(int $id, string $nombre, string $usuario, string $grupo, string $rol) : string
     {
         $stmt = $this->db_conection->prepare("UPDATE usuario SET 
                     nombre_completo = ?,

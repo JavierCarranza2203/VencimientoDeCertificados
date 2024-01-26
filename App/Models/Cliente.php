@@ -18,7 +18,7 @@ require_once 'Sello.php';
         public Firma $Firma;
 
         //Constructor
-        public function __construct(string $nombre, string $rfc, string $grupoClientes, string $fechaFinSello, bool $statusSello, string $fechaFinFirma, bool $statusFirma)
+        public function __construct(string $nombre = "", string $rfc = "", string $grupoClientes = "", string $fechaFinSello = "", bool $statusSello = false, string $fechaFinFirma = "", bool $statusFirma = false)
         {
             $this->Nombre = $nombre;
             $this->RFC = $rfc;

@@ -23,7 +23,7 @@ class AutoUpdateService {
     }
 
     //Metodo para agregar los clientes
-    public function AgregarClientes($grupo)
+    public function AgregarClientes(string $grupo)
     {
         //Obtiene una lista de todos los directorios que hay dentro de la ruta de certificados
         $Firmas = scandir($this->RutaDeLaFirma);                                              
@@ -48,7 +48,7 @@ class AutoUpdateService {
     }
 
     //Metodo para recorrer las carpetas y archivos
-    private function RecorrerCarpetas($Principal, $Secundaria, string $RutaPrincipal, string $RutaSecundaria, string $GrupoClientes, bool $FirmaPrimero) {
+    private function RecorrerCarpetas(array $Principal, array $Secundaria, string $RutaPrincipal, string $RutaSecundaria, string $GrupoClientes, bool $FirmaPrimero) {
         //Contadores
         $contadorExitos = 0;
         $contadorErrores = 0;
@@ -164,7 +164,7 @@ class AutoUpdateService {
     }
 
     //Método para eliminar certificados de la carpeta
-    private function EliminarElementos($ArrayIndices, $ArrayAEliminar, $Ruta)
+    private function EliminarElementos(array $ArrayIndices, array $ArrayAEliminar, string $Ruta)
     {
         //Array para guardar los elementos que no se van a eliminar
         $ArrayElementos = [];

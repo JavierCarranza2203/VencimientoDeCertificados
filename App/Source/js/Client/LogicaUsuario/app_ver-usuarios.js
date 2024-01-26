@@ -68,7 +68,7 @@ document.addEventListener('click', async function(event) {
 function InicializarTabla(){
     table = new gridjs.Grid({
         search: true,
-        columns: ["ID", "Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
+        columns: ["Nombre completo", "Nombre de usuario", "Grupo de clientes", "Rol", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
@@ -79,7 +79,7 @@ function InicializarTabla(){
         }],
         server: {
             url: '../Controllers/UsuarioController.php?Operacion=view',
-            then: data => data.map(usuario => [usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]])
+            then: data => data.map(Usuario => [Usuario.NombreCompleto, Usuario.NombreUsuario, Usuario.GrupoClientes, Usuario.Rol])
         },
         pagination: {
             limit: 10
