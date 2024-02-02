@@ -6,7 +6,7 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
-import { Cliente } from '../App/Source/js/Classes/Cliente.js';
+import { Relacion } from './Relacion.ts';
 
 const app = new express();
 let LibroDeGastos;
@@ -72,7 +72,7 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         const [results, fields] = await pool.query(consulta);
 
         if(results.length == 0) {
-            res.send({mensaje: "No hay datos para enviar"})
+            res.send({mensaje: "No hay datos para enviar"});
         }
 
         //Obtiene todos los clientes que van a vencer en el año
@@ -84,7 +84,7 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         const sheetClientesA_Semana = workbook.addWorksheet("Clientes A en dos semanas");
         const sheetClientesB_Semana = workbook.addWorksheet("Clientes B en dos semanas");
         const sheetClientesC_Semana = workbook.addWorksheet("Clientes C en dos semanas");
-        
+
         //Agrega los encabezados a cada una se las páginas
         AgregarEncabezados([sheetClientesA_Semana, sheetClientesB_Semana, sheetClientesC_Semana]);
 
@@ -92,7 +92,7 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         data = FiltarRegistroPorVencerEnLaSemana(data);
 
         if(data.length == 0) {
-            res.send({mensaje: "No hay datos para enviar"})
+            res.send({ mensaje: "No hay datos para enviar" });
         }
 
         //Agrega los renglones a las paginas de los clientes que se vencen en la semana
@@ -168,8 +168,7 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
             rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
             rowData.Concepto = row.getCell('AO').value;
 
-            if(rowData.NombreEmisor != null)
-            {
+            if(rowData.NombreEmisor != null) {
                 data.push(rowData);
             }
         }
@@ -181,9 +180,9 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
             if (a.NombreEmisor > b.NombreEmisor) {
                 return 1;
             }
+
             return 0;
         });
-
 
         res.json(data);
 
@@ -321,7 +320,7 @@ app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), a
         const HojaResumen = workbook.addWorksheet("RESUMEN");
 
         //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
-        LlenarHojaDeRelacionDeGastos(HojaResumen, data[0])
+        LlenarHojaDeRelacionDeGastos(HojaResumen, data[0]);
 
         //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
         HojaResumen.protect("SistemasRG");
@@ -358,4 +357,4 @@ process.on('unhandledRejection', (error, promise) => {
     console.log('Error en este código: ', promise);
     console.log("==================================");
     console.log('El error fué: ', error );
-})
+});

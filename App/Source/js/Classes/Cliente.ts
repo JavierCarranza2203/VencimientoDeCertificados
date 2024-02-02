@@ -1,4 +1,4 @@
-import { Certificado } from "./Certificado.js";
+import { Certificado } from "./Certificado.ts";
 
 export class Cliente
 {

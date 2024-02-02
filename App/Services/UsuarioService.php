@@ -175,7 +175,7 @@ class UsuarioService extends Connection
         else {
             throw new Exception("No hay registros");
         }
-    }
+    }   
 
     public function ActualizarUsuario(int $id, string $nombre, string $usuario, string $grupo, string $rol) : string
     {

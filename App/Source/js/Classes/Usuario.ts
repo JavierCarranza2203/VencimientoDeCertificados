@@ -1,15 +1,13 @@
 export class Usuario
 {
-    constructor(nombre, rol, grupoClientes)
+    private Nombre : string;
+    private Rol : string;
+    private GrupoClientes : string;
+
+    constructor(nombre : string, rol : string, grupoClientes : string)
     {
-        this._strNombre = nombre;
-        this._strRol = rol;
-        this._chrGrupoClientes = grupoClientes;
+        this.Nombre = nombre;
+        this.Rol = rol;
+        this.GrupoClientes = grupoClientes;
     }
-
-    get Nombre(){ return this._strNombre; }
-
-    get Rol() { return this._strRol; }
-
-    get GrupoClientes() { return this._chrGrupoClientes; }
 }
