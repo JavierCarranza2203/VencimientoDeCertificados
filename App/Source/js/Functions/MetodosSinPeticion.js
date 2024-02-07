@@ -57,13 +57,13 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
 
         let NuevoCliente = new Cliente();
 
-        NuevoCliente._strNombre = txtNombreEnFirma.value;
-        NuevoCliente._strRfc = txtRfcEnFirma.value;
-        NuevoCliente.Firma._dtmFechaVencimiento = txtFechaFinEnFirma.value;
-        NuevoCliente.Firma._blnStatus = statusFirma.textContent;
-        NuevoCliente.Sello._dtmFechaVencimiento = txtFechaFinEnSello.value;
-        NuevoCliente.Sello._blnStatus = statusSello.textContent;
-        NuevoCliente._chrGrupo = grupo;
+        NuevoCliente.Nombre = txtNombreEnFirma.value;
+        NuevoCliente.Rfc = txtRfcEnFirma.value;
+        NuevoCliente.Firma.FechaVencimiento = txtFechaFinEnFirma.value;
+        NuevoCliente.Firma.Status = statusFirma.textContent;
+        NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello.value;
+        NuevoCliente.Sello.Status = statusSello.textContent;
+        NuevoCliente.Grupo = grupo;
 
         await AgregarCliente(JSON.stringify(NuevoCliente));
     }

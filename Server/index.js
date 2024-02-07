@@ -6,7 +6,6 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
-import { Relacion } from './Relacion.ts';
 
 const app = new express();
 let LibroDeGastos;
@@ -72,7 +71,7 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         const [results, fields] = await pool.query(consulta);
 
         if(results.length == 0) {
-            res.send({mensaje: "No hay datos para enviar"});
+            res.status(403).send({mensaje: "No hay datos para enviar"});
         }
 
         //Obtiene todos los clientes que van a vencer en el año

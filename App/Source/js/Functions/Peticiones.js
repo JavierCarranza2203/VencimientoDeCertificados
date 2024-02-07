@@ -1,5 +1,3 @@
-import { MostrarVigencia } from "./MetodosSinPeticion.js";
-
 /**********************************************************/
 /*                   Metodos del certificado              */
 /**********************************************************/

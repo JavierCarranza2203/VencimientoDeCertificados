@@ -1,4 +1,4 @@
-import { Relacion } from './Factura.js';
+import { Relacion } from './Relacion.js';
 
 export function AgregarEncabezados(ArraySheet) {
     ArraySheet.forEach(sheet => {

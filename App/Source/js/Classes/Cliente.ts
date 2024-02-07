@@ -8,12 +8,11 @@ export class Cliente
     public Sello : Certificado;
     public Firma : Certificado;
 
-    constructor()
-    {
+    constructor(nombre : string, rfc : string, grupo : string, fechaVencimientoFirma : string, statusFirma : boolean, fechaVencimientoSello : string, statusSello : boolean) {
         //Inicializacion de las propiedades del cliente
-        this.Nombre = "Desconocido";
-        this.Rfc = "Desconocida";
-        this.Grupo = "";
+        this.Nombre = nombre;
+        this.Rfc = rfc;
+        this.Grupo = grupo;
 
         //Inicializacion del sello y firma
         this.Sello = new Certificado();
