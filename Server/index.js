@@ -9,6 +9,7 @@ import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from '.
 
 const app = new express();
 let LibroDeGastos;
+let DatosOriginales;
 
 app.use(express.json());
 
@@ -21,6 +22,7 @@ app.use(cors());
 //Crea una variable para almacenar un archivo en caché
 app.use((req, res, next)=>{
     req.workbook = LibroDeGastos;
+    req.datosOriginales = DatosOriginales;
     next();
 });
 
@@ -70,10 +72,6 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         const [results, fields] = await pool.query(consulta);
 
-        if(results.length == 0) {
-            res.send({mensaje: "No hay datos para enviar"})
-        }
-
         //Obtiene todos los clientes que van a vencer en el año
         let data = RegresarRegistrosPorVencer(results);
 
@@ -90,21 +88,22 @@ app.get('/clientes_por_vencer/excel', async(req, res) => {
         //Filtra los clientes por semana
         data = FiltarRegistroPorVencerEnLaSemana(data);
 
-        if(data.length == 0) {
-            res.send({mensaje: "No hay datos para enviar"})
-        }
-
         //Agrega los renglones a las paginas de los clientes que se vencen en la semana
         AgregarRenglonesPorGrupoDeClientes(sheetClientesA_Semana, data, 'A');
         AgregarRenglonesPorGrupoDeClientes(sheetClientesB_Semana, data, 'B');
         AgregarRenglonesPorGrupoDeClientes(sheetClientesC_Semana, data, 'C');
 
-        //Se guarda el excel y se manda el archivo al cliente
-        workbook.xlsx.writeBuffer().then(excelBuffer => {
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
-            res.send(excelBuffer);
-        });
+        if(data.length === 0) {
+            res.status(403).send({ mensaje : "No hay clientes por vencer esta semana" })
+        }
+        else {
+            //Se guarda el excel y se manda el archivo al cliente
+            workbook.xlsx.writeBuffer().then(excelBuffer => {
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+                res.send(excelBuffer);
+            }); 
+        }
     }
     catch(error) {
         res.status(500).send("Error en el servidor: " + error);

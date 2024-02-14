@@ -1,4 +1,4 @@
-import { Relacion } from './Factura.js';
+import { Relacion } from './Factura.js ';
 
 export function AgregarEncabezados(ArraySheet) {
     ArraySheet.forEach(sheet => {
@@ -7,9 +7,9 @@ export function AgregarEncabezados(ArraySheet) {
             { header: "Nombre completo", key: "nombre", width: 45 },
             { header: "Grupo de clientes", key: "grupo_clientes", width: 17 },
             { header: "Estatus de la firma", key: "status_firma", width: 20 },
-            { header: "Fecha de expiración de la firma", key: "fecha_vencimiento_firma", width: 30},
+            { header: "Fecha de expiración de la firma", key: "fecha_vencimiento_firma", width: 30 },
             { header: "Estatus del sello", key: "status_sello", width: 20 },
-            { header: "Fecha de expiración del sello", key: "fecha_vencimiento_sello", width: 30}
+            { header: "Fecha de expiración del sello", key: "fecha_vencimiento_sello", width: 30 }
         ];
 
         DarEstilosAEncabezados(sheet);
@@ -21,7 +21,7 @@ export function DarEstilosAEncabezados(sheet) {
 
     columnas.forEach(columna => {
         sheet.getCell(columna).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-        sheet.getCell(columna).font = { name: 'Arial', size: 10, color: { argb: 'FFFFFF'} };
+        sheet.getCell(columna).font = { name: 'Arial', size: 10, color: { argb: 'FFFFFF' } };
     });
 }
 
