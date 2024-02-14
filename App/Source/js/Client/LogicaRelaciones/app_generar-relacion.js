@@ -122,8 +122,8 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
         });
 
         let Datos = [miRelacion.Respaldo, miRelacion.Datos];
-        
-        let response = await fetch(`https://localhost:8082/generar_relacion_de_gastos`, { 
+
+        let response = await fetch(`http://localhost:8082/generar_relacion_de_gastos`, { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
