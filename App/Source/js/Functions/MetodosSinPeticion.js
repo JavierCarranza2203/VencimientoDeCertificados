@@ -123,3 +123,21 @@ export function FormatearCadena(cadena) {
         decimal: ','
     });
 }
+
+export function ConvertirNumeroDeMesALetra(numeroDelMes) {
+    switch(numeroDelMes) {
+        case 0: return 'ENERO';
+        case 1: return 'FEBRERO';
+        case 2: return 'MARZO';
+        case 3: return 'ABRIL';
+        case 4: return 'MAYO';
+        case 5: return 'JUNIO';
+        case 6: return 'JULIO';
+        case 7: return 'AGOSTO';
+        case 8: return 'SEPTIEMBRE';
+        case 9: return 'OCTUBRE';
+        case 10: return 'NOVIEMBRE';
+        case 11: return 'DICIEMBRE';
+        default: throw new Error("No se encontró el mes correspondiente"); //No se encontró el mes correspondiente
+    }
+}

@@ -63,7 +63,7 @@ export function DarEstilosARenglones(sheet, data) {
 
 export function CalcularSubTotal(tipo, subtotal, descuento){
     if(tipo == "Factura"){
-        return subtotal - descuento
+        return subtotal - descuento;
     }
     else if(tipo == ""){
         return 0;
@@ -74,13 +74,13 @@ export function CalcularSubTotal(tipo, subtotal, descuento){
 }
 
 export function CalcularValorParaMostrar(tipo, valor){
-    if(tipo == "Factura"){
+    if(tipo == "Factura") {
         return valor;
     }
-    else if(tipo == ""){
+    else if(tipo == "") {
         return 0;
     }
-    else{
+    else {
         return valor * -1;
     }
 }
@@ -91,18 +91,18 @@ export function AsignarFormatoDeCelda(hoja, ultimoNumeroDeRenglon) {
     arrayColumnas.forEach(columna => {
         let cell = hoja.getCell(columna + ultimoNumeroDeRenglon);
         cell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
-    })
+    });
 }
 
-export function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = false) {
+export function LlenarHojaDeRelacionDeGastos(hoja, data, nombre, banderaSumatorias = false) {
     const relacion = new Relacion(data);
 
     let fechaActual = new Date().getFullYear();
 
     hoja.mergeCells('A1:N1');
     hoja.mergeCells('A2:N2');
-    hoja.getCell('A2').value = "GASTOS MES DE " + fechaActual;
-    hoja.getCell('A2').font = { bold:true };
+    hoja.getCell('A2').value = nombre + " " + fechaActual;
+    hoja.getCell('A2').font = { bold: true };
     hoja.getCell('B2').alignment = { horizontal: 'center' };
     hoja.addRow();
 
@@ -112,6 +112,20 @@ export function LlenarHojaDeRelacionDeGastos(hoja, data, banderaSumatorias = fal
         cell.font = { bold: true };
         cell.alignment = { horizontal: 'center' };
     });
+
+    hoja.getColumn('A').width = 2;
+    hoja.getColumn('B').width = 0;
+    hoja.getColumn('C').width = 11;
+    hoja.getColumn('D').width = 6;
+    hoja.getColumn('E').width = 7;
+    hoja.getColumn('F').width = 16.29;
+    hoja.getColumn('G').width = 49;
+
+    hoja.getColumn('C').alignment = { horizontal: 'center' };
+    hoja.getColumn('D').alignment = { horizontal: 'center' };
+    hoja.getColumn('E').alignment = { horizontal: 'center' };
+    hoja.getColumn('F').alignment = { horizontal: 'center' };
+    AsignarAnchoAColumnas(hoja, ['H', 'I', 'J', 'K', 'L', 'M', 'N'], 13);
 
     relacion.Datos.forEach(row => {
         AsignarFormatoDeCelda(hoja, hoja.lastRow.number);
@@ -159,8 +173,8 @@ export function AgregarTotalesDiot(celdaTexto, celdaValor, valorCeldaTexto, form
     celdaTexto.alignment = { horizontal: 'right' };
     celdaValor.value = formulaCeldaValor;
     celdaValor.border = {
-        top: { style:'thin', color: { argb:'00000000' } },
-        bottom: { style:'double', color: { argb:'00000000' } }
+        top: { style: 'thin', color: { argb:'00000000' } },
+        bottom: { style: 'double', color: { argb:'00000000' } }
     };
     celdaValor.font = { bold: true };
     celdaValor.fill = {

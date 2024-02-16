@@ -139,8 +139,7 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
     {
         numeroClicks++;
 
-        switch(numeroClicks)
-        {
+        switch(numeroClicks) {
             case 1:
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
                 break;
@@ -159,8 +158,7 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 break;
         }
     }
-    catch(error)
-    {
+    catch(error) {
         numeroClicks--;
         Swal.fire({
             icon: "error",
@@ -182,7 +180,7 @@ document.getElementById("btnAnterior").addEventListener("click", ()=> {
     else {
         numeroClicks++;
     }
-    
+
     numeroClicks--;
 });
 

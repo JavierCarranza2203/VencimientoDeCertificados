@@ -86,8 +86,12 @@ document.getElementById("btnDocumentControl").addEventListener("click", ()=> {
     location.href = "control-de-certificados.html";
 });
 
-document.getElementById("btnRelacionDeGastosEIngresos").addEventListener("click", ()=> {
-    location.href = "generar-relacion.html";
+document.getElementById("btnRelacionDeGastos").addEventListener("click", ()=> {
+    location.href = "generar-relacion-gastos.html";
+});
+
+document.getElementById("btnRelacionDeIngresos").addEventListener("click", ()=> {
+    location.href = "generar-relacion-ingresos.html";
 });
 
 /*************************************************************/

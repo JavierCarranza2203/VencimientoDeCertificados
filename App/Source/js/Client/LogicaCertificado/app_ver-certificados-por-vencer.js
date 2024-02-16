@@ -23,8 +23,7 @@ window.addEventListener("load", async ()=> {
 /*             Métodos implementados en la página             */
 /**************************************************************/
 
-function InicializarTabla(rol, grupoClientes = null)
-{
+function InicializarTabla(rol, grupoClientes = null) {
     url = 'http://localhost:8082/clientes_por_vencer';
 
     if(rol != "admin" && rol != "dev") {

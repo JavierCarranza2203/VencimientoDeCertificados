@@ -1,6 +1,7 @@
 import { LeerArchivoDeExcel } from "../../Functions/Peticiones.js";
 import { Relacion } from "../../Classes/Factura.js";
 import { FormatearCadena } from "../../Functions/MetodosSinPeticion.js";
+import { GenerarExcelRelaciones, LlenarTabla } from "../../Functions/MetodosGenerarExcelRelaciones.js";
 
 let tableContainer = document.getElementById("table");
 let miRelacion;
@@ -32,8 +33,8 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
                     console.log("Cerrado por el timer");
                 }
             });
-        
-        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
+
+        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos, 'name'));
 
         Swal.fire({
             title: "¡Los datos se han procesado!",
@@ -42,28 +43,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
             confirmButtonText: "OK",
         });
 
-        table = new gridjs.Grid({
-            columns: [{name: "Número"}, "Fecha", "RFC Emisor", "Nombre Emisor", "Sub Total", "Ret. ISR", "Ret. IVA", "IEPS", "IVA 8%", "IVA 16%", "Total", "Concepto", {
-                    name: 'No considerar',
-                    formatter: (cell, row) => {
-                        const eliminarIcono = `<input type="checkbox" name="chkNoConsiderar" id="chkNoConsiderar" class="chkNoConsiderar">`;
-
-                        return gridjs.html(`<div class="acciones">${eliminarIcono}</div>`);
-                    }
-                },
-            ],
-            data: miRelacion.Datos.map(dato => [dato.Numero, dato.Fecha, dato.RfcEmisor, dato.NombreEmisor, FormatearCadena(dato.SubTotal), FormatearCadena(dato.RetIsr), FormatearCadena(dato.RetIva), FormatearCadena(dato.Ieps), FormatearCadena(dato.Iva8), FormatearCadena(dato.Iva16), FormatearCadena(dato.Total), dato.Concepto]),
-            pagination: {
-                limit: 10
-            },
-            height: '480px',
-            fixedHeader: true,
-            language: {
-                'search': {
-                    'placeholder': '🔍 Escriba para buscar...'
-                }
-            }
-        }).render(tableContainer);   
+        table = LlenarTabla(tableContainer, miRelacion);
 
         MostrarSumatorias();
     }
@@ -105,52 +85,41 @@ document.addEventListener('click', async function(event) {
     }
 });
 
-document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
+document.getElementById("btnGenerarExcel").addEventListener("click", async ()=> {
     try {
-        tableContainer.innerHTML = "";
-
         Swal.fire({
-        title: "El archivo se está generando",
-        text: "Espere por favor",
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-        }}).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("Cerrado por el timer");
+            title: 'Nueva relación de Excel',
+            html:
+                '<label for="txtNombreCliente" class="form__label">Ingrese el nombre del cliente:</label>' +
+                `<input id="txtNombreCliente" class="double-form-container__form-input" placeholder="Ej. JUAN PEREZ" value=""><br>` +
+
+                '<label for="cmbTipoRelacion" class="form__label">Seleccione el tipo de relación:</label>' +
+                '<select name="cmbTipoRelacion" id="cmbTipoRelacion" class="double-form-container__form-combobox">' +
+                    '<option value="gastos" selected>Relación de gastos (Facturas recibidas)</option>' +
+                    '<option value="ingresos">Relación de ingresos (Facturas emitidas)</option>' +
+                '</select><br>',
+            showCancelButton: true,
+            confirmButtonText: 'Generar relación',
+            cancelButtonText: 'Cancelar',
+            backdrop: false,
+            preConfirm: () => {
+                // Obtiene los valores de los campos de entrada
+                let NombreCliente = Swal.getPopup().querySelector('#txtNombreCliente').value;
+                let TipoRelacion = Swal.getPopup().querySelector('#cmbTipoRelacion').value;
+
+                if(NombreCliente !== null || NombreCliente !== ' ' || NombreCliente !== ''){
+                    if(TipoRelacion === '' || TipoRelacion === null){ throw new Error('Selecione el tipo de relación') } 
+
+                    TipoRelacion === "gastos"?
+                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_gastos`, 'RELACION DE GASTOS', tableContainer, NombreCliente)
+                    :
+                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_ingresos`, 'RELACION DE INGRESOS', tableContainer, NombreCliente)
+                }
+                else{
+                    throw new Error("Debe ingresar el nombre del cliente");
+                }
             }
         });
-
-        let Datos = [miRelacion.Respaldo, miRelacion.Datos];
-
-        let response = await fetch(`http://localhost:8082/generar_relacion_de_gastos`, { 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(Datos)
-        });
-
-        if(response.ok) {
-            let blob = await response.blob();
-            let url = window.URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = 'RELACION DE GASTOS';
-            a.click();
-
-            Swal.fire({
-                title: "¡El archivo se ha generado!",
-                text: "Puede encontrarlo en la carpeta de descargas",
-                icon: "success",
-                confirmButtonText: "OK",
-            });
-        }
-        else {
-            let mensaje = await response.json();
-            console.log(mensaje)
-            throw new Error(mensaje.error);
-        }
     }
     catch(error) {
         Swal.fire({
