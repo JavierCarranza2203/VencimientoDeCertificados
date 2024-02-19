@@ -4,7 +4,7 @@ import { createPool } from 'mysql2/promise';
 import ExcelJS from 'exceljs';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
-import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
+import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacion, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 
 const app = new express();
@@ -129,154 +129,45 @@ app.get("/test", (req, res)=>{
     }
 });
 
-//Método para generar el archivo de excel con la relación de gastos
-app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
-    try {
-        //Obtiene los datos del body
-        const data = req.body;
-
-        //Accede al libro de excel previamente almacenado en caché
-        const workbook = req.workbook;
-
-        //Agrega la hoja con el nombre "RESUMEN"
-        const sheetResumen = workbook.addWorksheet("RESUMEN");
-
-        //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
-        LlenarHojaDeRelacionDeGastos(sheetResumen, data[0], "RELACION DE GASTOS");
-
-        //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
-        sheetResumen.protect("SistemasRG");
-
-        //Agrega la hoja "GASTOS"
-        const sheetGastos = workbook.addWorksheet("GASTOS");
-
-        LlenarHojaDeRelacionDeGastos(sheetGastos, data[1], "RELACION DE GASTOS", true);
-
-        //Agrega la hoja "DIOT"
-        const sheetDiot = workbook.addWorksheet("DIOT");
-
-        //Asigna el tamaño de las columnas
-        sheetDiot.getColumn('A').width = 3;
-        sheetDiot.getColumn('B').width = 25.14;
-
-        AsignarAnchoAColumnas(sheetDiot, ['C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'V', 'W', 'X'], 0);
-        AsignarAnchoAColumnas(sheetDiot, ['AB', 'AC'], 5);
-        AsignarAnchoAColumnas(sheetDiot, ['Y', 'Z', 'AA', 'AD'], 13);
-        AsignarAnchoAColumnas(sheetDiot, ['G', 'L', 'T', 'U'], 20);
-
-        //Combina las celdas
-        sheetDiot.mergeCells('B1:AD1');
-        sheetDiot.mergeCells('B2:AD2');
-
-        //Asigna el texto a las celdas para que sirvan como encabezados
-        sheetDiot.getCell('B4').value = "RFC EMISOR";
-        sheetDiot.getCell('G4').value = "SUBTOTAL 16%";
-        sheetDiot.getCell('L4').value = "SUBTOTAL 8%";
-        sheetDiot.getCell('T4').value = "SUBTOTAL 0%";
-        sheetDiot.getCell('U4').value = "SUBTOTAL GASTOS";
-        sheetDiot.getCell('Y4').value = "IVA 8%";
-        sheetDiot.getCell('Z4').value = "IVA 16%";
-        sheetDiot.getCell('AA4').value = "RET. IVA";
-        sheetDiot.getCell('AD4').value = "DIFERENCIAS";
-
-        //Array con la letras de las columnas de los headers
-        const columnasDiot = ['B', 'G', 'L', 'T', 'U', 'Y', 'Z', 'AA', 'AD'];
-
-        for(let i = 0; i < columnasDiot.length; i++) {
-            sheetDiot.getCell(columnasDiot[i] + '4').font = { bold: true };
-            sheetDiot.getCell(columnasDiot[i] + '4').alignment = { horizontal: 'center' };
-        }
-
-        //Array con las columnas que llevan información
-        const arrayColumnas = ['B', 'G', 'L', 'T', 'AD', 'U', 'Y', 'Z', 'AA', 'AB', 'AC'];
-        let columnaEncontrada = true, celda;
-
-        //Ciclo para recorrer las 78 filas que manejan los contadores
-        for(let i = 5; i <= 78; i++) {
-            arrayColumnas.forEach(columna => {
-                celda = sheetDiot.getCell(columna + i);
-                
-                columna == 'B'? LlenarFormulasDiot(celda, null, true, '') : 
-                columna == 'G'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Z' + i } / ${ 0.16 }, 0)` }) : 
-                columna == 'L'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Y' + i } / ${ 0.08 }, 0)` }) : 
-                columna == 'T'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'U' + i } - ${ 'G' + i } - ${ 'L' + i }, 0)` }) : 
-                columna == 'AD'? LlenarFormulasDiot(celda, { formula: `=+${ 'U' + i }-${ 'G' + i }-${ 'L' + i }-${ 'T' + i }` }) : columnaEncontrada = false;
-
-                if(!columnaEncontrada){
-                    LlenarFormulasDiot(celda, null, true);
-                }
-
-                columnaEncontrada = true;
-            });
-        }
-
-        for(let i = 1; i <= arrayColumnas.length - 3; i++){
-            celda = sheetDiot.getCell(arrayColumnas[i] + 79);
-            LlenarFormulasDiot(celda, { formula: `SUM(${ arrayColumnas[i] + 5 } : ${ arrayColumnas[i] + 78 })` }, true)
-
-            celda.border = {
-                top: { style:'thin', color: { argb:'00000000' } },
-                bottom: { style:'double', color: { argb:'00000000' } }
-            };
-        }
-
-        AgregarTotalesDiot(sheetDiot.getCell('G81'), sheetDiot.getCell('L81'), "TOTAL SUBTOTAL", { formula: `SUM(G79:T79)` });
-        AgregarTotalesDiot(sheetDiot.getCell('T81'), sheetDiot.getCell('U81'), "TOTAL IVA", { formula: `SUM(Y79:Z79)` });
-        AgregarTotalesDiot(sheetDiot.getCell('Y81'), sheetDiot.getCell('Z81'), "TOTAL RET.", { formula: `=+AA79` });
-
-        workbook.xlsx.writeBuffer().then(excelBuffer => {
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
-            res.send(excelBuffer);
-
-            req.workbook = null;
-        });
-    }
-    catch(error){
-        res.status(500).json({
-            success: false,
-            message: 'Error al generar el archivo',
-            error: error.message,
-            });
-    }
-});
 
 //Método para leer el archivo de con la información de los XML emitidos en el SAT
 app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => {
     const filePath = req.file.path;
-
+    
     try {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(filePath);
-
+        
         LibroDeGastos = workbook;
-
+        
         const sheet = workbook.worksheets[0];
         sheet.name = "DATOS"
-
+        
         const rowCount = sheet.rowCount;
-
+        
         let data = [];
-
+        
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
             let rowData = {};
-            rowData.Numero = i - 2;
-            rowData.Tipo = row.getCell('D').value;
-            rowData.Fecha = row.getCell('E').value;
+            rowData.Number = i - 2;
+            rowData.Type = row.getCell('D').value;
+            rowData.Date = row.getCell('E').value;
             rowData.Serie = row.getCell('I').value;
             rowData.Folio = row.getCell('J').value;
             rowData.RfcEmisor = row.getCell('M').value;
-            rowData.NombreEmisor = row.getCell('N').value;
-            rowData.Descuento = row.getCell('V').value;
+            rowData.EmitterName = row.getCell('N').value;
+            rowData.Discount = row.getCell('V').value;
+
             rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
-            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
-            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
+            rowData.IsrRet = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
+            rowData.IvaRet = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
             rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
-            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
-            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
+            rowData.IvaAtEightPercent = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
+            rowData.IvaAtSixteenPercent = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
             rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
-            rowData.Concepto = row.getCell('AO').value;
+
+            rowData.Concept = row.getCell('AO').value;
 
             if(rowData.NombreEmisor != null)
             {
@@ -311,19 +202,132 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
                 success: false,
                 message: 'El parámetro enviado en la petición es incorrecto',
                 error: error.message,
-                });
+            });
         }
 
         res.json(data);
     } catch (error) {
         res.status(500).json({
-        success: false,
-        message: 'Error al leer el archivo de Excel',
+            success: false,
+            message: 'Error al leer el archivo de Excel',
         error: error.message,
         });
     }
 });
 
+//Método para generar el archivo de excel con la relación de gastos
+app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), async (req, res) => {
+    try {
+        //Obtiene los datos del body
+        const data = req.body;
+
+        //Accede al libro de excel previamente almacenado en caché
+        const workbook = req.workbook;
+
+        //Agrega la hoja con el nombre "RESUMEN"
+        const sheetResumen = workbook.addWorksheet("RESUMEN");
+
+        //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
+        LlenarHojaDeRelacion(sheetResumen, data[0], "RELACION DE GASTOS");
+
+        //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
+        sheetResumen.protect("SistemasRG");
+
+        //Agrega la hoja "GASTOS"
+        const sheetReceived = workbook.addWorksheet("GASTOS");
+
+        LlenarHojaDeRelacion(sheetGastos, data[1], "RELACION DE GASTOS", true);
+
+        if(req.query.relationType !== 'issued') {
+            //Agrega la hoja "DIOT"
+            const sheetDiot = workbook.addWorksheet("DIOT");
+
+            //Asigna el tamaño de las columnas
+            sheetDiot.getColumn('A').width = 3;
+            sheetDiot.getColumn('B').width = 25.14;
+
+            AsignarAnchoAColumnas(sheetDiot, ['C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'V', 'W', 'X'], 0);
+            AsignarAnchoAColumnas(sheetDiot, ['AB', 'AC'], 5);
+            AsignarAnchoAColumnas(sheetDiot, ['Y', 'Z', 'AA', 'AD'], 13);
+            AsignarAnchoAColumnas(sheetDiot, ['G', 'L', 'T', 'U'], 20);
+
+            //Combina las celdas
+            sheetDiot.mergeCells('B1:AD1');
+            sheetDiot.mergeCells('B2:AD2');
+
+            //Asigna el texto a las celdas para que sirvan como encabezados
+            sheetDiot.getCell('B4').value = "RFC EMISOR";
+            sheetDiot.getCell('G4').value = "SUBTOTAL 16%";
+            sheetDiot.getCell('L4').value = "SUBTOTAL 8%";
+            sheetDiot.getCell('T4').value = "SUBTOTAL 0%";
+            sheetDiot.getCell('U4').value = "SUBTOTAL GASTOS";
+            sheetDiot.getCell('Y4').value = "IVA 8%";
+            sheetDiot.getCell('Z4').value = "IVA 16%";
+            sheetDiot.getCell('AA4').value = "RET. IVA";
+            sheetDiot.getCell('AD4').value = "DIFERENCIAS";
+
+            //Array con la letras de las columnas de los headers
+            const columnasDiot = ['B', 'G', 'L', 'T', 'U', 'Y', 'Z', 'AA', 'AD'];
+
+            for(let i = 0; i < columnasDiot.length; i++) {
+                sheetDiot.getCell(columnasDiot[i] + '4').font = { bold: true };
+                sheetDiot.getCell(columnasDiot[i] + '4').alignment = { horizontal: 'center' };
+            }
+
+            //Array con las columnas que llevan información
+            const arrayColumnas = ['B', 'G', 'L', 'T', 'AD', 'U', 'Y', 'Z', 'AA', 'AB', 'AC'];
+            let columnaEncontrada = true, celda;
+
+            //Ciclo para recorrer las 78 filas que manejan los contadores
+            for(let i = 5; i <= 78; i++) {
+                arrayColumnas.forEach(columna => {
+                    celda = sheetDiot.getCell(columna + i);
+                    
+                    columna == 'B'? LlenarFormulasDiot(celda, null, true, '') : 
+                    columna == 'G'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Z' + i } / ${ 0.16 }, 0)` }) : 
+                    columna == 'L'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'Y' + i } / ${ 0.08 }, 0)` }) : 
+                    columna == 'T'? LlenarFormulasDiot(celda, { formula: `+ROUND(${ 'U' + i } - ${ 'G' + i } - ${ 'L' + i }, 0)` }) : 
+                    columna == 'AD'? LlenarFormulasDiot(celda, { formula: `=+${ 'U' + i }-${ 'G' + i } - ${ 'L' + i }-${ 'T' + i }` }) : columnaEncontrada = false;
+
+                    if(!columnaEncontrada){
+                        LlenarFormulasDiot(celda, null, true);
+                    }
+
+                    columnaEncontrada = true;
+                });
+            }
+
+            for(let i = 1; i <= arrayColumnas.length - 3; i++){
+                celda = sheetDiot.getCell(arrayColumnas[i] + 79);
+                LlenarFormulasDiot(celda, { formula: `SUM(${ arrayColumnas[i] + 5 } : ${ arrayColumnas[i] + 78 })` }, true)
+
+                celda.border = {
+                    top: { style:'thin', color: { argb:'00000000' } },
+                    bottom: { style:'double', color: { argb:'00000000' } }
+                };
+            }
+
+            AgregarTotalesDiot(sheetDiot.getCell('G81'), sheetDiot.getCell('L81'), "TOTAL SUBTOTAL", { formula: `SUM(G79:T79)` });
+            AgregarTotalesDiot(sheetDiot.getCell('T81'), sheetDiot.getCell('U81'), "TOTAL IVA", { formula: `SUM(Y79:Z79)` });
+            AgregarTotalesDiot(sheetDiot.getCell('Y81'), sheetDiot.getCell('Z81'), "TOTAL RET.", { formula: `=+AA79` });
+
+            workbook.xlsx.writeBuffer().then(excelBuffer => {
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+                res.send(excelBuffer);
+
+                req.workbook = null;
+            });
+        }
+    }
+    catch(error){
+        res.status(500).json({
+            success: false,
+            message: 'Error al generar el archivo',
+            error: error.message,
+            });
+    }
+});
 
 //Método para generar el archivo de excel de la relación de ingresos
 app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async(req, res)=>{
@@ -338,7 +342,7 @@ app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), a
         const HojaResumen = workbook.addWorksheet("RESUMEN");
 
         //Manda a llamar al método para llenar la hoja y manda el array con la información intacta
-        LlenarHojaDeRelacionDeGastos(HojaResumen, data[0], "RELACION DE INGRESOS");
+        LlenarHojaDeRelacion(HojaResumen, data[0], "RELACION DE INGRESOS");
 
         //Protege la hoja "RESUMEN" para que la información no pueda ser modificada, asignando la contraseña por parametro
         HojaResumen.protect("SistemasRG");
@@ -346,7 +350,7 @@ app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), a
         //Agrega la hoja "GASTOS"
         const HojaGastos = workbook.addWorksheet("INGRESOS");
 
-        LlenarHojaDeRelacionDeGastos(HojaGastos, data[1], "RELACION DE INGRESOS", true);
+        LlenarHojaDeRelacion(HojaGastos, data[1], "RELACION DE INGRESOS", true);
 
         workbook.xlsx.writeBuffer().then(excelBuffer => {
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

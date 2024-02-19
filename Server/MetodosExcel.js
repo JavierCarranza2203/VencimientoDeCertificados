@@ -1,7 +1,7 @@
-import { Relacion } from './Factura.js ';
+import { InvoicesReport } from './InvoicesReport';
 
-export function AgregarEncabezados(ArraySheet) {
-    ArraySheet.forEach(sheet => {
+export function AddHeaders(SheetsArray) {
+    SheetsArray.forEach(sheet => {
         sheet.columns = [
             { header: "RFC", key: "rfc", width: 40 },
             { header: "Nombre completo", key: "nombre", width: 45 },
@@ -12,16 +12,16 @@ export function AgregarEncabezados(ArraySheet) {
             { header: "Fecha de expiración del sello", key: "fecha_vencimiento_sello", width: 30 }
         ];
 
-        DarEstilosAEncabezados(sheet);
+        SetHeaderStyles(sheet);
     });
 }
 
-export function DarEstilosAEncabezados(sheet) {
-    const columnas = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1'];
+export function SetHeaderStyles(sheet) {
+    const cells = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1'];
 
-    columnas.forEach(columna => {
-        sheet.getCell(columna).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
-        sheet.getCell(columna).font = { name: 'Arial', size: 10, color: { argb: 'FFFFFF' } };
+    cells.forEach(cel => {
+        sheet.getCell(cel).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+        sheet.getCell(cel).font = { name: 'Arial', size: 10, color: { argb: 'FFFFFF' } };
     });
 }
 
@@ -31,22 +31,22 @@ export function AgregarRenglones(sheet, data) {
             row['fecha_vencimiento_firma'], row['status_sello'] == 1? "Vigente" : "Vencido", row['fecha_vencimiento_sello'],]);
     });
 
-    DarEstilosARenglones(sheet, data);
+    SetHeaderStyles(sheet, data);
 }
 
-export function AgregarRenglonesPorGrupoDeClientes(sheet, data, group) {
+export function AddRowsByClientGroup(sheet, data, group) {
     data.forEach(row => {
-        if(row['grupo_clientes'] == group)
+        if(row['grupo_clientes'] === group)
         {
             sheet.addRow([row['rfc'], row['nombre'], row['grupo_clientes'], row['status_firma'],
                 row['fecha_vencimiento_firma'], row['status_sello'], row['fecha_vencimiento_sello']]);
         }
     });
 
-    DarEstilosARenglones(sheet, data);
+    SetHeaderStyles(sheet, data);
 }
 
-export function DarEstilosARenglones(sheet, data) {
+export function SetRowStyle(sheet, data) {
     for(let i = 2; i <= data.length + 1; i++) {
         // Asignar colores alternados a las filas pares e impares
         if(i % 2 === 0) {
@@ -61,90 +61,90 @@ export function DarEstilosARenglones(sheet, data) {
 //============== Método para la relación de gastos =================//
 //==================================================================//
 
-export function CalcularSubTotal(tipo, subtotal, descuento){
-    if(tipo == "Factura"){
-        return subtotal - descuento;
+export function CalculateSubTotal(type, subtotal, discount){
+    if(type === "Factura"){
+        return subtotal - discount;
     }
-    else if(tipo == ""){
-        return 0;
-    }
-    else{
-        return descuento - subtotal;
-    }
-}
-
-export function CalcularValorParaMostrar(tipo, valor){
-    if(tipo == "Factura") {
-        return valor;
-    }
-    else if(tipo == "") {
+    else if(type === ""){
         return 0;
     }
     else {
-        return valor * -1;
+        return discount - subtotal;
     }
 }
 
-export function AsignarFormatoDeCelda(hoja, ultimoNumeroDeRenglon) {
-    const arrayColumnas = ['H', 'I', 'J', 'K', 'L', 'M', 'N'];
+export function CalculateValueToShow(type, value){
+    if(type === "Factura") {
+        return value;
+    }
+    else if(type === "") {
+        return 0;
+    }
+    else {
+        return value * -1;
+    }
+}
 
-    arrayColumnas.forEach(columna => {
-        let cell = hoja.getCell(columna + ultimoNumeroDeRenglon);
+export function SetCellFormat(sheet, lastRowNumber) {
+    const columnsArray = ['H', 'I', 'J', 'K', 'L', 'M', 'N'];
+
+    columnsArray.forEach(col => {
+        let cell = sheet.getCell(col + lastRowNumber);
         cell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
     });
 }
 
-export function LlenarHojaDeRelacionDeGastos(hoja, data, nombre, banderaSumatorias = false) {
-    const relacion = new Relacion(data);
+export function FillInvoicesReportSheet(sheet, data, name, SumatoryFlag = false) {
+    const myInvoicesReport = new InvoicesReport(data);
 
-    let fechaActual = new Date().getFullYear();
+    let currentDate = new Date().getFullYear();
 
-    hoja.mergeCells('A1:N1');
-    hoja.mergeCells('A2:N2');
-    hoja.getCell('A2').value = nombre + " " + fechaActual;
-    hoja.getCell('A2').font = { bold: true };
-    hoja.getCell('B2').alignment = { horizontal: 'center' };
-    hoja.addRow();
+    sheet.mergeCells('A1:N1');
+    sheet.mergeCells('A2:N2');
+    sheet.getCell('A2').value = name + " " + currentDate;
+    sheet.getCell('A2').font = { bold: true };
+    sheet.getCell('B2').alignment = { horizontal: 'center' };
+    sheet.addRow();
 
-    hoja.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total', '', "Concepto"]);
+    sheet.addRow(['', '', 'Fecha', 'Serie', 'Folio', 'RFC Emisor', 'Nombre Emisor', 'Sub Total', 'Ret. ISR', 'Ret. IVA', 'IEPS', 'IVA 8%', 'IVA 16%', 'Total', '', "Concepto"]);
 
-    hoja.getRow(4).eachCell(cell => {
+    sheet.getRow(4).eachCell(cell => {
         cell.font = { bold: true };
         cell.alignment = { horizontal: 'center' };
     });
 
-    hoja.getColumn('A').width = 2;
-    hoja.getColumn('B').width = 0;
-    hoja.getColumn('C').width = 11;
-    hoja.getColumn('D').width = 6;
-    hoja.getColumn('E').width = 7;
-    hoja.getColumn('F').width = 16.29;
-    hoja.getColumn('G').width = 49;
+    sheet.getColumn('A').width = 2;
+    sheet.getColumn('B').width = 0;
+    sheet.getColumn('C').width = 11;
+    sheet.getColumn('D').width = 6;
+    sheet.getColumn('E').width = 7;
+    sheet.getColumn('F').width = 16.29;
+    sheet.getColumn('G').width = 49;
 
-    hoja.getColumn('C').alignment = { horizontal: 'center' };
-    hoja.getColumn('D').alignment = { horizontal: 'center' };
-    hoja.getColumn('E').alignment = { horizontal: 'center' };
-    hoja.getColumn('F').alignment = { horizontal: 'center' };
-    AsignarAnchoAColumnas(hoja, ['H', 'I', 'J', 'K', 'L', 'M', 'N'], 13);
+    sheet.getColumn('C').alignment = { horizontal: 'center' };
+    sheet.getColumn('D').alignment = { horizontal: 'center' };
+    sheet.getColumn('E').alignment = { horizontal: 'center' };
+    sheet.getColumn('F').alignment = { horizontal: 'center' };
+    SetColumnsWidth(hoja, ['H', 'I', 'J', 'K', 'L', 'M', 'N'], 13);
 
-    relacion.Datos.forEach(row => {
-        AsignarFormatoDeCelda(hoja, hoja.lastRow.number);
+    myInvoicesReport.Data.forEach(row => {
+        SetCellFormat(sheet, sheet.lastRow.number);
 
-        hoja.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, row.SubTotal, row.RetIsr, row.RetIva,
-            row.Ieps, row.Iva8, row.Iva16, row.Total, '', row.Concepto]);
+        sheet.addRow(['', '', row.Date, row.Serie, row.Folio, row.EmitterRfc, row.EmitterName, row.SubTotal, row.IsrRet, row.IvaRet,
+            row.Ieps, row.IvaAtEightPercent, row.IvaAtSixteenPercent, row.Total, '', row.Concept]);
     });
 
-    const numero = hoja.lastRow.number;
+    const number = sheet.lastRow.number;
 
-    AsignarFormatoDeCelda(hoja, numero);
+    AsignarFormatoDeCelda(hoja, number);
 
-    if(banderaSumatorias) {
-        hoja.addRow(['', '', '', '', '', '', 'TOTAL DE GASTOS:', { formula: `SUM(H5:${"H" + numero})` },
-            { formula: `SUM(I5:${"I" + numero})` }, { formula: `SUM(J5:${"J" + numero})`}, {formula: `SUM(K5:${"K" + numero})` },
-            { formula: `SUM(L5:${"L" + numero})` }, { formula: `SUM(M5:${"M" + numero})`}, {formula: `SUM(N5:${"N" + numero})` }]);
+    if(SumatoryFlag) {
+        sheet.addRow(['', '', '', '', '', '', 'TOTAL DE GASTOS:', { formula: `SUM(H5:${"H" + number})` },
+            { formula: `SUM(I5:${"I" + number})` }, { formula: `SUM(J5:${"J" + number})`}, {formula: `SUM(K5:${"K" + number})` },
+            { formula: `SUM(L5:${"L" + number})` }, { formula: `SUM(M5:${"M" + number})`}, {formula: `SUM(N5:${"N" + number})` }]);
 
         let i = 1;
-        hoja.getRow(hoja.lastRow.number).eachCell(cell => {
+        sheet.getRow(sheet.lastRow.number).eachCell(cell => {
             if(i == 7) {
                 cell.font = { bold: true };
                 cell.alignment = { horizontal: 'right' };
@@ -161,32 +161,34 @@ export function LlenarHojaDeRelacionDeGastos(hoja, data, nombre, banderaSumatori
     }
 }
 
-export function LlenarFormulasDiot(celda, valor, esNegrita = false, formatoDeCelda = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-') {
-    celda.value = valor;
-    celda.numFmt = formatoDeCelda;
-    celda.font = { bold: esNegrita }
+export function FillDiotFormulas(cell, value, isBold = false, cellFormat = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-') {
+    cell.value = value;
+    cell.numFmt = cellFormat;
+    cell.font = { bold: isBold }
 }
 
-export function AgregarTotalesDiot(celdaTexto, celdaValor, valorCeldaTexto, formulaCeldaValor){
-    celdaTexto.value = valorCeldaTexto;
-    celdaTexto.font = { bold: true };
-    celdaTexto.alignment = { horizontal: 'right' };
-    celdaValor.value = formulaCeldaValor;
-    celdaValor.border = {
+export function SetTotalsDiot(textCell, valueCell, textValueCell, formulaCell){
+    textCell.value = textValueCell;
+    textCell.font = { bold: true };
+    textCell.alignment = { horizontal: 'right' };
+    valueCell.value = formulaCell;
+    valueCell.border = {
         top: { style: 'thin', color: { argb:'00000000' } },
         bottom: { style: 'double', color: { argb:'00000000' } }
     };
-    celdaValor.font = { bold: true };
-    celdaValor.fill = {
+
+    valueCell.font = { bold: true };
+    valueCell.fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb:'00FF00' },
     };
-    celdaValor.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+
+    valueCell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
 }
 
-export function AsignarAnchoAColumnas(hoja, arrayColumnas, tamanio){
-    arrayColumnas.forEach(columna => {
-        hoja.getColumn(columna).width = tamanio;
-    })
+export function SetColumnsWidth(sheet, columnsArray, width){
+    columnsArray.forEach(col => {
+        sheet.getColumn(col).width = width;
+    });
 }
