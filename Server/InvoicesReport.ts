@@ -1,78 +1,87 @@
+import { isSet } from "util/types";
+import { Invoice } from "./Invoice.ts";
+
 export class InvoicesReport
 {
-    Data: any;
-    
-    constructor(data){
-        this.Data = data;
+    private InvoicesList : Array<Invoice> | null;
+
+    public constructor() {
+        this.InvoicesList = null;
     }
 
-    getSubTotal() {
-        let sum = 0;
-
-        this.Data.forEach(d => {
-            sum += d.SubTotal;
-        });
-
-        return sum;
+    public addInvoice(invoice: Invoice) : void {
+        if(isSet(invoice.SenderName)) {
+            this.InvoicesList?.push(invoice);
+        }
     }
 
-    getIsr() {
-        let sum = 0;
+    public CalculateSubTotalsSummation() : number {
+        let summation = 0;
 
-        this.Datos.forEach(d => {
-            sum += d.RetIsr;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.SubTotal;
         });
 
-        return sum;
+        return summation;
     }
 
-    getIvaRetention() {
-        let suma = 0;
+    public CalculateIsrRetSummation() : number {
+        let summation = 0;
 
-        this.Data.forEach(d => {
-            sum += dato.IvaRet;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.IsrRet;
         });
 
-        return suma;
+        return summation;
     }
 
-    getIeps(){
-        let suma = 0;
+    public CalculateIvaRetSummation() : number {
+        let summation = 0;
 
-        this.Datos.forEach(dato => {
-            suma += dato.Ieps;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.IvaRet;
         });
 
-        return suma;
+        return summation;
     }
 
-    getIvaAtEightPercent(){
-        let sum = 0;
+    public CalculateIepsSummation() : number {
+        let summation = 0;
 
-        this.Data.forEach(d => {
-            sum += d.Iva8;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.Ieps;
         });
 
-        return sum;
+        return summation;
     }
 
-    getIvaAtSixteenPercent(){
-        let sum = 0;
+    public CalculateIvaAtEightPercentSummation() : number {
+        let summation = 0;
 
-        this.Datos.forEach(d => {
-            sum += d.Iva16;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.IvaAtEightPercent;
         });
 
-        return sum;
+        return summation;
     }
 
-    getTotal(){
-        let sum = 0;
+    public CalculateIvaAtSixteenPercentSummation() : number {
+        let summation = 0;
 
-        this.Datos.forEach(d => {
-            sum += d.Total;
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.IvaAtSixteenPercent;
         });
 
-        return sum;
+        return summation;
+    }
+
+    public CalculateTotalsSummation() : number {
+        let summation = 0;
+
+        this.InvoicesList?.forEach((invoice) => {
+            summation += invoice.Total;
+        });
+
+        return summation;
     }
 }

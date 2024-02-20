@@ -6,6 +6,7 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacion, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
+import { Invoice } from './Invoice.js';
 
 const app = new express();
 let LibroDeGastos;
@@ -149,30 +150,20 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
         
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
-            let rowData = {};
-            rowData.Number = i - 2;
-            rowData.Type = row.getCell('D').value;
-            rowData.Date = row.getCell('E').value;
-            rowData.Serie = row.getCell('I').value;
-            rowData.Folio = row.getCell('J').value;
-            rowData.RfcEmisor = row.getCell('M').value;
-            rowData.EmitterName = row.getCell('N').value;
-            rowData.Discount = row.getCell('V').value;
 
-            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
-            rowData.IsrRet = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
-            rowData.IvaRet = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
-            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
-            rowData.IvaAtEightPercent = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
-            rowData.IvaAtSixteenPercent = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
-            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
+            let dateString = row.getCell('D').value;
+            dateString = dateString.split('/');
 
-            rowData.Concept = row.getCell('AO').value;
+            let myInvoice = new Invoice(i - 2, row.getCell('D').value, new Date(Date.parse(dateString[2] + "-" + dateString[1] + "-" + dateString[0])),
+            row.getCell('I').value, row.getCell('J').value, row.getCell('M'), row.getCell('N'), row.getCell('V').value, row.getCell('AO').value);
 
-            if(rowData.NombreEmisor != null)
-            {
-                data.push(rowData);
-            }
+            myInvoice.SubTotal = row.getCell('U').value;
+            myInvoice.IsrRet = row.getCell('Z').value;
+            myInvoice.IvaRet = row.getCell('Y').value;
+            myInvoice.Ieps = row.getCell('W').value;
+            myInvoice.IvaAtEightPercent = row.getCell('BE').value;
+            myInvoice.IvaAtSixteenPercent = row.getCell('X').value;
+            myInvoice.Total = row.get('AB').value;
         }
 
         if(req.query.orderBy === 'name') {
