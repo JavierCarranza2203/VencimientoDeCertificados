@@ -1,16 +1,20 @@
-import { isSet } from "util/types";
 import { Invoice } from "./Invoice.ts";
+import { OrderMethod } from "./OrderMethod.ts";
 
-export class InvoicesReport
+export class InvoicesReport extends OrderMethod
 {
-    private InvoicesList : Array<Invoice> | null;
+    //Attribute to store a list of invoices
+    private InvoicesList : Array<Invoice>;
 
+    //Class constructor
     public constructor() {
-        this.InvoicesList = null;
+        super();
+        this.InvoicesList = new Array<Invoice>();
     }
 
-    public addInvoice(invoice: Invoice) : void {
-        if(isSet(invoice.SenderName)) {
+    //This method adds invoices to InvoicesList
+    public AddInvoice(invoice: Invoice) : void {
+        if(invoice.SenderName != null) {
             this.InvoicesList?.push(invoice);
         }
     }
@@ -83,5 +87,9 @@ export class InvoicesReport
         });
 
         return summation;
+    }
+
+    public OrderInvoicesList(compareFunction: (a: Invoice, b: Invoice) => number) {
+        OrderMethod.OrderBy(this.InvoicesList, compareFunction);
     }
 }

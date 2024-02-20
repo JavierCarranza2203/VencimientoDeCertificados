@@ -7,6 +7,7 @@ const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacion, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 import { Invoice } from './Invoice.js';
+import { InvoicesReport } from './InvoicesReport.js';
 
 const app = new express();
 let LibroDeGastos;
@@ -146,7 +147,7 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
         
         const rowCount = sheet.rowCount;
         
-        let data = [];
+        let myInvoicesReport = new InvoicesReport();
         
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
@@ -164,29 +165,15 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
             myInvoice.IvaAtEightPercent = row.getCell('BE').value;
             myInvoice.IvaAtSixteenPercent = row.getCell('X').value;
             myInvoice.Total = row.get('AB').value;
+
+            myInvoicesReport.AddInvoice(myInvoice);
         }
 
         if(req.query.orderBy === 'name') {
-            data.sort(function(a, b) {
-                if (a.NombreEmisor < b.NombreEmisor) {
-                    return -1;
-                }
-                if (a.NombreEmisor > b.NombreEmisor) {
-                    return 1;
-                }
-                return 0;
-            });
+            myInvoicesReport.OrderInvoicesList((a, b) => a.SenderName.localeCompare(b.SenderName));
         }
         else if(req.query.orderBy === 'id') {
-            data.sort(function(a, b) {
-                if (a.Folio < b.Folio) {
-                    return -1;
-                }
-                if (a.Folio > b.Folio) {
-                    return 1;
-                }
-                return 0;
-            });
+            myInvoicesReport.OrderInvoicesList((a, b) => a.Folio.localeCompare(b.Folio));
         }
         else {
             res.status(403).json({
