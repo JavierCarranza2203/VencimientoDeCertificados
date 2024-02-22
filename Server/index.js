@@ -3,21 +3,23 @@ import cors from 'cors';
 import { createPool } from 'mysql2/promise';
 import ExcelJS from 'exceljs';
 import multer from 'multer';
-const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacion, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
-import { Invoice } from './Invoice.js';
-import { InvoicesReport } from './InvoicesReport.js';
+import { Invoice } from './Invoice.ts';
+import { InvoicesReport } from './InvoicesReport.ts';
+
+app.mime.types['.ts'] = 'application/javascript';
 
 const app = new express();
+const upload = multer({ dest: 'uploads/' });
 let LibroDeGastos;
 let DatosOriginales;
 
-app.use(express.json({ limit: "2mb", extended: true }));
-app.use(express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 }))
-
 //Variable para el puerto en el que se abre el servidor
 const serverPort = 8082;
+
+app.use(express.json({ limit: "2mb", extended: true }));
+app.use(express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 }))
 
 //Para permitir el acceso desde cualquier server
 app.use(cors());

@@ -57,34 +57,6 @@ export function SetRowStyle(sheet, data) {
     }
 }
 
-//==================================================================//
-//============== Método para la relación de gastos =================//
-//==================================================================//
-
-export function CalculateSubTotal(type, subtotal, discount){
-    if(type === "Factura"){
-        return subtotal - discount;
-    }
-    else if(type === ""){
-        return 0;
-    }
-    else {
-        return discount - subtotal;
-    }
-}
-
-export function CalculateValueToShow(type, value){
-    if(type === "Factura") {
-        return value;
-    }
-    else if(type === "") {
-        return 0;
-    }
-    else {
-        return value * -1;
-    }
-}
-
 export function SetCellFormat(sheet, lastRowNumber) {
     const columnsArray = ['H', 'I', 'J', 'K', 'L', 'M', 'N'];
 

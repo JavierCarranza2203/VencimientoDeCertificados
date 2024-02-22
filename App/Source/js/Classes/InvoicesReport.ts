@@ -4,27 +4,25 @@ import { OrderMethod } from "./OrderMethod.ts";
 export class InvoicesReport extends OrderMethod
 {
     //Attribute to store a list of invoices
-    private _InvoicesList : Array<Invoice>;
+    private InvoicesList : Array<Invoice>;
 
     //Class constructor
     public constructor() {
         super();
-        this._InvoicesList = new Array<Invoice>();
+        this.InvoicesList = new Array<Invoice>();
     }
-
-    public get InvoicesList(){ return this._InvoicesList; }
 
     //This method adds invoices to InvoicesList
     public AddInvoice(invoice: Invoice) : void {
         if(invoice.SenderName != null) {
-            this._InvoicesList?.push(invoice);
+            this.InvoicesList?.push(invoice);
         }
     }
 
     public CalculateSubTotalsSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.SubTotal;
         });
 
@@ -34,7 +32,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateIsrRetSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.IsrRet;
         });
 
@@ -44,7 +42,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateIvaRetSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.IvaRet;
         });
 
@@ -54,7 +52,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateIepsSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.Ieps;
         });
 
@@ -64,7 +62,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateIvaAtEightPercentSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.IvaAtEightPercent;
         });
 
@@ -74,7 +72,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateIvaAtSixteenPercentSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.IvaAtSixteenPercent;
         });
 
@@ -84,7 +82,7 @@ export class InvoicesReport extends OrderMethod
     public CalculateTotalsSummation() : number {
         let summation = 0;
 
-        this._InvoicesList?.forEach((invoice) => {
+        this.InvoicesList?.forEach((invoice) => {
             summation += invoice.Total;
         });
 
@@ -92,6 +90,6 @@ export class InvoicesReport extends OrderMethod
     }
 
     public OrderInvoicesList(compareFunction: (a: Invoice, b: Invoice) => number) {
-        OrderMethod.OrderBy(this._InvoicesList, compareFunction);
+        OrderMethod.OrderBy(this.InvoicesList, compareFunction);
     }
 }

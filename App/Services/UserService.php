@@ -3,7 +3,7 @@
 require_once '../Models/Usuario.php';
 require_once '../Libraries/Connection.php';
 
-class UsuarioService extends Connection
+class UserService extends Connection
 {
     //Código de acceso (Se requiere para operaciones críticas como borrar usuarios)
     private int $codigoDeAccesso = 00175;

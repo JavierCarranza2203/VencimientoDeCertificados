@@ -1,12 +1,10 @@
-import { Cliente } from "../Classes/Cliente.js";
-import { Usuario } from "../Classes/Usuario.js";
+import { Customer } from '../Classes/Customer.ts';
+// import { User } from "../Classes/User.ts";
 import { AgregarCliente, ValidarUsuarioLogeado } from "./Peticiones.js";
 
 //Método que realiza la llamada al método de validar sesión
-export async function PermitirAcceso()
-{
-    try
-    {
+export async function PermitirAcceso() {
+    try {
         //Llama al método para validar la sesión
         const data = await ValidarUsuarioLogeado(); //NOTA: En caso de que no haya sesión, genera una excepción
 
@@ -14,7 +12,7 @@ export async function PermitirAcceso()
         document.getElementById("blocker").classList.add("content-blocker--hidden");
 
         //Regresa un objeto anónimo de la clase usuario
-        return new Usuario(data["NombreUsuario"], data["Rol"], data["GrupoClientes"]);
+        console.log(new User(data["NombreUsuario"], data["Rol"], data["GrupoClientes"]));
     }
     catch(error)
     {

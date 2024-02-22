@@ -1,5 +1,3 @@
-import { MostrarVigencia } from "./MetodosSinPeticion.js";
-
 /**********************************************************/
 /*                   Metodos del certificado              */
 /**********************************************************/
@@ -37,28 +35,26 @@ export async function ObtenerDatosDelCertificado(certificado)
 /**********************************************************/
 /*                     Metodos del usuario                */
 /**********************************************************/
-export async function IniciarSesion(NombreDeUsuario, Contrasenia) 
+export async function LogIn(userName, password) 
 {   //Crea una instancia de la clase FormData
     const credentials = new FormData();
 
     // Agrega las variables al formData creado
-    credentials.append("NombreDeUsuario", NombreDeUsuario);
-    credentials.append("Contrasenia", Contrasenia);
+    credentials.append("UserName", userName);
+    credentials.append("Password", password);
 
     //Realiza la petición al controlador del usuario
-    const response = await fetch("App/Controllers/UsuarioController.php?Operacion=login", {
+    const response = await fetch("App/Controllers/UserController.php?action=login", {
         method: "POST",
         body: credentials,
     });
 
     //Si la petición responde con un estado 200, regresa los datos
-    if (response.ok) 
-    {
+    if (response.ok) {
         const data = await response.json();
         return data;
     } 
-    else //Si no, genera un error
-    {
+    else { //Si no, genera un error
         throw new Error(await response.json());
     }
 }
@@ -66,11 +62,10 @@ export async function IniciarSesion(NombreDeUsuario, Contrasenia)
 export async function ValidarUsuarioLogeado()
 {
     //Realiza la petición al controlador del usuario
-    const response = await fetch("../Controllers/UsuarioController.php?Operacion=userLogged",{method:"GET"})
+    const response = await fetch("../Controllers/UsuarioController.php?action=userLogged",{ method:"GET" })
 
     //Si responde con un estado 200, regresa los datos. Solo hay dos posibles datos true/false
-    if (response.ok) 
-    {
+    if (response.ok) {
         return await response.json();
     } 
     else //Si no, genera una excepción con la respuesta del servidor

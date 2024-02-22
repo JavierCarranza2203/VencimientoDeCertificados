@@ -1,4 +1,4 @@
-import { IniciarSesion } from "../../Functions/Peticiones.js";
+import { LogIn } from "../../Functions/Peticiones.js";
 
 /*************************************************************/
 /* Declaracion de variables y obtiene los elementos del html */
@@ -31,7 +31,7 @@ document.getElementById("frmIniciarSesion").addEventListener("submit", async (e)
             throw new Error("Por favor, llene los campos");
         }
 
-        const data = await IniciarSesion(NombreDeUsuario, Contrasenia);
+        const data = await LogIn(NombreDeUsuario, Contrasenia);
         
         Swal.fire({
             title: "¡Tarea realizada con éxito!",

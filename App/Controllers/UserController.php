@@ -1,6 +1,6 @@
 <?php
 
-require_once "../Services/UsuarioService.php";
+require_once "../Services/UserService.php";
 
     try {
         header('Access-Control-Allow-Origin: *');
@@ -8,15 +8,15 @@ require_once "../Services/UsuarioService.php";
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 
         //Obtiene la variable de operación enviada por el método GET
-        $Operacion = $_GET['Operacion'];
+        $Action = $_GET['action'];
         //Crea una instancia del servicio de usuarios
-        $UsuarioService = new UsuarioService();
+        $UsuarioService = new UserService();
 
         //Switch para evaluar la operación
-        switch($Operacion) {
+        switch($Action) {
             case 'login': 
                 //Manda a llamar el método para inciar sesións
-                echo json_encode($UsuarioService->IniciarSesion($_POST['NombreDeUsuario'], $_POST['Contrasenia']));
+                echo json_encode($UsuarioService->IniciarSesion($_POST['UserName'], $_POST['Password']));
             break;
             case 'userLogged':
                 //Manda a llamar el método para obtener los datos de un usuario loggeado
