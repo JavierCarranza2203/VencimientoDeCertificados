@@ -1,6 +1,7 @@
 import { LeerArchivoDeExcel } from "../../Functions/Peticiones.js";
-import { Relacion } from "../../Classes/Factura.ts";
+import { Relacion } from "../../Classes/Factura.js";
 import { FormatearCadena } from "../../Functions/MetodosSinPeticion.js";
+import { GenerarExcelRelaciones, LlenarTabla } from "../../Functions/MetodosGenerarExcelRelaciones.js";
 
 let tableContainer = document.getElementById("table");
 let miRelacion;
@@ -32,8 +33,8 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
                     console.log("Cerrado por el timer");
                 }
             });
-        
-        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
+
+        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos, 'id'));
 
         Swal.fire({
             title: "¡Los datos se han procesado!",
@@ -42,28 +43,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
             confirmButtonText: "OK",
         });
 
-        table = new gridjs.Grid({
-            columns: [{name: "Número"}, "Fecha", "RFC Emisor", "Nombre Emisor", "Sub Total", "Ret. ISR", "Ret. IVA", "IEPS", "IVA 8%", "IVA 16%", "Total", "Concepto", {
-                    name: 'No considerar',
-                    formatter: (cell, row) => {
-                        const eliminarIcono = `<input type="checkbox" name="chkNoConsiderar" id="chkNoConsiderar" class="chkNoConsiderar">`;
-
-                        return gridjs.html(`<div class="acciones">${eliminarIcono}</div>`);
-                    }
-                },
-            ],
-            data: miRelacion.Datos.map(dato => [dato.Numero, dato.Fecha, dato.RfcEmisor, dato.NombreEmisor, FormatearCadena(dato.SubTotal), FormatearCadena(dato.RetIsr), FormatearCadena(dato.RetIva), FormatearCadena(dato.Ieps), FormatearCadena(dato.Iva8), FormatearCadena(dato.Iva16), FormatearCadena(dato.Total), dato.Concepto]),
-            pagination: {
-                limit: 10
-            },
-            height: '480px',
-            fixedHeader: true,
-            language: {
-                'search': {
-                    'placeholder': '🔍 Escriba para buscar...'
-                }
-            }
-        }).render(tableContainer);   
+        table = LlenarTabla(tableContainer, miRelacion);
 
         MostrarSumatorias();
     }
@@ -106,60 +86,7 @@ document.addEventListener('click', async function(event) {
 });
 
 document.getElementById("btnGenerarExcel").addEventListener("click", async ()=>{
-    try {
-        tableContainer.innerHTML = "";
-
-        Swal.fire({
-        title: "El archivo se está generando",
-        text: "Espere por favor",
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-        }}).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("Cerrado por el timer");
-            }
-        });
-
-        let Datos = [miRelacion.Respaldo, miRelacion.Datos];
-        
-        let response = await fetch(`https://localhost:8082/generar_relacion_de_gastos`, { 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(Datos)
-        });
-
-        if(response.ok) {
-            let blob = await response.blob();
-            let url = window.URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = 'RELACION DE GASTOS';
-            a.click();
-
-            Swal.fire({
-                title: "¡El archivo se ha generado!",
-                text: "Puede encontrarlo en la carpeta de descargas",
-                icon: "success",
-                confirmButtonText: "OK",
-            });
-        }
-        else {
-            let mensaje = await response.json();
-            console.log(mensaje)
-            throw new Error(mensaje.error);
-        }
-    }
-    catch(error) {
-        Swal.fire({
-            icon: "error",
-            title: "¡Hubo un error inesperado!",
-            text: error,
-            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
-        });
-    }
+    GenerarExcelRelaciones(miRelacion, `generar_relacion_de_ingresos`, 'RELACION DE INGRESOS', tableContainer);
 });
 
 function MostrarSumatorias() {

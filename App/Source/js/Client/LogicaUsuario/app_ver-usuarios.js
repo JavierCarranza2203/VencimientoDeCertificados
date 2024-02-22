@@ -26,9 +26,8 @@ window.addEventListener("load", async ()=> {
 /*************************************************************/
 
 document.addEventListener('click', async function(event) {
-    try{
-        if (event.target.classList.contains('fa-edit')) 
-        {
+    try {
+        if (event.target.classList.contains('fa-edit')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const id = row.cells[0].textContent;
             const nombre = row.cells[1].textContent;
@@ -46,8 +45,7 @@ document.addEventListener('click', async function(event) {
             EliminarUsuario(nombreUsuario, table)
         }
     }
-    catch(error)
-    {
+    catch(error) {
         Swal.fire({
             icon: "error",
             title: "¡Hubo un error inesperado!",

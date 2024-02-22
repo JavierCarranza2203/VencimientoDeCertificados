@@ -6,6 +6,7 @@ Test/Relaciones
 Server/node_modules
 Server/package-lock.json
 Server/package.json
+Server/uploads
 Database/note.txt
 Database/Constancias
 uploads/

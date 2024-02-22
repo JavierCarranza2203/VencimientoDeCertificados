@@ -20,10 +20,13 @@ document.getElementById("btnGenerarExcel").addEventListener('click', async ()=>{
             });
         }
         else{
+            let respuesta = await response.json();
+            let error = respuesta !== null || respuesta !== ''? respuesta['mensaje'] : "No se pudo generar el archivo";
+
             Swal.fire({
                 icon: "error",
-                title: "¡Hubo un error inesperado!",
-                text: "No se puede generar el archivo",
+                title: "Ocurrió un error",
+                text: error,
                 footer: '<label>Llame al administrador de sistemas.</label>'
             });
         }

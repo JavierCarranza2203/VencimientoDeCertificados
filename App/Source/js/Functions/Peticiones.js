@@ -127,9 +127,9 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
         title: 'Insertar Datos del usuario',
         html:
             '<label for="swal-input1" class="form__label">Ingrese el nombre completo:</label>' +
-            `<input id="swal-input1" class="double-form-container__form-input" value="${nombre}" placeholder="Nombre"><br>` +
+            `<input id="swal-input1" class="double-form-container__form-input" value="${ nombre }" placeholder="Nombre"><br>` +
             '<label for="swal-input2" class="form__label">Ingrese el nombre de usuario:</label>' +
-            `<input id="swal-input2" class="double-form-container__form-input" value="${usuario}" placeholder="NombreUsuario"><br>` +
+            `<input id="swal-input2" class="double-form-container__form-input" value="${ usuario }" placeholder="NombreUsuario"><br>` +
             '<label for="cmbGrupoClientes" class="form__label">Ingrese el grupo de clientes:</label>' +
             '<select name="cmbGrupoClientes" id="cmbGrupoClientes" class="double-form-container__form-combobox">' +
                 '<option value="A">Clientes A</option>' +
@@ -165,7 +165,7 @@ export async function ActualizarUsuario(id, nombre, usuario, grupo, rol, table){
                     grupoClientes: grupoClientes,
                     rol: rol
                 }),
-            })
+            });
         }
     }).then((result) => {
         // Maneja la respuesta de la petición AJAX
@@ -256,7 +256,6 @@ export function ActualizarTablaUsuarios(table){
 /**********************************************************/
 
 export async function AgregarCliente(jsonCliente){
-
     //Envía la solicitud por método POST al server
     const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
     {
@@ -541,7 +540,7 @@ export async function RunAutoUpdateService()
 /*       Método para generar relaciones de excel          */
 /**********************************************************/
 
-export async function LeerArchivoDeExcel(archivo) {
+export async function LeerArchivoDeExcel(archivo, orderBy){
     //Genera una instancia de la clase FormData
     const formData = new FormData();
 
@@ -549,7 +548,7 @@ export async function LeerArchivoDeExcel(archivo) {
     formData.append("ReporteDeGastos", archivo);
 
     //Realiza la petición al controlador del certificado
-    const response = await fetch("http://localhost:8082/leer_archivo", {
+    const response = await fetch("http://localhost:8082/leer_archivo?orderBy=" + orderBy, {
         method: "POST",
         body: formData,
     });
