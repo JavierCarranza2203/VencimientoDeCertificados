@@ -1,13 +1,13 @@
 export class Invoice {
 
     //Attributes
-    private _dblSubTotal : number;
-    private _dblIsrRet : number;
-    private _dblIvaRet : number;
-    private _dblIeps : number;
-    private _dblIvaAtEightPercent : number;
-    private _dblIvaAtSixteenPercent : number;
-    private _dblTotal : number;
+    private _dblSubTotal! : number;
+    private _dblIsrRet! : number;
+    private _dblIvaRet! : number;
+    private _dblIeps! : number;
+    private _dblIvaAtEightPercent! : number;
+    private _dblIvaAtSixteenPercent! : number;
+    private _dblTotal! : number;
 
     //Constructor
     public constructor(number : number, type : string, date : Date, serie : string, folio : string, senderRfc : string, senderName : string, discount : number, description : string) {
