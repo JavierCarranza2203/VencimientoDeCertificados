@@ -1,6 +1,6 @@
 import { CerrarSesion } from "./Functions/Peticiones.js";
 
-document.getElementById("btnLogout").addEventListener("click", async ()=>{
+document.getElementById("btnLogout").addEventListener("click", async ()=> {
     if(await CerrarSesion())
     {
         location.href = "../../index.html";

@@ -64,7 +64,7 @@ export async function IniciarSesion(NombreDeUsuario, Contrasenia)
 export async function ValidarUsuarioLogeado()
 {
     //Realiza la petición al controlador del usuario
-    const response = await fetch("../Controllers/UsuarioController.php?Operacion=userLogged",{method:"GET"})
+    const response = await fetch("../Controllers/UsuarioController.php?Operacion=userLogged", { method:"GET" })
 
     //Si responde con un estado 200, regresa los datos. Solo hay dos posibles datos true/false
     if (response.ok) 
