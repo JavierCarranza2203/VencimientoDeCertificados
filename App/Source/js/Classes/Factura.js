@@ -34,23 +34,4 @@ export class Factura {
         this.Total = total;
         this.Concepto = concepto;
     }
-
-    toJSON() {
-        return JSON.stringify({
-            Numero: this.Numero,
-            Fecha: this.Fecha,
-            Serie: this.Serie,
-            Folio: this.Folio,
-            RfcEmisor: this.RfcEmisor,
-            NombreEmisor: this.NombreEmisor,
-            SubTotal: this.SubTotal,
-            RetIsr: this.RetIsr,
-            RetIva: this.RetIva,
-            Ieps: this.Ieps,
-            Iva8: this.Iva8,
-            Iva16: this.Iva16,
-            Total: this.Total,
-            Concepto: this.Concepto
-        });
-    }
 }

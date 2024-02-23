@@ -90,10 +90,6 @@ document.getElementById("btnRelacionDeGastos").addEventListener("click", ()=> {
     location.href = "generar-relacion-gastos.html";
 });
 
-document.getElementById("btnRelacionDeIngresos").addEventListener("click", ()=> {
-    location.href = "generar-relacion-ingresos.html";
-});
-
 /*************************************************************/
 /*             Eventos de los controles del html             */
 /*************************************************************/

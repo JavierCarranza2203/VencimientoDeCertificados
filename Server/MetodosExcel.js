@@ -1,4 +1,4 @@
-import { Relacion } from './Factura.js ';
+import { Relacion } from "./Relacion.js";
 
 export function AgregarEncabezados(ArraySheet) {
     ArraySheet.forEach(sheet => {
@@ -127,7 +127,7 @@ export function LlenarHojaDeRelacionDeGastos(hoja, data, nombre, banderaSumatori
     hoja.getColumn('F').alignment = { horizontal: 'center' };
     AsignarAnchoAColumnas(hoja, ['H', 'I', 'J', 'K', 'L', 'M', 'N'], 13);
 
-    relacion.Datos.forEach(row => {
+    relacion.ListaFacturas.forEach(row => {
         AsignarFormatoDeCelda(hoja, hoja.lastRow.number);
 
         hoja.addRow(['', '', row.Fecha, row.Serie, row.Folio, row.RfcEmisor, row.NombreEmisor, row.SubTotal, row.RetIsr, row.RetIva,

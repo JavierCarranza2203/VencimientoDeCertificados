@@ -34,7 +34,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
                 }
             });
 
-        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos, 'id'));
+        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
 
         Swal.fire({
             title: "¡Los datos se han procesado!",

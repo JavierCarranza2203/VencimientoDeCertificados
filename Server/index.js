@@ -6,6 +6,7 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
+import { Relacion } from './Relacion.js';
 
 const app = new express();
 let LibroDeGastos;
@@ -138,6 +139,35 @@ app.post("/generar_relacion_de_gastos", multer({ dest: 'uploads/' }).none(), asy
         //Accede al libro de excel previamente almacenado en caché
         const workbook = req.workbook;
 
+        if(req.query.orderBy === 'name') {
+            data[0].sort(function(a, b) {
+                if (a.NombreEmisor < b.NombreEmisor) {
+                    return -1;
+                }
+                if (a.NombreEmisor > b.NombreEmisor) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            data[1].sort(function(a, b) {
+                if (a.NombreEmisor < b.NombreEmisor) {
+                    return -1;
+                }
+                if (a.NombreEmisor > b.NombreEmisor) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        else {
+            res.status(403).json({
+                success: false,
+                message: 'El parámetro enviado en la petición es incorrecto',
+                error: error.message,
+                });
+        }
+
         //Agrega la hoja con el nombre "RESUMEN"
         const sheetResumen = workbook.addWorksheet("RESUMEN");
 
@@ -256,62 +286,17 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
 
         const rowCount = sheet.rowCount;
 
-        let data = [];
+        let miRelacion = new Relacion();
 
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
-            let rowData = {};
-            rowData.Numero = i - 2;
-            rowData.Tipo = row.getCell('D').value;
-            rowData.Fecha = row.getCell('E').value;
-            rowData.Serie = row.getCell('I').value;
-            rowData.Folio = row.getCell('J').value;
-            rowData.RfcEmisor = row.getCell('M').value;
-            rowData.NombreEmisor = row.getCell('N').value;
-            rowData.Descuento = row.getCell('V').value;
-            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
-            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
-            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
-            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
-            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
-            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
-            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
-            rowData.Concepto = row.getCell('AO').value;
-
-            if(rowData.NombreEmisor != null)
-            {
-                data.push(rowData);
-            }
-        }
-
-        if(req.query.orderBy === 'name') {
-            data.sort(function(a, b) {
-                if (a.NombreEmisor < b.NombreEmisor) {
-                    return -1;
-                }
-                if (a.NombreEmisor > b.NombreEmisor) {
-                    return 1;
-                }
-                return 0;
-            });
-        }
-        else if(req.query.orderBy === 'id') {
-            data.sort(function(a, b) {
-                if (a.Folio < b.Folio) {
-                    return -1;
-                }
-                if (a.Folio > b.Folio) {
-                    return 1;
-                }
-                return 0;
-            });
-        }
-        else {
-            res.status(403).json({
-                success: false,
-                message: 'El parámetro enviado en la petición es incorrecto',
-                error: error.message,
-                });
+            
+            miRelacion.AgregarFactura(i - 2, row.getCell('D').value, row.getCell('E').value, row.getCell('I').value, row.getCell('J').value,
+                row.getCell('M').value, row.getCell('N').value, row.getCell('V').value, CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento),
+                CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value),
+                CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value),
+                CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value),
+                row.getCell('AO').value);
         }
 
         res.json(data);
@@ -330,6 +315,35 @@ app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), a
     try {
         //Obtiene los datos del body
         const data = req.body
+
+        if(req.query.orderBy === 'id') {
+            data[1].sort(function(a, b) {
+                if (a.Folio < b.Folio) {
+                    return -1;
+                }
+                if (a.Folio > b.Folio) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            data[0].sort(function(a, b) {
+                if (a.Folio < b.Folio) {
+                    return -1;
+                }
+                if (a.Folio > b.Folio) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        else {
+            res.status(403).json({
+                success: false,
+                message: 'El parámetro enviado en la petición es incorrecto',
+                error: error.message,
+                });
+        }
 
         //Accede al libro de excel previamente almacenado en caché
         const workbook = req.workbook;

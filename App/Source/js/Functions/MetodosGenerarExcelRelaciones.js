@@ -1,6 +1,6 @@
 import { FormatearCadena, ConvertirNumeroDeMesALetra } from "./MetodosSinPeticion.js";
 
-export async function GenerarExcelRelaciones(miRelacion, endPoint, nombreArchivo, tableContainer, nombreCliente) {
+export async function GenerarExcelRelaciones(miRelacion, endPoint, modoOrdenamiento, nombreArchivo, tableContainer, nombreCliente) {
     tableContainer.innerHTML = "";
 
     try{
@@ -16,9 +16,9 @@ export async function GenerarExcelRelaciones(miRelacion, endPoint, nombreArchivo
             }
         });
 
-        let Datos = [miRelacion.Respaldo, miRelacion.Datos];
+        let Datos = [miRelacion.ListaFacturasOriginal, miRelacion.ListaFacturas];
 
-        let response = await fetch(`http://localhost:8082/` + endPoint, { 
+        let response = await fetch(`http://localhost:8082/` + endPoint + `?orderBy=` + modoOrdenamiento, { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -68,7 +68,7 @@ export async function LlenarTabla(tableContainer, miRelacion) {
                 }
             },
         ],
-        data: miRelacion.Datos.map(dato => [dato.Numero, dato.Fecha, dato.RfcEmisor, dato.NombreEmisor, FormatearCadena(dato.SubTotal), FormatearCadena(dato.RetIsr), FormatearCadena(dato.RetIva), FormatearCadena(dato.Ieps), FormatearCadena(dato.Iva8), FormatearCadena(dato.Iva16), FormatearCadena(dato.Total), dato.Concepto]),
+        data: miRelacion.ListaFacturas.map(dato => [dato.Numero, dato.Fecha, dato.RfcEmisor, dato.NombreEmisor, FormatearCadena(dato.SubTotal), FormatearCadena(dato.RetIsr), FormatearCadena(dato.RetIva), FormatearCadena(dato.Ieps), FormatearCadena(dato.Iva8), FormatearCadena(dato.Iva16), FormatearCadena(dato.Total), dato.Concepto]),
         pagination: {
             limit: 10
         },

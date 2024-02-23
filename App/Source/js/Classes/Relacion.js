@@ -1,18 +1,18 @@
-import { Factura } from './Factura.ts';
+import { Factura } from './Factura.js';
 
 export class Relacion
 {
-    public ListaFacturas : Array<Factura>;
-    private miListaFacturasOriginal : Array<Factura>;
+    ListaFacturas;
+    miListaFacturasOriginal;
 
-    public get ListaFacturasOriginal() { return this.miListaFacturasOriginal; }
+    get ListaFacturasOriginal() { return this.miListaFacturasOriginal; }
 
-    constructor(data : Array<Factura>) {
+    constructor(data) {
         this.ListaFacturas = data;
         this.miListaFacturasOriginal = [...data];
     }
 
-    public CalcularSubTotal() : number {
+    CalcularSubTotal() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -22,7 +22,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaRetencionIsr() : number {
+    CalcularSumaRetencionIsr() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -32,7 +32,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaRetIva() : number {
+    CalcularSumaRetIva() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -42,7 +42,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaIeps() : number {
+    CalcularSumaIeps() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -52,7 +52,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaIva8() : number {
+    CalcularSumaIva8(){
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -62,7 +62,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaIva16() : number {
+    CalcularSumaIva16() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -72,7 +72,7 @@ export class Relacion
         return suma;
     }
 
-    CalcularSumaTotal() : number {
+    CalcularSumaTotal() {
         let suma = 0;
 
         this.ListaFacturas.forEach(factura => {
@@ -82,10 +82,10 @@ export class Relacion
         return suma;
     }
 
-    RestarCantidad(numero : number) : void {
+    RestarCantidad(numero) {
         let indiceAEliminar = -1;
     
-        this.ListaFacturas.forEach((factura : Factura, index : number) => {
+        this.ListaFacturas.forEach((factura, index) => {
             if(factura.Numero == numero) {
                 indiceAEliminar = index;
             }
@@ -96,7 +96,7 @@ export class Relacion
         }
     }
 
-    RestaurarCantidad(numero : number) {
+    RestaurarCantidad(numero) {
         this.miListaFacturasOriginal.forEach(factura => {
             if(factura.Numero == numero) {
                 this.ListaFacturas.push(factura);

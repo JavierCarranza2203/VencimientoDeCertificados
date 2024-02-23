@@ -1,4 +1,4 @@
-import { Factura } from './Factura.js';
+import { Factura } from "./Factura";
 
 export class Relacion
 {
@@ -7,9 +7,18 @@ export class Relacion
 
     get ListaFacturasOriginal() { return this.miListaFacturasOriginal; }
 
-    constructor(data) {
+    constructor(data = []) {
         this.ListaFacturas = data;
         this.miListaFacturasOriginal = [...data];
+    }
+
+    AgregarFactura(numero, fecha, serie, folio, rfcEmisor, nombreEmisor, subTotal, retIsr, retIva,
+        ieps, iva8, iva16, total, concepto) 
+    {
+        let miFactura = new Factura(numero, fecha, serie, folio, rfcEmisor, nombreEmisor, subTotal, retIsr,
+            retIva, ieps, iva8, iva16, total, concepto);
+        
+        push(this.ListaFacturas, miFactura);
     }
 
     CalcularSubTotal() {
@@ -102,5 +111,20 @@ export class Relacion
                 this.ListaFacturas.push(factura);
             }
         });
+    }
+
+    toJSON() {
+        let ListaFacturasOriginalJSON = {};
+        let ListaFacturasJSON = {};
+
+        this.ListaFacturasOriginal.forEach((factura)=>{
+            ListaFacturasOriginalJSON[factura.Numero] = factura.toJSON();
+        });
+
+        this.ListaFacturas.forEach((factura)=>{
+            ListaFacturasJSON[factura.Numero] = factura.toJSON();
+        });
+
+        return JSON.stringify({ ListaFacturasOriginalJSON, ListaFacturasJSON });
     }
 }

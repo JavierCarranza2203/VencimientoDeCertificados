@@ -1,5 +1,5 @@
 import { LeerArchivoDeExcel } from "../../Functions/Peticiones.js";
-import { Relacion } from "../../Classes/Factura.ts";
+import { Relacion } from "../../Classes/Relacion.js";
 import { FormatearCadena } from "../../Functions/MetodosSinPeticion.js";
 import { GenerarExcelRelaciones, LlenarTabla } from "../../Functions/MetodosGenerarExcelRelaciones.js";
 
@@ -34,7 +34,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
                 }
             });
 
-        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos, 'name'));
+        miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
 
         Swal.fire({
             title: "¡Los datos se han procesado!",
@@ -111,9 +111,9 @@ document.getElementById("btnGenerarExcel").addEventListener("click", async ()=> 
                     if(TipoRelacion === '' || TipoRelacion === null){ throw new Error('Selecione el tipo de relación') } 
 
                     TipoRelacion === "gastos"?
-                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_gastos`, 'RELACION DE GASTOS', tableContainer, NombreCliente)
+                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_gastos`, 'name', 'RELACION DE GASTOS', tableContainer, NombreCliente)
                     :
-                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_ingresos`, 'RELACION DE INGRESOS', tableContainer, NombreCliente)
+                        GenerarExcelRelaciones(miRelacion, `generar_relacion_de_ingresos`, 'id', 'RELACION DE INGRESOS', tableContainer, NombreCliente)
                 }
                 else{
                     throw new Error("Debe ingresar el nombre del cliente");
