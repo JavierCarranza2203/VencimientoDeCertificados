@@ -319,6 +319,7 @@ export async function EliminarCliente(rfc, tabla, url){
 }
 
 export async function EditarCertificadosDelCliente(rfc, tabla, url){
+    let res;
     Swal.fire({
         title: 'Modificar cliente',
         html:
@@ -334,7 +335,7 @@ export async function EditarCertificadosDelCliente(rfc, tabla, url){
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
         backdrop: false,
-        preConfirm: () => {
+        preConfirm: async () => {
             // Obtiene los valores de los campos de entrada
             const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
             const CertificadoSello = Swal.getPopup().querySelector('#certificadoSello').files[0];
@@ -346,32 +347,34 @@ export async function EditarCertificadosDelCliente(rfc, tabla, url){
             datos.append("CertificadoSello", CertificadoSello);
             datos.append("CertificadoFirma", CertificadoFirma);
 
-            fetch('../Controllers/ClienteController.php?Operacion=updateCertificates', {
+            await fetch('../Controllers/ClienteController.php?Operacion=updateCertificates', {
                 method: 'POST',
                 body: datos,
+            }).then(async (response) => {
+
+                if(response.ok) {
+                    await Swal.fire({
+                        title: 'Éxito',
+                        text: 'Datos insertados correctamente.',
+                        icon: 'success'
+                    });
+
+                    ActualizarTablaClientes(tabla, url);
+                }
+                else{
+                    let mensaje = await response.json();
+                    
+                    throw new Error(mensaje)
+                }
             });
         }
     }).then((result) => {
         // Maneja la respuesta de la petición AJAX
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Éxito',
-                text: 'Datos insertados correctamente.',
-                icon: 'success'
-            });
-
-            ActualizarTablaClientes(tabla, url);
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
                 title: 'Cancelado',
                 text: 'La operación fue cancelada.',
                 icon: 'info'
-            });
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: 'Hubo un error al insertar datos.',
-                icon: 'error'
             });
         }
     })
@@ -436,7 +439,7 @@ export async function EditarDatosDelCliente(rfc, clave, tabla, url){
         } else {
             Swal.fire({
                 title: 'Error',
-                text: 'Hubo un error al insertar datos.',
+                text: res['message'],
                 icon: 'error'
             });
         }

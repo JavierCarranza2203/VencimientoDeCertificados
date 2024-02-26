@@ -154,7 +154,7 @@ class ClienteService extends Connection
     }
 
     //Método que edita los certificados del cliente
-    public function EditarCertificados(string $rfc, string $certificadoSello, string $certificadoFirma) : string {
+    public function EditarCertificados(string $rfc, string | null $certificadoSello, string | null $certificadoFirma) : string {
         $this->EditarCertificado($certificadoSello, "El sello está vencido", $rfc, "El sello pertenece a otra persona", "Hubo un error al actualizar el sello");
 
         $this->EditarCertificado($certificadoFirma, "La firma está vencida", $rfc, "La firma pertenece a otra persona", "Hubo un error al actualizar la firma");
@@ -163,7 +163,7 @@ class ClienteService extends Connection
     }
 
     //Método que edita 1 certificado
-    private function EditarCertificado(string $certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
+    private function EditarCertificado(string | null $certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
         if(isset($certificado)) {
             $CertificadoService = new CertificadoService();
 

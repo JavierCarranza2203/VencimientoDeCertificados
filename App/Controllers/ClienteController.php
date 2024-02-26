@@ -30,7 +30,7 @@ require_once "../Models/Cliente.php";
                 if(isset($_FILES['CertificadoSello']['tmp_name'])){ $CertificadoSello = $_FILES['CertificadoSello']['tmp_name']; }
                 if(isset($_FILES['CertificadoFirma']['tmp_name'])){ $CertificadoFirma = $_FILES['CertificadoFirma']['tmp_name']; }
 
-                echo $ClienteService->EditarCertificados($Rfc, $CertificadoSello, $CertificadoSello);
+                echo $ClienteService->EditarCertificados($Rfc, $CertificadoSello, $CertificadoFirma);
             break;
             case 'updateInformation':
                 $Rfc = $_POST['Rfc'];

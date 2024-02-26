@@ -26,6 +26,8 @@ require_once 'Sello.php';
             $this->Firma = new Firma($fechaFinFirma, $statusFirma);
             $this->GrupoClientes = $grupoClientes;
         }
+
+        
     }
 
 ?>

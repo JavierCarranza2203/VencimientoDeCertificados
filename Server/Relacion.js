@@ -1,4 +1,4 @@
-import { Factura } from "./Factura";
+import { Factura } from "./Factura.js";
 
 export class Relacion
 {
