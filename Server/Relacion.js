@@ -17,8 +17,6 @@ export class Relacion
     {
         let miFactura = new Factura(numero, fecha, serie, folio, rfcEmisor, nombreEmisor, subTotal, retIsr,
             retIva, ieps, iva8, iva16, total, concepto);
-        
-        push(this.ListaFacturas, miFactura);
     }
 
     CalcularSubTotal() {

@@ -556,13 +556,14 @@ export async function LeerArchivoDeExcel(archivo, orderBy){
         body: formData,
     });
 
+    let mensaje = await response.json();
     //Si la petición responde con estado 200, regresa los datos del certificado
     if(response.ok)
     {
-        return await response.json();
+        return mensaje;
     }
     else {
-        throw new Error(await response.json());
+        throw new Error(mensaje['message']);
     }
 }
 

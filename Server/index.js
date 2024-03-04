@@ -290,9 +290,13 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
 
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
+            let rowData = {
+                Tipo: row.getCell('D'),
+                Descuento: row.getCell('V')
+            }
             
-            miRelacion.AgregarFactura(i - 2, row.getCell('D').value, row.getCell('E').value, row.getCell('I').value, row.getCell('J').value,
-                row.getCell('M').value, row.getCell('N').value, row.getCell('V').value, CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento),
+            miRelacion.AgregarFactura(i - 2, row.getCell('E').value, row.getCell('I').value, row.getCell('J').value, row.getCell('M').value,
+                row.getCell('N').value, row.getCell('U').value, row.getCell('V').value, CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento),
                 CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value),
                 CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value),
                 CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value),

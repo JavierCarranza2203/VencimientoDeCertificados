@@ -36,7 +36,7 @@ export class Factura {
     }
 
     toJSON() {
-        return JSON.stringify({
+        return {
             Numero: this.Numero,
             Fecha: this.Fecha,
             Serie: this.Serie,
@@ -51,6 +51,16 @@ export class Factura {
             Iva16: this.Iva16,
             Total: this.Total,
             Concepto: this.Concepto
-        });
+        };
+    }
+
+    static ToObject( jsonObj ) 
+    {
+        if(jsonObj.Nombre && jsonObj.Fecha && jsonObj.Serie && jsonObj.Folio && jsonObj.RfcEmisor && jsonObj.NombreEmisor
+            && jsonObj.SubTotal && jsonObj.RetIsr && jsonObj.RetIva && jsonObj.Ieps && jsonObj.Iva8 && jsonObj.Iva16 && jsonObj.Total && jsonObj.Concepto)
+        {
+            return new Factura(jsonObj.NombreEmisor, jsonObj.Fecha, jsonObj.Serie, jsonObj.Folio, jsonObj.RfcEmisor, jsonObj.NombreEmisor, 
+                jsonObj.SubTotal, jsonObj.RetIsr, jsonObj.RetIva, jsonObj.Ieps, jsonObj.Iva8, jsonObj.Iva16, jsonObj.Total, jsonObj.Concepto)
+        }
     }
 }

@@ -48,6 +48,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
         MostrarSumatorias();
     }
     catch(error){
+        console.log(error)
         Swal.fire({
             icon: "error",
             title: "¡Hubo un error inesperado!",
