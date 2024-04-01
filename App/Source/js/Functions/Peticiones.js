@@ -256,6 +256,8 @@ export function ActualizarTablaUsuarios(table){
 /**********************************************************/
 
 export async function AgregarCliente(jsonCliente){
+    console.log(jsonCliente);
+
     //Envía la solicitud por método POST al server
     const response = await fetch("../Controllers/ClienteController.php?Operacion=add",
     {
@@ -456,17 +458,19 @@ export async function EditarDatosDelCliente(rfc, clave, tabla, url){
 export function ActualizarTablaClientes(table, url)
 {
     table.updateConfig({
-        columns: ["Nombre", "Grupo", "Vigencia del sello", "Vigencia de la firma", {
+        columns: ["RFC", "Nombre", "Grupo", "Clave CIEC", "Régimen fiscal", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash"></i>`;
 
-                return gridjs.html(`<div class="acciones">${editarIcono}</div>`);
+                return gridjs.html(`<div class="acciones">${editarIcono} ${eliminarIcono}</div>`);
             }
         }],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente[1], cliente[2], cliente[7], cliente[5]])
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], 
+                cliente[8]])
         }
     }).forceRender();
 }

@@ -144,10 +144,13 @@ document.getElementById("btnSiguiente").addEventListener("click", async()=>{
                 CambiarPaginaFormulario(statusFirma, contenedorFirma, nivel2);
                 break;
             case 2:
-                CambiarPaginaFormulario(statusSello);
+                if(document.getElementById("certificadoSello").files[0])
+                {
+                    CambiarPaginaFormulario(statusSello);
 
-                if(txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value) {
-                    throw new Error("Los certificados no son de la misma persona");
+                    if((txtNombreEnFirma.value != txtNombreEnSello.value || txtRfcEnFirma.value != txtRfcEnSello.value) ) {
+                        throw new Error("Los certificados no son de la misma persona");
+                    }
                 }
 
                 await RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirma, 

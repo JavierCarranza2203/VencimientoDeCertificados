@@ -155,15 +155,15 @@ class ClienteService extends Connection
 
     //Método que edita los certificados del cliente
     public function EditarCertificados(string $rfc, string | null $certificadoSello, string | null $certificadoFirma) : string {
-        $this->EditarCertificado($certificadoSello, "El sello está vencido", $rfc, "El sello pertenece a otra persona", "Hubo un error al actualizar el sello");
+        $this->EditarCertificado($certificadoSello, "El sello está vencido", $rfc, "El sello pertenece a otra persona", "Hubo un error al actualizar el sello", "Sello");
 
-        $this->EditarCertificado($certificadoFirma, "La firma está vencida", $rfc, "La firma pertenece a otra persona", "Hubo un error al actualizar la firma");
+        $this->EditarCertificado($certificadoFirma, "La firma está vencida", $rfc, "La firma pertenece a otra persona", "Hubo un error al actualizar la firma", "Firma");
 
         return "Se ha actualizado el cliente con RFC: " . $rfc; 
     }
 
     //Método que edita 1 certificado
-    private function EditarCertificado(string | null $certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar) : void {
+    private function EditarCertificado(string | null $certificado, string $mensajeVencimiento, string $rfc, string $mensajeDeIdentidad, string $mensajeDeErrorAlActualizar, string $tipo = "") : void {
         if(isset($certificado)) {
             $CertificadoService = new CertificadoService();
 
@@ -177,6 +177,10 @@ class ClienteService extends Connection
             $stmt->bind_param("siss", $datosDelCertificado->FechaDeVencimiento, $bitBooleano, $rfc, $datosDelCertificado->Tipo);
 
             if(!$stmt->execute()) { throw new Exception($mensajeDeErrorAlActualizar); }
+            else if($stmt->affected_rows === 0) 
+            { 
+                $this->AgregarCertificado($datosDelCertificado->FechaDeVencimiento, $bitBooleano, $rfc, $tipo);
+            }
         }
     }
 

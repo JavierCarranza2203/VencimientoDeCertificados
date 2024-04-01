@@ -36,7 +36,7 @@ document.addEventListener('click', async function(event) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
 
-            // EliminarCliente(rfc, table, url);
+            EliminarCliente(rfc, table, url);
         }
     }
     catch(error) {
@@ -69,7 +69,7 @@ function InicializarTabla(rol, grupoClientes = null) {
 
     table = new gridjs.Grid({
         search: true,
-        columns: ["RFC", "Nombre", "Grupo", "Clave CIEC", "Régimen fiscal", "Status del sello", "Status de la firma", {
+        columns: ["RFC", "Nombre", "Grupo", "Clave CIEC", "Régimen fiscal", {
             name: 'Acciones',
             formatter: (cell, row) => {
                 const editarIcono = `<i class="fas fa-edit"></i>`;
@@ -81,7 +81,7 @@ function InicializarTabla(rol, grupoClientes = null) {
         server: {
             url: url,
             then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[3], 
-                cliente[8], MostrarVigencia(cliente[6]), MostrarVigencia(cliente[4])])
+                cliente[8]])
         },
         pagination: {
             limit: 10

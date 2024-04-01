@@ -30,8 +30,8 @@ document.addEventListener('click', async function(event) {
         if (event.target.classList.contains('fa-edit')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const id = row.cells[0].textContent;
-            const nombre = row.cells[1].textContent;
-            const nombreUsuario = row.cells[2].textContent;
+            const nombre = row.cells[0].textContent;
+            const nombreUsuario = row.cells[1].textContent;
             const grupo = row.cells[3].textContent;
             const rol = row.cells[4].textContent;
 

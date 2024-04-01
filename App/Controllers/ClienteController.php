@@ -48,9 +48,9 @@ require_once "../Models/Cliente.php";
                 $datosDelCliente = json_decode($datosRecibidos);
 
                 //Crea una nueva instancia del cliente
-                $NuevoCliente = new Cliente($datosDelCliente->_strNombre, 
-                                            $datosDelCliente->_strRfc, 
-                                            $datosDelCliente->_chrGrupo, 
+                $NuevoCliente = new Cliente($datosDelCliente->Nombre, 
+                                            $datosDelCliente->Rfc, 
+                                            $datosDelCliente->Grupo, 
                                             $datosDelCliente->Sello->_dtmFechaVencimiento,
                                             $datosDelCliente->Sello->_blnStatus,
                                             $datosDelCliente->Firma->_dtmFechaVencimiento,
