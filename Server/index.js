@@ -56,7 +56,8 @@ app.get('/clientes_por_vencer', async(req, res) => {
         //Activa la conexión y hace la consulta para después mandar a llamar una función
         const [rows, fields] = await pool.query(consulta);
 
-        const data = RegresarRegistrosPorVencer(rows);
+        let data = RegresarRegistrosPorVencer(rows);
+        data = FiltarRegistroPorVencerEnLaSemana(data);
 
         res.json(data);
     } catch (error) {

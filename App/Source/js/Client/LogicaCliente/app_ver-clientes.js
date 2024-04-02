@@ -27,10 +27,11 @@ window.addEventListener("load", async ()=> {
 document.addEventListener('click', async function(event) {
     try {
         if (event.target.classList.contains('fa-edit')) {
-            const row = event.target.parentElement.parentElement.parentElement.parentElement;
-            const rfc = row.cells[0].textContent;
+            let row = event.target.parentElement.parentElement.parentElement.parentElement;
+            let rfc = row.cells[0].textContent;
+            let clave = row.cells[3].textContent;
 
-            // EditarDatosDelCliente(rfc, table, url);
+            EditarDatosDelCliente(rfc, clave, table, url);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;

@@ -29,12 +29,12 @@ function InicializarTabla(rol, grupoClientes = null) {
         url += "?grupo=" + grupoClientes;
     }
 
-    table = new gridjs.Grid({
+    let table = new gridjs.Grid({
         search: true,
-        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Status del sello", "Vencimiento de la firma", "Status de la firma"],
+        columns: ["RFC", "Nombre", "Grupo", "Vencimiento del sello", "Vencimiento de la firma"],
         server: {
             url: url,
-            then: data => data.map(cliente => [cliente["rfc"], cliente["nombre"], cliente["grupo_clientes"], cliente["fecha_vencimiento_sello"], MostrarVigencia(cliente["status_sello"]), cliente["fecha_vencimiento_firma"], MostrarVigencia(cliente["status_firma"])])
+            then: data => data.map(cliente => [cliente["rfc"], cliente["nombre"], cliente["grupo_clientes"], cliente["fecha_vencimiento_sello"], cliente["fecha_vencimiento_firma"]])
         },
         pagination: {
             limit: 10

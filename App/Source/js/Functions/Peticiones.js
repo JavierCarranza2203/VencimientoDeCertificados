@@ -396,11 +396,35 @@ export async function EditarDatosDelCliente(rfc, clave, tabla, url){
             '<label for="txtRfc" class="form__label">RFC del cliente a editar:</label>' +
             `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
 
-            '<label for="certificadoSello" class="form__label">Ingrese certificado del sello:</label>' +
-            `<input type="file" name="certificadoSello" id="certificadoSello" class="double-form-container__form-input"><br>` +
+            '<label for="certificadoSello" class="form__label">Ingrese el nuevo régimen fiscal:</label>' +
+            '<select name="cmbRegimenFiscal" id="cmbRegimenFiscal" class="double-form-container__form-combobox">' +
+                '<option value="601">601. General de Ley Personas Morales</option>' +
+                '<option value="603">603. Personas Morales con Fines no Lucrativos</option>' +
+                '<option value="605">605. Sueldos y Salarios e Ingresos Asimilados a Salarios</option>' +
+                '<option value="606">606. Arrendamiento</option>' +
+                '<option value="607">607. Régimen de Enajenación o Adquisición de Bienes</option>' +
+                '<option value="608">608. Demás ingresos</option>' +
+                '<option value="609">609. Consolidación</option>' +
+                '<option value="610">610. Residentes en el Extranjero sin Establecimineto Permanente en México</option>' +
+                '<option value="611">611. Ingresos por Dividendos (socios y accionistas)</option>' +
+                '<option value="612">612. Personas Físicas con Actividades Empresariales y Profesionales</option>' +
+                '<option value="614">614. Ingresos por intereses</option>' +
+                '<option value="615">615. Régimen de los ingresos por obtención de premios</option>' +
+                '<option value="616">616. Sin obligaciones fiscales</option>' +
+                '<option value="620">620. Sociedades Cooperativas de Producción que optan por diferir sus ingresos</option>' +
+                '<option value="621">621. Régimen de Incorporación Fiscal (RIF)</option>' +
+                '<option value="622">622. Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras</option>' +
+                '<option value="623">623. Opcional para Grupos de Sociedades</option>' +
+                '<option value="624">624. Coordinados</option>' +
+                '<option value="625">625. Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>' +
+                '<option value="626">626. Régimen Simplificado de Confianza (RESICO)</option>' +
+                '<option value="628">628. Hidrocarburos</option>' +
+                '<option value="629">629. De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales</option>' +
+                '<option value="630">630. Enajenación de acciones en bolsa de valores</option>' +
+            '</select><br>' +
 
             '<label for="txtRfc" class="form__label">Ingrese la nueva clave CIEC:</label>' +
-            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="Clave CIEC"><br>`,
+            `<input id="txtRfc" class="double-form-container__form-input" value="${clave}" placeholder="Clave CIEC"><br>`,
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
@@ -417,7 +441,7 @@ export async function EditarDatosDelCliente(rfc, clave, tabla, url){
             datos.append("CertificadoSello", CertificadoSello);
             datos.append("CertificadoFirma", CertificadoFirma);
 
-            fetch('../Controllers/ClienteController.php?Operacion=updateCertificates', {
+            fetch('../Controllers/ClienteController.php?Operacion=updateInformation', {
                 method: 'POST',
                 body: datos,
             });

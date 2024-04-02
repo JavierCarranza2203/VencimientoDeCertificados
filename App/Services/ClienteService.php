@@ -117,15 +117,20 @@ class ClienteService extends Connection
 /*******************************************************/
 
     //Método para editar los clientes
-    public function EditarDatosCliente(string $rfc, string $grupo, string | int $claveCiec, string $regimenFiscal) : string {
+    public function EditarDatosCliente(string $rfc, string $grupo, string $claveCiec, string $regimenFiscal) : string {
         if(isset($rfc) && is_string($rfc))
         {
-            if(is_string($claveCiec)) {
-                $stmtCliente = $this->db_conection->prepare("UPDATE `cliente` SET `grupo_clientes` = ? WHERE `id_clave_ciec` = ?");
+            if(isset($claveCiec)) {
+                $stmtCliente = $this->db_conection->prepare("SELECT * FROM `clave_ciec` WHERE `contrasenia` = ?");
 
-                $stmtCliente->bind_param("ss", $claveCiec, $rfc);
+                $stmtCliente->bind_param("s", $claveCiec);
 
                 if(!$stmtCliente->execute()){ throw new Exception("Hubo un error al actualizar el cliente"); }
+                if($stmtCliente->get_result()->num_rows == 0) {
+                    $stmtClaveCiec = $this->db_conection->prepare("INSERT INTO clave_ciec (contrasenia) VALUE (?)");
+                    $stmtClaveCiec->bind_param("s", $claveCiec);
+                    $stmtClaveCiec->execute();
+                }
             }
 
             $this->EditarCampoCliente($grupo, $rfc, "UPDATE `cliente` SET `grupo_clientes` = ? WHERE `rfc` = ?");
@@ -140,7 +145,7 @@ class ClienteService extends Connection
     }
 
     //Método para editar 1 campo
-    private function EditarCampoCliente(string | int $nuevoValor, string $rfc, string $consulta) : void {
+    private function EditarCampoCliente(string $nuevoValor, string $rfc, string $consulta) : void {
         if(isset($nuevoValor) && (is_string($nuevoValor) || is_int($nuevoValor))) {
             $stmtCliente = $this->db_conection->prepare($consulta);
 
