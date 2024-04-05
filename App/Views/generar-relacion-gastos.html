@@ -19,6 +19,9 @@
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <!-- Bloqueador de contenido en caso de que no se haya iniciado sesión -->
+    <div id="blocker" class="content-blocker"></div>
+
     <header class="header">
         <div class="logo-container">
             <img src="../Utilities/LOGO RG.jpg" alt="RG" class="logo-container__img">
@@ -29,36 +32,13 @@
             </div>
         </div>
 
-        <h2 class="header__title">Relación de gastos</h2>
+        <h2 class="header__title">Relación de gastos e ingresos</h2>
 
         <nav class="header__navbar">
             <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
             <button class="header__navbar-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
         </nav>
     </header>
-
-    <form method="POST" id="frmGenerarRelacionDeGastos" enctype="multipart/form-data" class="double-form-container__form double-form-container__left-form">
-        <h3 class="double-form-container__form-title">Ingrese el archivo de Excel</h3>
-        <div></div>
-        <input type="file" name="archivoGastos" id="archivoGastos" class="double-form-container__form-input">
-
-        <button type="submit" class="double-form-container__form-button">Ver datos</button>
-    </form>
-
-    <section class="info-container">
-        <div id="lblSubTotal">Sub Total: $0.00</div>
-        <div id="lblIva8">IVA 8%: $0.00</div>
-        <div id="lblRetIva">Ret. IVA: $0.00</div>
-        <div id="lblIeps">IEPS: $0.00</div>
-        <div id="lblTotal">Total: $0.00</div>
-        <div id="lblIva16">IVA: 16%: $0.00</div>
-        <div id="lblRetIsr">Ret. ISR: $0.00</div>
-        <div class="buttons-container">
-            <button type="button" class="btn" id="btnGenerarExcel"><i class="fa-regular fa-file-excel"></i></button>
-            <button type="button" class="btn" id="btnAgregarGasto"><i class="fa-solid fa-cart-plus"></i></button>
-        </div>
-    </section>
-
     <div class="table" id="table"></div>
 
     <!--======== Archivos js ========-->

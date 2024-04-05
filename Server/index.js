@@ -3,10 +3,13 @@ import cors from 'cors';
 import { createPool } from 'mysql2/promise';
 import ExcelJS from 'exceljs';
 import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 import { Relacion } from './Relacion.js';
+import xml2js from 'xml2js';
 
 const app = new express();
 let LibroDeGastos;
@@ -287,21 +290,32 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
 
         const rowCount = sheet.rowCount;
 
-        let miRelacion = new Relacion();
+        let data = [];
 
         for (let i = 2; i <= rowCount; i++) {
             const row = sheet.getRow(i);
-            let rowData = {
-                Tipo: row.getCell('D'),
-                Descuento: row.getCell('V')
+            let rowData = {};
+            rowData.Numero = i - 2;
+            rowData.Tipo = row.getCell('D').value;
+            rowData.Fecha = row.getCell('E').value;
+            rowData.Serie = row.getCell('I').value;
+            rowData.Folio = row.getCell('J').value;
+            rowData.RfcEmisor = row.getCell('M').value;
+            rowData.NombreEmisor = row.getCell('N').value;
+            rowData.Descuento = row.getCell('V').value;
+            rowData.SubTotal = CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento);
+            rowData.RetIsr = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value);
+            rowData.RetIva = CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value);
+            rowData.Ieps = CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value);
+            rowData.Iva8 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value);
+            rowData.Iva16 = CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value);
+            rowData.Total = CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value);
+            rowData.Concepto = row.getCell('AO').value;
+
+            if(rowData.NombreEmisor != null)
+            {
+                data.push(rowData);
             }
-            
-            miRelacion.AgregarFactura(i - 2, row.getCell('E').value, row.getCell('I').value, row.getCell('J').value, row.getCell('M').value,
-                row.getCell('N').value, row.getCell('U').value, row.getCell('V').value, CalcularSubTotal(rowData.Tipo, row.getCell('U').value, rowData.Descuento),
-                CalcularValorParaMostrar(rowData.Tipo, row.getCell('Z').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('Y').value),
-                CalcularValorParaMostrar(rowData.Tipo, row.getCell('W').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('BE').value),
-                CalcularValorParaMostrar(rowData.Tipo, row.getCell('X').value), CalcularValorParaMostrar(rowData.Tipo, row.getCell('AB').value),
-                row.getCell('AO').value);
         }
 
         res.json(data);
@@ -312,6 +326,34 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
         error: error.message,
         });
     }
+});
+
+app.get("/getXMLInfo", async(req, res)=>{
+    const xmlPath = 'C:/AdminXML/BovedaCFDi/BAGA680128QQ7/Emitidas/2024/03/';
+
+    fs.readdirSync(xmlPath).forEach((file) => {
+        const filePath = path.join(xmlPath, file);
+
+        if (path.extname(file) === '.xml') {
+            // Read the XML file
+            const xmlData = fs.readFileSync(filePath, 'utf8');
+
+            // Parse the XML data
+            const result = xml2js.parseString(xmlData, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                // Extract the required information
+                const comprobante = result["cfdi:Comprobante"];
+
+                res.json({
+                    comprobante
+                });
+            });
+        }
+    });
 });
 
 
