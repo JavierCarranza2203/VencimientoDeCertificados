@@ -9,6 +9,7 @@ const upload = multer({ dest: 'uploads/' });
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 import { Relacion } from './Relacion.js';
+import { Factura } from './Factura.js';
 import xml2js from 'xml2js';
 
 const app = new express();
@@ -328,7 +329,7 @@ app.post('/leer_archivo', upload.single("ReporteDeGastos"), async (req, res) => 
     }
 });
 
-app.get("/getXMLInfo", async(req, res)=>{
+app.get("/getXMLInfo", async(req, res)=> {
     const xmlPath = 'C:/AdminXML/BovedaCFDi/BAGA680128QQ7/Emitidas/2024/03/';
 
     fs.readdirSync(xmlPath).forEach((file) => {
@@ -346,11 +347,8 @@ app.get("/getXMLInfo", async(req, res)=>{
                 }
 
                 // Extract the required information
-                const comprobante = result["cfdi:Comprobante"];
-
-                res.json({
-                    comprobante
-                });
+                let factura = new Factura(result["cfdi:Comprobante"]);
+                console.log(factura);
             });
         }
     });

@@ -40,7 +40,7 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
     try {
         //La bandera es utilizada para saber si el usuario no es admin o dev,
         //En caso de ser cualquiera de los dos, pide el grupo al que pertenece el nuevo cliente
-        let grupo, claveCiec, regimenFiscal;
+        let grupoD = grupo, claveCiec, regimenFiscal;
         if(bandera == true)
         {
             await Swal.fire({
@@ -50,8 +50,8 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
                     '<option value="A" selected>Clientes A</option>' +
                     '<option value="B">Clientes B</option>' +
                     '<option value="C">Clientes C</option>' +
+                    '<option value="S">No aplica</option>' +
                 '</select><br>' +
-
                 '<label for="cmbRegimenFiscal" class="form__label">Ingrese el régimen fiscal:</label>' +
                 '<select name="cmbRegimenFiscal" id="cmbRegimenFiscal" class="double-form-container__form-combobox">' +
                     '<option value="601" selected>601. General de Ley Personas Morales</option>' +
@@ -78,7 +78,6 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
                     '<option value="629">629. De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales</option>' +
                     '<option value="630">630. Enajenación de acciones en bolsa de valores</option>' +
                 '</select><br>' +
-
                 '<label for="certificadoFiel" class="form__label">Ingrese la clave CIEC:</label>' +
                 `<input type="file" name="txtClaveCiec" id="txtClaveCiec" class="double-form-container__form-input"><br>`,
                 showCancelButton: true,
@@ -87,7 +86,7 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
                 backdrop: false,
                 preConfirm: ()=>
                 {
-                    grupo = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
+                    grupoD = Swal.getPopup().querySelector('#cmbGrupoClientes').value;
                     regimenFiscal = Swal.getPopup().querySelector('#cmbRegimenFiscal').value;
                     claveCiec = Swal.getPopup().querySelector('#txtClaveCiec').value;
                 }
@@ -102,7 +101,7 @@ export async function RecibirDatosDelNuevoCliente(txtNombreEnFirma, txtRfcEnFirm
         NuevoCliente.Firma.Status = statusFirma.textContent;
         NuevoCliente.Sello.FechaVencimiento = txtFechaFinEnSello.value != '' && txtFechaFinEnSello.value != null? txtFechaFinEnSello.value : '';
         NuevoCliente.Sello.Status = statusSello.textContent != '' && statusSello.textContent != null? statusSello.textContent : false;
-        NuevoCliente.Grupo = grupo;
+        NuevoCliente.Grupo = grupoD;
 
         await AgregarCliente(JSON.stringify(NuevoCliente));
     }
