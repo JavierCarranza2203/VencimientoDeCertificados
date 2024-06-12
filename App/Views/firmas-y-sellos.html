@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RG | Control de certificados</title>
+
+    <!--======== Título ========-->
+    <title>RG | Firmas y sellos</title>
 
     <!--======== Icono principal ========-->
     <link rel="icon" href="../Utilities/LOGO RG.jpg" type="image/x-icon">
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/module/all-users_style.css">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../Source/css/module/main-page_style.css">
 
     <!--======== Archivos js ========-->
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
@@ -30,26 +31,27 @@
             </div>
         </div>
 
-        <h2 class="header__title">Control de certificados</h2>
+        <h2 class="header__title">Módulo de Firmas y Sellos</h2>
 
         <nav class="header__navbar">
-            <a href="firmas-y-sellos.html" class="header__navbar-item"><i class="fa-solid fa-circle-arrow-left"></i> Regresar</a>
+            <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
             <button class="header__navbar-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
         </nav>
     </header>
+    <section class="card" id="btnDocumentControl">
+        <img src="https://img.freepik.com/free-vector/document-vector-colorful-design_341269-1262.jpg?w=740&t=st=1703785703~exp=1703786303~hmac=aeeba60a4bb1bd562fe9cdc8debe203527b63c867496023eb1fdd121b8bf7fc1" alt="ver-clientes" class="card__img">
+        <a href="#" class="card__link">Control de certificados</a>
+    </section>
 
-    <!-- div que solo sirve para que se acomode en el grid -->
-    <div></div>
-
-    <!-- Contenedor de la tabla -->
-    <main class="table-client-container">
-        <div id="wrapper"></div>
-    </main>
+    <!-- Tarjeta para la sección "Clientes por vencer" -->
+    <section class="card" id="btnWarningCustomers">
+        <img src="https://img.freepik.com/free-vector/folder-concept-illustration_114360-3450.jpg?size=626&ext=jpg&ga=GA1.1.1668157491.1701210920&semt=sph" alt="ver-clientes" class="card__img">
+        <a href="#" class="card__link">Certificados por vencer</a>
+    </section>
 
     <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-    <script type="module" src="../Source/js/Client/LogicaCertificado/app_control-de-certificados.js"></script>
+    <script type="module" src="../Source/js/Client/app_modulo-csd-fiel.js"></script>
     <script type="module" src="../Source/js/btnLogout.js"></script>
 </body>
 </html>

@@ -28,3 +28,37 @@ CREATE TABLE pagos(
     fecha DATETIME NOT NULL,
     FOREIGN KEY (idCliente) REFERENCES cliente(rfc)
 );
+
+BEGIN
+	DECLARE v_idCliente VARCHAR(80);
+    DECLARE v_cantidadPagos INT;
+    
+    SELECT rfc INTO v_idCliente FROM cliente WHERE rfc = p_idCliente;
+    
+    IF v_idCliente IS NULL THEN
+    	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El cliente no existe.';
+    ELSE
+    	SELECT COUNT(idCliente) INTO v_cantidadPagos FROM pagos WHERE idCliente = v_idCliente;
+    	
+        IF v_cantidadPagos IS NULL THEN 
+        	SET v_cantidadPagos = 0; 
+        END IF;
+    
+    	SELECT 
+            rfc, 
+            nombre,
+            domicilio,
+            ciudad,
+            COUNT(DISTINCT C.folio) AS cantidadContraRecibosTimbrados,
+            v_cantidadPagos AS cantidadPagosRealizados,
+            total AS saldoActual
+        FROM 
+            contrarecibos_timbrados C
+            JOIN contrarecibos ON (C.rfc = contrarecibos.idCliente)
+            JOIN saldos ON (C.rfc = saldos.idCliente)
+        WHERE 
+        	rfc = p_idCliente
+        GROUP BY
+			rfc;
+    END IF;
+END

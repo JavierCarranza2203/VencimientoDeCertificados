@@ -5,3 +5,7 @@ div.acciones > i.fa-edit{
 div.acciones > i.fa-trash{
     color: rgb(172, 0, 0);
 }
+
+div.acciones > i.fa-tablet{
+    color: rgb(163, 112, 0);
+}

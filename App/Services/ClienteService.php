@@ -90,6 +90,32 @@ class ClienteService extends Connection
         return $this->EjecutarStamentDeQuerySelect($stmt);
     }
 
+    public function ObtenerTodosLosContrarecibosDeTodosLosClientes() : array {
+        $stmt = $this->db_conection->prepare("SELECT * FROM contrarecibos_timbrados");
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    public function ObtenerInformacionDeTimbradoDeClientes() : array {
+        $stmt = $this->db_conection->prepare("SELECT * FROM informacion_timbrado_clientes");
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    public function ObtenerPagosRegistradosDeTodosLosClientes() : array {
+        $stmt = $this->db_conection->prepare("SELECT * FROM pagos_registrados");
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    public function ObtenerInformacionDeTimbradoPorCliente(string $rfc) : array {
+        $stmt = $this->db_conection->prepare("CALL ObtenerEstadoDeCuentaDelCliente(?)");
+
+        $stmt->bind_param("s", $rfc);
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
     //Ejecuta las consultas SELECT y regresa el resultado
     private function EjecutarStamentDeQuerySelect(mysqli_stmt $stmt) : array {
         //Ejecuta la consulta

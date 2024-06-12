@@ -1,5 +1,5 @@
 <?php
-
+//Todo esto es de la mejor lógica que he hecho uwu
 require_once "../Services/CertificadoService.php";
 require_once "../Services/ClienteService.php";
 require_once "../Models/Cliente.php";

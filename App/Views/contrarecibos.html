@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RG | Control de certificados</title>
+
+    <!--======== Título ========-->
+    <title>RG | Agregar nuevo cliente</title>
 
     <!--======== Icono principal ========-->
     <link rel="icon" href="../Utilities/LOGO RG.jpg" type="image/x-icon">
 
     <!--======== Archivos css ========-->
-    <link rel="stylesheet" href="../Source/css/module/all-users_style.css">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../Source/css/module/main-page_style.css">
 
     <!--======== Archivos js ========-->
     <script src="https://kit.fontawesome.com/f8571caff0.js" crossorigin="anonymous"></script>
@@ -30,26 +31,40 @@
             </div>
         </div>
 
-        <h2 class="header__title">Control de certificados</h2>
+        <h2 class="header__title">Página principal</h2>
 
         <nav class="header__navbar">
-            <a href="firmas-y-sellos.html" class="header__navbar-item"><i class="fa-solid fa-circle-arrow-left"></i> Regresar</a>
+            <a href="pagina-principal.html" class="header__navbar-item"><i class="fa-solid fa-house"></i> Página principal</a>
             <button class="header__navbar-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
         </nav>
     </header>
 
-    <!-- div que solo sirve para que se acomode en el grid -->
-    <div></div>
+    <!-- Tarjeta para la sección "Timbrar contra-recibos -->
+    <section class="card" id="btnTimbrarContraRecibos">
+        <img src="" alt="nuevo-cliente" class="card__img">
+        <a class="card__link">Timbrar contra-recibos</a>
+    </section>
 
-    <!-- Contenedor de la tabla -->
-    <main class="table-client-container">
-        <div id="wrapper"></div>
-    </main>
+    <!-- Tarjeta para la sección "Contra-recibos timbrados" -->
+    <section class="card" id="btnVerContraRecibos">
+        <img src="" alt="ver-clientes" class="card__img">
+        <a href="#" class="card__link">Contra-recibos timbrados</a>
+    </section>
+
+    <!-- Tarjeta para la sección "Pagos registrados" -->
+    <section class="card" id="btnVerPagosRegistrados">
+        <img src="" alt="ver-clientes" class="card__img">
+        <a href="#" class="card__link">Pagos registrados</a>
+    </section>
+
+    <section class="card" id="btnVerClientesYSaldos">
+        <img src="" alt="nuevo-cliente" class="card__img">
+        <a class="card__link">Clientes y saldos</a>
+    </section>
 
     <!--======== Archivos js ========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-    <script type="module" src="../Source/js/Client/LogicaCertificado/app_control-de-certificados.js"></script>
+    <script type="module" src="../Source/js/Client/app_modulo-contrarecibos.js"></script>
     <script type="module" src="../Source/js/btnLogout.js"></script>
 </body>
 </html>

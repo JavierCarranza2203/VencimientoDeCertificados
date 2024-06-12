@@ -22,6 +22,17 @@ require_once "../Models/Cliente.php";
                 //Manda a llamar el método de obtener todos los clientes por grupo
                 echo json_encode($ClienteService->ObtenerTodosLosClientes($_GET['Grupo']));
             break;
+            case 'viewRecibos':
+                echo json_encode($ClienteService->ObtenerTodosLosContrarecibosDeTodosLosClientes());
+            break;
+            case 'viewInfoTimbrado':
+                echo json_encode($ClienteService->ObtenerInformacionDeTimbradoDeClientes());
+            break;
+            case 'viewTicketsInfoByCustomerId':
+                $Rfc = $_GET['Rfc'];
+
+                echo json_encode($ClienteService->ObtenerInformacionDeTimbradoPorCliente($Rfc));
+            break;
             case 'updateCertificates':
                 $Rfc = $_POST['Rfc'];
                 $CertificadoFirma = null;

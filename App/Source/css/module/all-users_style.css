@@ -31,3 +31,13 @@
 #btnGenerarExcel:hover{
     background-color: #4583a0;
 }
+
+td{
+    cursor: default;
+    transition: all 0.2s;
+}
+
+tr:hover td{
+    background-color: #e8e8e8 !important;
+    transition: all 0.2s;
+}

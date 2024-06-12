@@ -1,0 +1,8 @@
+@import url('../base/reset-syle.css');
+@import url('../layout/customer-balance_layout.css');
+@import url('./components/header_style.css');
+
+/* Modificacion del tamaño de la imagen del logo */
+.logo-container__img{
+    width: 50px;
+}

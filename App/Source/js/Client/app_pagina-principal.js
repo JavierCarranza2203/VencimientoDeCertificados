@@ -5,8 +5,7 @@ import { RunAutoUpdateService } from "../Functions/Peticiones.js";
 /* Declaracion de variables y obtiene los elementos del html */
 /*************************************************************/
 
-const btnNewUser = document.getElementById("btnNewUser");
-const btnAllUsers = document.getElementById("btnAllUsers");
+const btnModuloUsuarios = document.getElementById("btnModuloUsuarios");
 const btnAutoUpdateService = document.getElementById("btnUseAutoUpdateService");
 
 /*************************************************************/
@@ -21,23 +20,15 @@ window.addEventListener("load", async()=>{
     await PermitirAcceso().then(res =>{
         if(res["Rol"] == "admin")
         {
-            btnNewUser.addEventListener("click", ()=>{
-                location.href = "nuevo-usuario.html";
-            });
-
-            btnAllUsers.addEventListener("click", ()=>{
-                location.href = "ver-usuarios.html";
+            btnModuloUsuarios.addEventListener("click", ()=>{
+                location.href = "usuarios.html";
             });
 
             btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
         else if(res["Rol"] == "dev") {
-            btnNewUser.addEventListener("click", ()=> {
-                location.href = "nuevo-usuario.html";
-            });
-            
-            btnAllUsers.addEventListener("click", ()=> {
-                location.href = "ver-usuarios.html";
+            btnModuloUsuarios.addEventListener("click", ()=>{
+                location.href = "usuarios.html";
             });
 
             btnAutoUpdateService.addEventListener("click", ()=> {
@@ -55,8 +46,7 @@ window.addEventListener("load", async()=>{
             });
         }
         else {
-            btnNewUser.classList.add("content-blocker--hidden");
-            btnAllUsers.classList.add("content-blocker--hidden");
+            btnModuloUsuarios.classList.add("content-blocker--hidden");
             btnAutoUpdateService.classList.add("content-blocker--hidden");
         }
     });
@@ -70,23 +60,19 @@ window.addEventListener("load", async()=>{
 /*             Eventos de los controles del html             */
 /*************************************************************/
 
-document.getElementById("btnWarningCustomers").addEventListener("click", ()=>{
-    location.href = "clientes-por-vencer.html";
+document.getElementById("btnModuloClientes").addEventListener("click", ()=>{
+    location.href = "clientes.html";
 });
 
-document.getElementById("btnNewCustomer").addEventListener("click", ()=>{
-    location.href = "nuevo-cliente.html";
+document.getElementById("btnModuloCSDyFiel").addEventListener("click", ()=>{
+    location.href = "firmas-y-sellos.html";
 });
 
-document.getElementById("btnAllCustomers").addEventListener("click", ()=>{
-    location.href = "ver-clientes.html";
+document.getElementById("btnModuloContrarecibos").addEventListener("click", ()=>{
+    location.href = "contrarecibos.html";
 });
 
-document.getElementById("btnDocumentControl").addEventListener("click", ()=> {
-    location.href = "control-de-certificados.html";
-});
-
-document.getElementById("btnRelacionDeGastos").addEventListener("click", ()=> {
+document.getElementById("btnModuloGastosIngresos").addEventListener("click", ()=> {
     location.href = "generar-relacion-gastos.html";
 });
 
