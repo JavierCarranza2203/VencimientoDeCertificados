@@ -29,7 +29,7 @@ function InicializarTabla() {
             then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], cliente[3], cliente[5], cliente[6], cliente[7], "$" + cliente[10] + ".00", cliente[8], "$" + cliente[9] + ".00"])
         },
         pagination: {
-            limit: 10
+            limit: 6
         },
         language: {
             'search': {
@@ -48,7 +48,7 @@ document.addEventListener('click', async function(event) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
 
-            EliminarCliente(rfc, table, url);
+            // EliminarCliente(rfc, table, url);
         }
         else if(event.target.classList.contains('fa-tablet')) {
             const rfc = event.target.parentElement.parentElement.parentElement.parentElement.cells[0].textContent;

@@ -25,6 +25,9 @@ require_once "../Models/Cliente.php";
             case 'viewRecibos':
                 echo json_encode($ClienteService->ObtenerTodosLosContrarecibosDeTodosLosClientes());
             break;
+            case 'viewPayments':
+                echo json_encode($ClienteService->ObtenerPagosRegistradosDeTodosLosClientes());
+            break;
             case 'viewInfoTimbrado':
                 echo json_encode($ClienteService->ObtenerInformacionDeTimbradoDeClientes());
             break;
@@ -32,6 +35,30 @@ require_once "../Models/Cliente.php";
                 $Rfc = $_GET['Rfc'];
 
                 echo json_encode($ClienteService->ObtenerInformacionDeTimbradoPorCliente($Rfc));
+            break;
+            case 'getCustomersWithTickets':
+                echo json_encode($ClienteService->ObtenerClientesQueTimbranContraRecibos());
+            break;
+            case 'viewTicketsByCustomerId':
+                $Rfc = $_GET['Rfc'];
+
+                echo json_encode($ClienteService->ObtenerContraRecibosTimbradosPorCliente($Rfc));
+            break;
+            case 'viewPaymentsByCustomerId':
+                $Rfc = $_GET['Rfc'];
+
+                echo json_encode($ClienteService->ObtenerPagosRealizadosPorCliente($Rfc));
+            break;
+            case 'stampAllTickets':
+                $concepto = $_POST['concepto'];
+
+                echo json_encode($ClienteService->TimbrarTodosLosContraRecibos($concepto));
+            break;
+            case 'stampTicket':
+                $concepto = $_POST['concepto'];
+                $rfc = $_POST['rfc'];
+                
+                echo json_encode($ClienteService->TimbrarContraRecibo($rfc, $concepto));
             break;
             case 'updateCertificates':
                 $Rfc = $_POST['Rfc'];

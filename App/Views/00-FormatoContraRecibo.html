@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContraRecibo</title>
+</head>
+<body>
+    <div class="contra-recibo-container" id="content">
+        <div class="info-emisor-container">
+            <img src="../Utilities/LOGO RG.jpg" alt="RG">
+
+            <div class="info-emisor-container__info">
+                <h1>GARCIA REYES Y ASOCIADOS</h1>
+                <h2>Dinorah Ortiz Obregón</h2>
+                <h3><b>CONTADOR PÚBLICO</b></h3>
+
+                <div class="info-emisor-container__info-direccion">
+                    <h3>R.F.C.: OIOD650814KQ9</h3>
+                    <h3>CURP.: OIOD650814KQ9</h3>
+                    <h3>MATIAS GUERRA #73</h3>
+                    <h3>COL. INFONAVIT</h3>
+                    <h3>TEL.: (867) 717-0815</h3>
+                    <h3>CORREO: rgarcia@globalpc.net</h3>
+                    <h3>NUEVO LAREDO, TAMAULIPAS</h3>
+                    <h3>C.P.: 88275</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="titulo-container">
+        <h2>CONTRA-RECIBO</h2>
+
+        <h3><b>FOLIO: <span id="lblFolio"></span></b></h3>
+    </div>
+
+    <div class="info-cliente-container">
+        <div class="info-cliente-container__info-identificacion">
+            <h3><b>FECHA: </b><span id="lblFecha"></span></h3>
+            <h3><b>CLIENTE: </b><span id="lblFecha"></span></h3>
+            <h3><b>DOMICILIO: </b><span id="lblFecha"></span></h3>
+            <h3><b>CIUDAD: </b><span id="lblFecha"></span></h3>
+            <h3><b>RFC: </b><span id="lblFecha"></span></h3>
+            <h3><b>CONCEPTO: </b><span id="lblFecha"></span></h3>
+        </div>
+
+        <div class="info-cliente-container__info-pago">
+            <h3><b>IMPORTE: </b><span id="lblImporte"></span></h3>
+            <h3><b>IVA: </b><span id="lblIva"></span></h3>
+            <h3><b>SUBTOTAL: </b><span id="lblSubTotal"></span></h3>
+            <h3><b>RET. I.V.A.: </b><span id="lblRetIva"></span></h3>
+            <h3><b>RET. I.S.R.: </b><span id="lblRetIsr"></span></h3>
+            <h3><b>TOTAL: </b><span id="lblTotal"></span></h3>
+        </div>
+    </div>
+
+    <!-- jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+            var doc = new jsPDF();   
+
+            doc.html(document.body, {
+                callback: function (doc) {
+                    doc.save();
+                }
+            });
+        })
+    </script>
+</body>
+</html>

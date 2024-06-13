@@ -598,3 +598,68 @@ export async function LeerArchivoDeExcel(archivo, orderBy){
 /**********************************************************/
 /*       Método para generar relaciones de excel          */
 /**********************************************************/
+
+export async function TimbrarContraRecibo(rfc, tarifa) {
+    let folio;
+
+    Swal.fire({
+        title: 'Timbrar contra-recibo',
+        html:
+            '<label for="txtRfc" class="form__label">RFC del cliente a timbrar:</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+
+            '<label for="txtTarifa" class="form__label">Tarifa mensual:</label>' +
+            `<input id="txtTarifa" class="double-form-container__form-input" value="${tarifa}" placeholder="Tarifa" readonly><br>` +
+
+            '<label for="txtConcepto" class="form__label">Ingrese el concepto:</label>' +
+            `<input id="txtConcepto" class="double-form-container__form-input" placeholder="HONORARIOS DEL MES DE..."><br>`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        backdrop: false,
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
+            const Concepto = Swal.getPopup().querySelector('#txtConcepto').value;
+
+            if(Concepto === null || Concepto === '') { throw new Error("Debe ingresar por lo menos un dato"); }
+            
+            let datos = new FormData();
+            datos.append("rfc", Rfc);
+            datos.append("concepto", Concepto);
+
+            fetch('../Controllers/ClienteController.php?Operacion=stampTicket', {
+                method: 'POST',
+                body: datos,
+            });
+        }
+    }).then((result) => {
+        // Maneja la respuesta de la petición AJAX
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Datos insertados correctamente.',
+                icon: 'success'
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: res['message'],
+                icon: 'error'
+            });
+        }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
+    });
+}

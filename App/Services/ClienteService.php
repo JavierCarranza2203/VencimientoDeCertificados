@@ -116,6 +116,44 @@ class ClienteService extends Connection
         return $this->EjecutarStamentDeQuerySelect($stmt);
     }
 
+    public function ObtenerContraRecibosTimbradosPorCliente(string $rfc) : array {
+        $stmt = $this->db_conection->prepare("CALL ObtenerContrarecibosPorCliente(?)");
+
+        $stmt->bind_param("s", $rfc);
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    public function ObtenerPagosRealizadosPorCliente(string $rfc) : array {
+        $stmt = $this->db_conection->prepare("CALL ObtenerPagosRealizadosPorCliente(?)");
+
+        $stmt->bind_param("s", $rfc);
+
+        $stmt->execute();
+
+        //Obtiene el resultado
+        $resultado = $stmt->get_result();
+
+        $resultado = $resultado->fetch_all();
+
+        return $resultado;
+    }
+
+    public function ObtenerClientesQueTimbranContraRecibos() : array {
+        $stmt = $this->db_conection->prepare("SELECT 
+                                                rfc,
+                                                nombre,
+                                                grupo_clientes,
+                                                CONCAT('$', tarifaMensual, '.00') AS tarifa
+                                            FROM 
+                                                cliente
+                                            JOIN
+                                                tarifas ON cliente.rfc = tarifas.idCliente
+                                            WHERE timbraNominas = true");
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
     //Ejecuta las consultas SELECT y regresa el resultado
     private function EjecutarStamentDeQuerySelect(mysqli_stmt $stmt) : array {
         //Ejecuta la consulta
@@ -282,6 +320,45 @@ class ClienteService extends Connection
         else {
             throw new Exception("Código de acceso incorrecto");
         }
+    }
+
+    public function TimbrarContraRecibo($rfc, $concepto) {
+        $stmt = $this->db_conection->prepare("CALL TimbrarContraRecibo(?, ?)");
+
+        $stmt->bind_param("ss", $rfc, $concepto);
+
+        return $this->EjecutarStamentDeQuerySelect($stmt);
+    }
+
+    public function TimbrarContraRecibo2($rfc, $concepto) {
+        $stmt = $this->db_conection->prepare("CALL TimbrarContraRecibo(?, ?)");
+
+        $stmt->bind_param("ss", $rfc, $concepto);
+
+        return $stmt->execute();
+    }
+
+    public function TimbrarTodosLosContraRecibos(string $concepto) {
+        $clientes = $this->ObtenerClientesQueTimbranContraRecibos();
+        $contadorErrores = 0;
+        $contadorExitos = 0;
+
+        for($i = 0; $i < count($clientes); $i++) {
+            if($this->TimbrarContraRecibo2($clientes[$i][0], $concepto)) {
+                $contadorExitos++;
+            }
+            else {
+                $contadorErrores++;
+            }
+        }
+
+        $data = [
+            "Agregados" => $contadorExitos,
+            "Con Errores" => $contadorErrores,
+            "Mensaje" => "Se han agregado los clientes",
+        ];
+
+        return $data;
     }
 }
 ?>

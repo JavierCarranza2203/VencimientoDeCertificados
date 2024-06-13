@@ -51,3 +51,26 @@ div.acciones{
     justify-content: center;
     gap: 20px;
 }
+
+div.acciones > i.fa-bell{
+    color: rgb(179, 137, 1);
+}
+
+#btnTimbrarTodos{
+    position: absolute;
+    top: 105px;
+    right: 23px;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 8px 12px;
+    background-color: #4c77af;
+}
+
+#btnTimbrarTodos > i{
+    margin-right: 3px;
+}
+
+#btnTimbrarTodos:hover{
+    background-color: #4583a0;
+}

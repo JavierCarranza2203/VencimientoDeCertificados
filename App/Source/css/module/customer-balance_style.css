@@ -5,4 +5,5 @@
 /* Modificacion del tamaño de la imagen del logo */
 .logo-container__img{
     width: 50px;
+    height: 68px;
 }

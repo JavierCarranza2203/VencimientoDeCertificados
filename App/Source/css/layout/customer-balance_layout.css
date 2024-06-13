@@ -17,12 +17,24 @@ body {
 .customer-info-card {
     padding: 0 8px;
     padding-top: 8px;
+    display: grid;
+    width: 250px;
+}
+
+.customer-info-card:first-child{
+    width: 400px;
 }
 
 .customer-info-card h3, h4 {
     padding-bottom: 8px;
-    color: #3a3a3a;
+    display: grid;
+    color: #474747;
 }
+
+.customer-info-card:first-child h3, .customer-info-card:first-child h4{
+    grid-template-columns: 90px 1fr;
+}
+
 
 .customer-info-card h3 b {
     font-weight: bold;
@@ -32,4 +44,19 @@ body {
 .customer-info-card h4 b {
     font-weight: bold;
     font-size: 16px;
+}
+
+h2{
+    font-size: 18px;
+    font-weight: bold;
+    color: #616161;
+    padding-bottom: 8px;
+}
+
+.table-container {
+    padding: 8px 16px;
+}
+
+.gridjs-pages{
+    display: flex;
 }
