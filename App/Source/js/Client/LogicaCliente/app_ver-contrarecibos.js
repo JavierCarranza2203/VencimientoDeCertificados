@@ -1,4 +1,5 @@
 import { PermitirAcceso } from "../../Functions/MetodosSinPeticion.js";
+import { GenerarReporteDeContraRecibosTimbrados } from "../../Functions/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -31,3 +32,17 @@ function InicializarTabla() {
     }).render(tableContainer);
 }
 
+document.getElementById("btnGenerarExcel").addEventListener('click', async ()=> {
+    try {
+        GenerarReporteDeContraRecibosTimbrados();
+    }
+    catch(error) {  
+        console.log(error);
+        Swal.fire({
+            icon: "error",
+            title: "¡Hubo un error inesperado!",
+            text: "Intente de nuevo, por favor",
+            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+        });
+    }
+});

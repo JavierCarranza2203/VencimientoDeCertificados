@@ -60,6 +60,12 @@ require_once "../Models/Cliente.php";
                 
                 echo json_encode($ClienteService->TimbrarContraRecibo($rfc, $concepto));
             break;
+            case 'pay':
+                $rfc = $_POST['rfc'];
+                $monto = $_POST['monto'];
+
+                echo json_encode($ClienteService->RealizarPago($rfc, $monto));
+            break;
             case 'updateCertificates':
                 $Rfc = $_POST['Rfc'];
                 $CertificadoFirma = null;
@@ -77,6 +83,17 @@ require_once "../Models/Cliente.php";
                 $RegimenFiscal = $_POST['RegimenFiscal'];
 
                 echo $ClienteService->EditarDatosCliente($Rfc, $GrupoClientes, $ClaveCiec, $RegimenFiscal);
+            break;
+            case 'updateTicketsInfo':
+                $Rfc = $_POST['rfc'];
+                $Calle = $_POST['calle'];
+                $Numero = $_POST['numero'];
+                $Ciudad = $_POST['ciudad'];
+                $Estado = $_POST['estado'];
+                $CodigoPostal = $_POST['codigoPostal'];
+                $TarifaMensal = $_POST['tarifaMensual'];
+
+                echo $ClienteService->EditarDatosDeTimbradoDeContraRecibos($Rfc, $Calle, $Numero, $Ciudad, $Estado, $CodigoPostal, $TarifaMensual);
             break;
             case 'add':
                 // Obtén el contenido del cuerpo de la solicitud (request body)

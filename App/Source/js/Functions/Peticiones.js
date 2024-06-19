@@ -631,17 +631,26 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
             fetch('../Controllers/ClienteController.php?Operacion=stampTicket', {
                 method: 'POST',
                 body: datos,
+            }).then(response => {
+
+                if(response.ok) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Datos insertados correctamente.',
+                        icon: 'success'
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: '¡Error al timbrar!',
+                        text: "Verifique que no haya un contra-recibo con el mismo concepto e intente de nuevo, por favor.",
+                        icon: 'error'
+                    });
+                }
             });
         }
     }).then((result) => {
-        // Maneja la respuesta de la petición AJAX
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Éxito',
-                text: 'Datos insertados correctamente.',
-                icon: 'success'
-            });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
                 title: 'Cancelado',
                 text: 'La operación fue cancelada.',
@@ -652,6 +661,300 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
                 title: 'Error',
                 text: res['message'],
                 icon: 'error'
+            });
+        }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
+    });
+}
+
+export async function RegistrarPago(rfc, table) {
+    Swal.fire({
+        title: 'Realizar pago',
+        html:
+            '<label for="txtRfc" class="form__label">RFC del cliente a pagar:</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
+
+            '<label for="txtMonto" class="form__label">Cantidad pagada (Sin decimales):</label>' +
+            `<input id="txtMonto" class="double-form-container__form-input" placeholder="Monto"><br>`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        backdrop: false,
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
+            const Monto = Swal.getPopup().querySelector('#txtMonto').value;
+
+            if(Monto === null || Monto === '') { throw new Error("Debe ingresar por lo menos un dato"); }
+            
+            let datos = new FormData();
+            datos.append("rfc", Rfc);
+            datos.append("monto", Monto);
+
+            fetch('../Controllers/ClienteController.php?Operacion=pay', {
+                method: 'POST',
+                body: datos,
+            }).then(async response => {
+                if(response.ok) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Datos insertados correctamente.',
+                        icon: 'success'
+                    });
+
+                    table.updateConfig({
+                        search: true,
+                        columns: ["RFC", "Cliente", "Calle", "Colonia", "Número", "Ciudad", "Estado", "C.P.", "Tarifa mensual", "Activo", "Saldo actual", {
+                            name: 'Acciones',
+                            formatter: (cell, row) => {
+                                const editarIcono = `<i class="fas fa-edit" aria-hidden="true" title="Editar datos"></i>`;
+                                const eliminarIcono = `<i class="fas fa-trash" aria-hidden="true" title="Dejar de timbar"></i>`;
+                                const estadoDeCuenta = `<i class="fa-solid fa-tablet" aria-hidden="true" title="Estado de cuenta"></i>`;
+                                const agregarPago = `<i class="fa-solid fa-sack-dollar" aria-hidden="true" title="Registrar pago"></i>`
+
+                                return gridjs.html(`<div class="acciones">${estadoDeCuenta}${editarIcono}${eliminarIcono}${agregarPago}</div>`);
+                            }
+                        }],
+                        server: {
+                            url: '../Controllers/ClienteController.php?Operacion=viewInfoTimbrado',
+                            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], cliente[3], cliente[5], cliente[6], cliente[7], "$" + cliente[10] + ".00", cliente[8], "$" + cliente[9] + ".00"])
+                        },
+                        pagination: {
+                            limit: 6
+                        },
+                        language: {
+                            'search': {
+                                'placeholder': '🔍 Escriba para buscar...'
+                            }
+                        }
+                    }).forceRender();
+                }
+                else {
+                    const error = await response.json();
+                    console.log(error);
+
+                    if(error === null || error === '' || typeof(error) === 'undefined') {
+                        error = "Intente de nuevo o llame al administrador del sistema."
+                    }
+
+                    Swal.fire({
+                        title: '¡Error al realizar el pago!',
+                        text: error,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: result['message'],
+                icon: 'error'
+            });
+        }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
+    });
+}
+
+export async function GenerarReporteDeContraRecibosTimbrados() {
+    Swal.fire({
+        title: 'Generar reporte de Excel',
+        html:
+            '<label for="txtRfc" class="double-form-container__form-label swal-label">Ingrese el RFC del cliente (Si así lo requiere):</label>' +
+            `<input id="txtRfc" class="double-form-container__form-input" value="TODOS" placeholder="RFC"><br>` +
+
+            '<label for="txtTarifa" class="double-form-container__form-label swal-label">Ingrese la fecha inicial:</label>' +
+            `<input type="date" name="txtFechaInicial" id="txtFechaInicial" class="double-form-container__form-input"><br>` +
+
+            '<label for="txtConcepto" class="double-form-container__form-label swal-label">Ingrese la fecha final:</label>' +
+            `<input type="date" name="txtFechaFinal" id="txtFechaFinal" class="double-form-container__form-input"><br>`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        backdrop: false,
+        preConfirm: () => {
+            // Obtiene los valores de los campos de entrada
+            const Rfc = Swal.getPopup().querySelector('#txtRfc').value.toUpperCase();
+            const FechaInicial = Swal.getPopup().querySelector('#txtFechaInicial').value;
+            const FechaFinal = Swal.getPopup().querySelector('#txtFechaFinal').value;
+
+            if(Rfc === null || Rfc === '' || FechaFinal === '' || FechaInicial === '') { throw new Error('Debe llenar todos los campos'); }
+
+            if(!/^([A-ZÑ&]{3,4}) ?(?:- ?)?([0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1-2][0-9]|3[0-1])) ?(?:- ?)?([A-Z0-9]{2}) ?([A-Z0-9]{1})$/.test(Rfc) && Rfc != "TODOS") 
+            {
+                throw new Error('El RFC ingresado no es válido. Si desea generar de todos los clientes, escriba "TODOS"');
+            }
+
+            let datos = new FormData();
+
+            datos.append("rfc", Rfc);
+            datos.append("fechaInicial", FechaInicial);
+            datos.append("fechaFinal", FechaFinal);
+
+            Swal.fire({
+                title: "El archivo se está generando",
+                text: "Espere por favor",
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch(`http://localhost:8082/generar-reporte-contrarecibos-timbrados?rfc=${Rfc}&fechaInicial=${FechaInicial}&fechaFinal=${FechaFinal}`, {
+                method: 'POST'
+            }).then(async response => {
+                if(response.ok) {
+                    let blob = await response.blob();
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = url;
+
+                    if(Rfc === "TODOS") {
+                        a.download = 'Contra-Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal;
+                    }
+                    else {
+                        a.download = 'Contra-Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal + ' -- ' + Rfc;
+                    }
+
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'El archivo se ha generado correctamente.',
+                        icon: 'success'
+                    });
+
+                    a.click();
+                }
+                else {
+                    const data = await response.json();
+                    Swal.fire({
+                        title: '¡Error al generar el archivo!',
+                        text: data["message"],
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error'
+        });
+    });
+}
+
+export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, numero, ciudad, estado, cp, tarifa) {
+    Swal.fire({
+        title: 'Editar a ' + nombre,
+        html:
+            '<label for="txtCalle" class="double-form-container__form-label swal-label">Calle:</label>' +
+            `<input id="txtCalle" class="double-form-container__form-input" value="${calle}" placeholder="Calle de domicilio">` +
+
+            '<label for="txtColonia" class="double-form-container__form-label swal-label">Colonia:</label>' +
+            `<input id="txtColonia" class="double-form-container__form-input" value="${colonia}" placeholder="Colonia de domicilio">` +
+
+            '<label for="txtNumero" class="double-form-container__form-label swal-label">Número exterior o interior:</label>' +
+            `<input id="txtNumero" class="double-form-container__form-input" value="${numero}" placeholder="Número exterior o interior">` +
+
+            '<label for="txtCiudad" class="double-form-container__form-label swal-label">Ciudad:</label>' +
+            `<input id="txtCiudad" class="double-form-container__form-input" value="${ciudad}" placeholder="Ciudad">` +
+
+            '<label for="txtEstado" class="double-form-container__form-label swal-label">Estado:</label>' +
+            `<input id="txtEstado" class="double-form-container__form-input" value="${estado}" placeholder="Estado">` +
+
+            '<label for="txtCodigoPostal" class="double-form-container__form-label swal-label">Código postal:</label>' +
+            `<input id="txtCodigoPostal" class="double-form-container__form-input" value="${cp}" placeholder="Código postal">   ` +
+
+            '<label for="txtTarifa" class="double-form-container__form-label swal-label">Tarifa mensual (Sin decimales y signos):</label>' +
+            `<input id="txtTarifa" class="double-form-container__form-input" value="${tarifa}" placeholder="Tarifa mensual">`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, insertar',
+        cancelButtonText: 'Cancelar',
+        backdrop: false,
+        preConfirm: () => {
+            const calle = Swal.getPopup().querySelector('#txtCalle').value.toUpperCase();
+            const colonia = Swal.getPopup().querySelector('#txtColonia').value.toUpperCase();
+            const numero = Swal.getPopup().querySelector('#txtNumero').value.toUpperCase();
+            const ciudad = Swal.getPopup().querySelector('#txtCiudad').value.toUpperCase();
+            const estado = Swal.getPopup().querySelector('#txtEstado').value.toUpperCase();
+            const codigoPostal = Swal.getPopup().querySelector('#txtCodigoPostal').value.toUpperCase();
+            const tarifa = Swal.getPopup().querySelector('#txtTarifa').value.toUpperCase();
+
+            let datos = new FormData();
+
+            datos.append("rfc", rfc);
+            datos.append("calle", calle);
+            datos.append("colonia", colonia);
+            datos.append("numero", numero);
+            datos.append("ciudad", ciudad);
+            datos.append("estado", estado);
+            datos.append("codigoPostal", codigoPostal);
+            datos.append("tarifa", tarifa);
+
+            Swal.fire({
+                title: "El archivo se está generando",
+                text: "Espere por favor",
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch(`../Controllers/ClienteController.php?Operacion=updateTicketsInfo`, {
+                method: 'POST',
+                body: datos
+            }).then(async response => {
+                if(response.ok) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'El cliente se ha actualizado.',
+                        icon: 'success'
+                    });
+                }
+                else {
+                    const data = await response.json();
+                    Swal.fire({
+                        title: '¡Al generar el contrarecibo!',
+                        text: data["message"],
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
             });
         }
     })

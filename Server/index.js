@@ -6,11 +6,12 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 const upload = multer({ dest: 'uploads/' });
-import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas } from './MetodosExcel.js';
+import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas, DarEstilosAEncabezados, DarEstilosARenglones, convertDate } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 import { Relacion } from './Relacion.js';
 import { Factura } from './Factura.js';
 import xml2js from 'xml2js';
+import { jsPDF } from 'jspdf';
 
 const app = new express();
 let LibroDeGastos;
@@ -354,6 +355,15 @@ app.get("/getXMLInfo", async(req, res)=> {
     });
 });
 
+app.post('/generar-contrarecibo', upload.single('image'), (req, res) => {
+    const buffer = req.body.image;
+    console.log(buffer);
+
+    res.set('Content-Type', 'image/png');
+    res.set('Content-Disposition', 'attachment; filename="image.png"');
+    res.send(buffer);
+});
+
 
 //Método para generar el archivo de excel de la relación de ingresos
 app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async(req, res)=>{
@@ -421,6 +431,151 @@ app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), a
             message: 'Error al generar el archivo',
             error: error.message,
             });
+    }
+});
+
+app.post("/generar-reporte-contrarecibos-timbrados", async (req, res) => {
+    try {
+        const id = req.query.rfc;
+        const fechaInicial = req.query.fechaInicial;
+        const fechaFinal = req.query.fechaFinal;
+
+        let consulta;
+
+        if(id === "TODOS") {
+            consulta = `SELECT folio, fecha, hora, nombre, rfc, concepto, tarifaMensual FROM contrarecibos_timbrados WHERE fecha BETWEEN '${fechaInicial}' AND '${fechaFinal}' ORDER BY folio;`;
+        }
+        else {
+            consulta = `SELECT folio, fecha, hora, nombre, rfc, concepto, tarifaMensual FROM contrarecibos_timbrados WHERE (fecha BETWEEN '${fechaInicial}' AND '${fechaFinal}') AND rfc = '${id}' ORDER BY folio`;
+        }
+
+        const [rows, fields] = await pool.execute(consulta);
+
+        console.log(rows.length)
+
+        if(rows.length === 0) {
+            res.status(404).json( { message: "No hay contrarecibos timbrados" } )
+        }
+        else {
+            const workbook = new ExcelJS.Workbook();
+
+            const HojaReporte = workbook.addWorksheet("Clientes activos");
+
+            HojaReporte.columns = [
+                { header: "Folio", key: "folio", width: 11 },
+                { header: "Fecha", key: "fecha", width: 15 },
+                { header: "Hora", key: "hora", width: 15 },
+                { header: "Nombre", key: "nombre", width: 49 },
+                { header: "RFC", key: "rfc", width: 34 },
+                { header: "Concepto", key: "concepto", width: 41 },
+                { header: "Total", key: "total", width: 14 }
+            ];
+
+            DarEstilosAEncabezados(HojaReporte);
+
+            rows.forEach((contrarecibo, i) => {
+                HojaReporte.getCell('G' + i).numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+
+                HojaReporte.addRow([contrarecibo['folio'], contrarecibo['fecha'], contrarecibo['hora'], contrarecibo['nombre'], contrarecibo['rfc'], contrarecibo['concepto'], contrarecibo['tarifaMensual']]);
+            });
+
+            HojaReporte.getColumn('A').width = 11;
+            HojaReporte.getColumn('B').width = 15;
+            HojaReporte.getColumn('C').width = 15;
+            HojaReporte.getColumn('D').width = 49;
+            HojaReporte.getColumn('E').width = 34;
+            HojaReporte.getColumn('F').width = 41;
+            HojaReporte.getColumn('G').width = 14;
+
+            HojaReporte.getColumn('A').alignment = { horizontal: 'center' };
+            HojaReporte.getColumn('B').alignment = { horizontal: 'center' };
+            HojaReporte.getColumn('C').alignment = { horizontal: 'center' };
+            HojaReporte.getColumn('F').alignment = { horizontal: 'left' };
+            HojaReporte.getColumn('G').alignment = { horizontal: 'right' };
+
+            DarEstilosARenglones(HojaReporte, rows);
+
+            const numero = HojaReporte.lastRow.number;
+
+            HojaReporte.addRow(['', '', '', '', '', 'TOTAL DE INGRESOS POR CONTRARECIBOS:', { formula: `SUM(G2:${"G" + numero})` }]);
+    
+            let i = 1;
+            HojaReporte.getRow(HojaReporte.lastRow.number).eachCell(cell => {
+                if(i == 6) {
+                    cell.font = { bold: true };
+                    cell.alignment = { horizontal: 'right' };
+                    cell.border = {
+                        top: { style:'double', color: { argb:'00000000' } },
+                        bottom: { style:'double', color: { argb:'00000000' } }
+                    };
+                }
+                if(i == 7) {
+                    cell.font = { bold: true };
+                    cell.alignment = { horizontal: 'right' };
+                    cell.border = {
+                        top: { style:'double', color: { argb:'00000000' } },
+                        bottom: { style:'double', color: { argb:'00000000' } }
+                    };
+                    cell.numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+                }
+                else {
+                    i++;
+                }
+            });
+
+            workbook.xlsx.writeBuffer().then(excelBuffer => {
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename=contrarecibos_timbrados.xlsx');
+                res.send(excelBuffer);
+            });
+        }
+    }
+    catch(error) {
+        res.status(500).json({
+            success: false,
+            message: 'Hubo un error no esperado',
+            error: error.message
+        });
+    }
+});
+
+app.post("/generar-reporte-clientes-que-timbran-contrarecibos", async (req, res) => {
+    try {
+        const consulta = "SELECT rfc, nombre, grupo_clientes, CONCAT('$', tarifaMensual, '.00') AS tarifa FROM  cliente JOIN tarifas ON cliente.rfc = tarifas.idCliente WHERE timbraNominas = true";
+
+        const [rows, fields] = await pool.query(consulta);
+
+        const workbook = new ExcelJS.Workbook();
+
+            const HojaReporte = workbook.addWorksheet("ContraRecibos timbrados");
+
+            HojaReporte.columns = [
+                { header: "RFC", key: "rfc", width: 34 },
+                { header: "Nombre", key: "nombre", width: 49 },
+                { header: "Grupo de clientes", key: "grupo", width: 10 },
+                { header: "Tarifa mensual", key: "tarifa", width: 14 }
+            ];
+
+            const columnas = ['A1', 'B1', 'C1', 'D1'];
+
+            columnas.forEach(columna => {
+                sheet.getCell(columna).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '385592' } };
+                sheet.getCell(columna).font = { name: 'Arial', size: 12, color: { argb: 'FFFFFF' } };
+            });
+
+            rows.forEach((contrarecibo, i) => {
+                HojaReporte.getCell('D' + i).numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+
+                HojaReporte.addRow([contrarecibo['rfc'], contrarecibo['nombre'], contrarecibo['grupo_clientes'], contrarecibo['tarifa']]);
+            });
+
+    }
+    catch(error) {
+        res.status(500).json({
+            success: false,
+            message: 'Hubo un error no esperado',
+            error: error.message
+        });
     }
 });
 

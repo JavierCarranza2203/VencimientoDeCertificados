@@ -1,0 +1,24 @@
+@import url('../base/reset-syle.css');
+
+.contra-recibo-container {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.contra-recibo-container .info-emisor-container {
+    display: grid;
+    grid-template-columns: 1fr 150px 70%;
+}
+
+.info-emisor-container__info {
+    padding: 0 120px;
+}
+
+img {
+    width: 120px;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+}

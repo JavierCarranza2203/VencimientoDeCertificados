@@ -32,7 +32,7 @@ document.getElementById("frmGenerarRelacionDeGastos").addEventListener("submit",
                 if (result.dismiss === Swal.DismissReason.timer) {
                     console.log("Cerrado por el timer");
                 }
-            });
+        });
 
         miRelacion = new Relacion(await LeerArchivoDeExcel(archivoGastos));
 

@@ -190,3 +190,9 @@ export function AsignarAnchoAColumnas(hoja, arrayColumnas, tamanio){
         hoja.getColumn(columna).width = tamanio;
     })
 }
+
+export function convertDate(string) {
+    console.log(string);
+    let fech = string.split('-')
+    return fech[2] + '/' + fech[1] + '/' + fech[0];
+}

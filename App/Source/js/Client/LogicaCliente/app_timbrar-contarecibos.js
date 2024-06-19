@@ -57,6 +57,7 @@ document.getElementById('btnTimbrarTodos').addEventListener('click', ()=> {
                 '<option value="JULIO">JULIO</option>' +
                 '<option value="AGOSTO">AGOSTO</option>' +
                 '<option value="SEPTIEMBRE">SEPTIEMBRE</option>' +
+                '<option value="OCTUBRE">OCTUBRE</option>' +
                 '<option value="NOVIEMBRE">NOVIEMBRE</option>' +
                 '<option value="DICIEMBRE">DICIEMBRE</option>' +
             '</select><br>',
@@ -78,7 +79,23 @@ document.getElementById('btnTimbrarTodos').addEventListener('click', ()=> {
             fetch('../Controllers/ClienteController.php?Operacion=stampAllTickets', {
                 method: 'POST',
                 body: datos,
-            });
+            }).then(response => {
+                if(response.ok) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Datos insertados correctamente.',
+                        icon: 'success'
+                    });
+                }
+                else{
+                    console.log(response.json());
+                    Swal.fire({
+                        title: 'Error',
+                        text: error,
+                        icon: 'error'
+                    });
+                }
+            })
         }
     }).then((result) => {
         // Maneja la respuesta de la petición AJAX
@@ -118,9 +135,9 @@ document.addEventListener('click', async function(event) {
             const rfc = row.cells[0].textContent;
             const tarifa = row.cells[3].textContent;
 
-            // let folio = TimbrarContraRecibo(rfc, tarifa);
+            // TimbrarContraRecibo(rfc, tarifa);
 
-            this.location.href = './00-FormatoContraRecibo.html?folio=' + folio;
+            this.location.href = "00-FormatoContraRecibo.html"
         }
     }
     catch(error) {

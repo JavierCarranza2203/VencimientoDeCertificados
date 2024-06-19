@@ -74,3 +74,22 @@ div.acciones > i.fa-bell{
 #btnTimbrarTodos:hover{
     background-color: #4583a0;
 }
+
+#btnGenerarReporte {
+    position: absolute;
+    top: 105px;
+    right: 360px;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 8px 12px;
+    background-color: #4c77af;
+}
+
+#btnGenerarReporte > i{
+    margin-right: 3px;
+}
+
+#btnGenerarReporte:hover{
+    background-color: #4583a0;
+}

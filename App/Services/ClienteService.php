@@ -91,9 +91,9 @@ class ClienteService extends Connection
     }
 
     public function ObtenerTodosLosContrarecibosDeTodosLosClientes() : array {
-        $stmt = $this->db_conection->prepare("SELECT * FROM contrarecibos_timbrados");
+        $stmt = $this->db_conection->prepare("SELECT * FROM contrarecibos_timbrados ORDER BY folio");
 
-        return $this->EjecutarStamentDeQuerySelect($stmt);
+        return $this->EjecutarStamentDeQueryCall($stmt);
     }
 
     public function ObtenerInformacionDeTimbradoDeClientes() : array {
@@ -105,7 +105,8 @@ class ClienteService extends Connection
     public function ObtenerPagosRegistradosDeTodosLosClientes() : array {
         $stmt = $this->db_conection->prepare("SELECT * FROM pagos_registrados");
 
-        return $this->EjecutarStamentDeQuerySelect($stmt);
+        return $this->EjecutarStamentDeQueryCall($stmt);
+
     }
 
     public function ObtenerInformacionDeTimbradoPorCliente(string $rfc) : array {
@@ -121,7 +122,7 @@ class ClienteService extends Connection
 
         $stmt->bind_param("s", $rfc);
 
-        return $this->EjecutarStamentDeQuerySelect($stmt);
+        return $this->EjecutarStamentDeQueryCall($stmt);
     }
 
     public function ObtenerPagosRealizadosPorCliente(string $rfc) : array {
@@ -129,14 +130,7 @@ class ClienteService extends Connection
 
         $stmt->bind_param("s", $rfc);
 
-        $stmt->execute();
-
-        //Obtiene el resultado
-        $resultado = $stmt->get_result();
-
-        $resultado = $resultado->fetch_all();
-
-        return $resultado;
+        return $this->EjecutarStamentDeQueryCall($stmt);
     }
 
     public function ObtenerClientesQueTimbranContraRecibos() : array {
@@ -171,6 +165,17 @@ class ClienteService extends Connection
         else {
             throw new Exception("No hay registros"); 
         }
+    }
+
+    private function EjecutarStamentDeQueryCall(mysqli_stmt $stmt) {
+        $stmt->execute();
+
+        //Obtiene el resultado
+        $resultado = $stmt->get_result();
+
+        $resultado = $resultado->fetch_all();
+
+        return $resultado;
     }
 
 /***********************************************************/
@@ -254,6 +259,19 @@ class ClienteService extends Connection
         }
     }
 
+    public function EditarDatosDeTimbradoDeContraRecibos(string $rfc, string $calle, string $numero, string $ciudad, string $estado, string $codigoPostal, int $tarifaMensual) {
+        $stmt = $this->db_conection->prepare("CALL EditarDatosDeContraRecibos(?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt->bind_param("ssssssi", $rfc, $calle, $numero, $ciudad, $estado, $codigoPostal, $tarifaMensual);
+
+        if($stmt->execute()) {
+            return "Se ha actualizaco al cliente con RFC: " . $rfc;
+        }
+        else {
+            throw new Exception("Hubo un error al actualizar el cliente");
+        }
+    }
+
 /*******************************************************/
 /*             Métodos para editar clientes            */
 /*******************************************************/
@@ -330,7 +348,7 @@ class ClienteService extends Connection
         return $this->EjecutarStamentDeQuerySelect($stmt);
     }
 
-    public function TimbrarContraRecibo2($rfc, $concepto) {
+    public function TimbrarContraReciboMasivo($rfc, $concepto) {
         $stmt = $this->db_conection->prepare("CALL TimbrarContraRecibo(?, ?)");
 
         $stmt->bind_param("ss", $rfc, $concepto);
@@ -344,7 +362,7 @@ class ClienteService extends Connection
         $contadorExitos = 0;
 
         for($i = 0; $i < count($clientes); $i++) {
-            if($this->TimbrarContraRecibo2($clientes[$i][0], $concepto)) {
+            if($this->TimbrarContraReciboMasivo($clientes[$i][0], $concepto)) {
                 $contadorExitos++;
             }
             else {
@@ -359,6 +377,19 @@ class ClienteService extends Connection
         ];
 
         return $data;
+    }
+
+    public function RealizarPago(string $rfc, int $monto) {
+        $stmt = $this->db_conection->prepare("CALL RealizarPago(?, ?)");
+        
+        $stmt->bind_param("si", $rfc, $monto);
+
+        if($stmt->execute()) {
+            return true;
+        }
+        else {
+            throw new Exception($stmt->error);
+        }
     }
 }
 ?>
