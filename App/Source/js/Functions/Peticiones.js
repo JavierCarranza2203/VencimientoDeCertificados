@@ -814,6 +814,7 @@ export async function GenerarReporteDeContraRecibosTimbrados() {
                 title: "El archivo se está generando",
                 text: "Espere por favor",
                 timerProgressBar: true,
+                backdrop: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -851,7 +852,13 @@ export async function GenerarReporteDeContraRecibosTimbrados() {
                         icon: 'error'
                     });
                 }
-            });
+            }).catch(error => {
+                Swal.fire({
+                    title: '¡Error al generar el archivo!',
+                    text: error,
+                    icon: 'error'
+                });
+            })
         }
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.cancel) {
@@ -941,13 +948,20 @@ export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, nume
                 }
                 else {
                     const data = await response.json();
+
                     Swal.fire({
-                        title: '¡Al generar el contrarecibo!',
+                        title: '¡Error al generar el contrarecibo!',
                         text: data["message"],
                         icon: 'error'
                     });
                 }
-            });
+            }).catch(error => {
+                Swal.fire({
+                    title: '¡Error al generar el contrarecibo!',
+                    text: error,
+                    icon: 'error'
+                });
+            })
         }
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.cancel) {

@@ -91,31 +91,18 @@ document.getElementById('btnTimbrarTodos').addEventListener('click', ()=> {
                     console.log(response.json());
                     Swal.fire({
                         title: 'Error',
-                        text: error,
+                        text: response.json(),
                         icon: 'error'
                     });
                 }
             })
         }
     }).then((result) => {
-        // Maneja la respuesta de la petición AJAX
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Éxito',
-                text: 'Datos insertados correctamente.',
-                icon: 'success'
-            });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
                 title: 'Cancelado',
                 text: 'La operación fue cancelada.',
                 icon: 'info'
-            });
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: res['message'],
-                icon: 'error'
             });
         }
     })
@@ -135,9 +122,7 @@ document.addEventListener('click', async function(event) {
             const rfc = row.cells[0].textContent;
             const tarifa = row.cells[3].textContent;
 
-            // TimbrarContraRecibo(rfc, tarifa);
-
-            this.location.href = "00-FormatoContraRecibo.html"
+            TimbrarContraRecibo(rfc, tarifa);
         }
     }
     catch(error) {

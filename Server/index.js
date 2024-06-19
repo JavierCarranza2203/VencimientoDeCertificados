@@ -6,12 +6,11 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 const upload = multer({ dest: 'uploads/' });
+import xml2js from 'xml2js';
+import jsPDF from 'jspdf';
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas, DarEstilosAEncabezados, DarEstilosARenglones, convertDate } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
-import { Relacion } from './Relacion.js';
 import { Factura } from './Factura.js';
-import xml2js from 'xml2js';
-import { jsPDF } from 'jspdf';
 
 const app = new express();
 let LibroDeGastos;
@@ -355,15 +354,12 @@ app.get("/getXMLInfo", async(req, res)=> {
     });
 });
 
-app.post('/generar-contrarecibo', upload.single('image'), (req, res) => {
-    const buffer = req.body.image;
-    console.log(buffer);
+app.post('/generar-contrarecibo', (req, res) => {
+    let doc = new jsPDF();
 
-    res.set('Content-Type', 'image/png');
-    res.set('Content-Disposition', 'attachment; filename="image.png"');
-    res.send(buffer);
+    doc.text("Hello world!", 1, 1);
+    doc.save("two-by-four.pdf");
 });
-
 
 //Método para generar el archivo de excel de la relación de ingresos
 app.post("/generar_relacion_de_ingresos", multer({ dest: 'uploads/' }).none(), async(req, res)=>{
@@ -450,8 +446,6 @@ app.post("/generar-reporte-contrarecibos-timbrados", async (req, res) => {
         }
 
         const [rows, fields] = await pool.execute(consulta);
-
-        console.log(rows.length)
 
         if(rows.length === 0) {
             res.status(404).json( { message: "No hay contrarecibos timbrados" } )

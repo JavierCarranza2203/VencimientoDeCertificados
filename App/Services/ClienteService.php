@@ -391,5 +391,9 @@ class ClienteService extends Connection
             throw new Exception($stmt->error);
         }
     }
+
+    public function CancelarContraRecibo(string $rfc) {
+        
+    }
 }
 ?>
