@@ -42,10 +42,10 @@ async function LlenarTablaContreRecibos(rfc) {
     const url = '../Controllers/ClienteController.php?Operacion=viewTicketsByCustomerId&Rfc=' + rfc
 
     new gridjs.Grid({
-        columns: ["Folio", "Fecha de timbrado", "Hora", "Concepto", "Importe"],
+        columns: ["Folio", "Fecha de timbrado", "Hora", "Concepto", "Importe", "Estatus"],
         server: {
             url: url,
-            then: data => data.map(pago => [pago[0], pago[1], pago[2], pago[3], "$" + pago[4] + ".00"])
+            then: data => data.map(pago => [pago[0], pago[1], pago[2], pago[3], "$" + pago[4] + ".00", pago[5]])
         },
         pagination: {
             limit: 5

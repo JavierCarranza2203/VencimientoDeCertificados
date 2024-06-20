@@ -1,5 +1,5 @@
 import { PermitirAcceso } from "../../Functions/MetodosSinPeticion.js";
-import { EditarDetallesDeTimbrado, RegistrarPago } from "../../Functions/Peticiones.js";
+import { EditarDetallesDeTimbrado, RegistrarPago, DejarDeTimbrarContraRecibos } from "../../Functions/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -54,14 +54,23 @@ document.addEventListener('click', async function(event) {
             const estado = row.cells[6].textContent;
             const codigoPostal = row.cells[7].textContent;
             const tarifa = row.cells[8].textContent;
+            let tarifaSinSignos = '';
 
-            EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, numero, ciudad, estado, codigoPostal, tarifa);
+            for(let i = 0; i < tarifa.length; i++){
+                if(tarifa[i] === "."){ break; }
+                if(tarifa[i] !== "$") {
+                    tarifaSinSignos += tarifa[i];
+                }
+            }
+
+            EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, numero, ciudad, estado, codigoPostal, tarifaSinSignos, table);
         }
         else if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const rfc = row.cells[0].textContent;
+            const nombre = row.cells[1].textContent;
 
-            // EliminarCliente(rfc, table, url);
+            DejarDeTimbrarContraRecibos(rfc, table, nombre);
         }
         else if(event.target.classList.contains('fa-tablet')) {
             const rfc = event.target.parentElement.parentElement.parentElement.parentElement.cells[0].textContent;

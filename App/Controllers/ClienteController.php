@@ -93,7 +93,17 @@ require_once "../Models/Cliente.php";
                 $CodigoPostal = $_POST['codigoPostal'];
                 $TarifaMensal = $_POST['tarifaMensual'];
 
-                echo $ClienteService->EditarDatosDeTimbradoDeContraRecibos($Rfc, $Calle, $Numero, $Ciudad, $Estado, $CodigoPostal, $TarifaMensual);
+                echo $ClienteService->EditarDatosDeTimbradoDeContraRecibos($Rfc, $Calle, $Numero, $Ciudad, $Estado, $CodigoPostal, $TarifaMensal);
+            break;
+            case 'cancelTicket':
+                $folio = $_GET['folio'];
+
+                echo json_encode($ClienteService->CancelarContraRecibo($folio));
+            break;
+            case 'cancelCustomer':
+                $rfc = $_GET['rfc'];
+
+                echo json_encode($ClienteService->DejarDeTimbrarContraRecibos($rfc));
             break;
             case 'add':
                 // Obtén el contenido del cuerpo de la solicitud (request body)

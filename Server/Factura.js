@@ -202,7 +202,7 @@ export class Factura {
                     message = ' - Por definir';
                 break;
             default:
-                throw new Error('Uso de CFDI no identificado');
+                message = '';
         }
 
         return _strUsoCfdi + message;

@@ -13,10 +13,8 @@
 /* Estilos para el form de actualizar */
 @import url("components/double-form_style.css");
 
-#btnGenerarExcel{
+#btnGenerarExcel, #btnGenerarExcelMes{
     position: absolute;
-    top: 82px;
-    right: 16px;
     color: #fff;
     border-radius: 5px;
     font-weight: bold;
@@ -24,12 +22,22 @@
     background-color: #4c77af;
 }
 
-#btnGenerarExcel > i{
+#btnGenerarExcel > i, #btnGenerarExcelMes > i{
     margin-right: 3px;
 }
 
-#btnGenerarExcel:hover{
+#btnGenerarExcel:hover, #btnGenerarExcelMes:hover{
     background-color: #4583a0;
+}
+
+#btnGenerarExcel {
+    top: 82px;
+    right: 16px;
+}
+
+#btnGenerarExcelMes {
+    top: 82px;
+    right: 240px;
 }
 
 td{

@@ -1,5 +1,5 @@
 import { PermitirAcceso } from "../../Functions/MetodosSinPeticion.js";
-import { GenerarReporteDeContraRecibosTimbrados } from "../../Functions/Peticiones.js";
+import { ActualizarTablaContraRecibos, CancelarContraRecibo, GenerarReporteDeContraRecibosTimbrados } from "../../Functions/Peticiones.js";
 
 const tableContainer = document.getElementById("wrapper");
 let table;
@@ -16,7 +16,7 @@ function InicializarTabla() {
     table = new gridjs.Grid({
         search: true,
         columns: ["Folio", "Fecha y hora", "Cliente", "Concepto", "Importe", "Estatus", {
-            name: '',
+            name: 'Cancelar',
             formatter: (cell, row) => {
                 const timbrarIcono = `<i class="fa-solid fa-trash" aria-hidden="true" title="Cancelar Contra Recibo"></i>`;
 
@@ -54,13 +54,28 @@ document.getElementById("btnGenerarExcel").addEventListener('click', async ()=> 
     }
 });
 
+document.getElementById("btnGenerarExcelPorMes").addEventListener('click', async ()=> {
+    try {
+        GenerarReporteDeContraRecibosTimbradosPorMes();
+    }
+    catch(error) {
+        console.log(error);
+        Swal.fire({
+            icon: "error",
+            title: "¡Hubo un error inesperado!",
+            text: "Intente de nuevo, por favor",
+            footer: '<label>Si ya ha intentado, llame al administrador de sistemas.</label>'
+        });
+    }
+});
+
 document.addEventListener('click', async function(event) {
     try {
         if (event.target.classList.contains('fa-trash')) {
             const row = event.target.parentElement.parentElement.parentElement.parentElement;
             const folio = row.cells[0].textContent;
 
-            
+            CancelarContraRecibo(folio, table);
         }
     }
     catch(error) {

@@ -16,7 +16,7 @@ function InicializarTabla() {
     table = new gridjs.Grid({
         search: true,
         columns: ["RFC", "Nombre del cliente", "Grupo de clientes", "Tarifa mensual", {
-            name: 'Acciones',
+            name: 'Timbrar',
             formatter: (cell, row) => {
                 const timbrarIcono = `<i class="fa-solid fa-bell" aria-hidden="true" title="Timbrar ContraRecibo"></i>`;
 
@@ -82,8 +82,8 @@ document.getElementById('btnTimbrarTodos').addEventListener('click', ()=> {
             }).then(response => {
                 if(response.ok) {
                     Swal.fire({
-                        title: 'Éxito',
-                        text: 'Datos insertados correctamente.',
+                        title: '¡Acción realizada con éxito!',
+                        text: 'Se han timbrado todos los contra recibos por honorarios del mes de ' + mes + '.',
                         icon: 'success'
                     });
                 }
@@ -122,7 +122,8 @@ document.addEventListener('click', async function(event) {
             const rfc = row.cells[0].textContent;
             const tarifa = row.cells[3].textContent;
 
-            TimbrarContraRecibo(rfc, tarifa);
+            // TimbrarContraRecibo(rfc, tarifa);
+            this.location.href = "./00-FormatoContraRecibo.html"
         }
     }
     catch(error) {

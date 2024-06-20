@@ -1,24 +1,62 @@
 @import url('../base/reset-syle.css');
 
+body {
+    font-size: 12.5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .contra-recibo-container {
+    padding: 50px;
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 150px 35px 300px;
 }
 
 .contra-recibo-container .info-emisor-container {
     display: grid;
-    grid-template-columns: 1fr 150px 70%;
+    grid-template-columns: 1fr 130px 500px 1fr;
+    text-align: center;
 }
 
 .info-emisor-container__info {
-    padding: 0 120px;
+}
+
+.info-emisor-container__info-direccion > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 15px;
 }
 
 img {
-    width: 120px;
+    width: 110px;
+    place-self: top;
+    margin-top: -10px;
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 17.5px;
     font-weight: bold;
+}
+
+h2 {
+    font-size: 17.5px;
+}
+
+.titulo-container {
+    display: grid;
+    grid-template-columns: 1fr 500px 1fr;
+}
+
+.titulo-container > h2 {
+    text-align: center;
+    background-color: #bebebe;
+    display: block;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid #555;
+}
+
+.info-cliente-container {
+    display: grid;
+    grid-template-columns: 1fr 650px 1fr;
 }

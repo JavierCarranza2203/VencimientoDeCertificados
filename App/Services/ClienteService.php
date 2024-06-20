@@ -142,8 +142,7 @@ class ClienteService extends Connection
                                             FROM 
                                                 cliente
                                             JOIN
-                                                tarifas ON cliente.rfc = tarifas.idCliente
-                                            WHERE timbraNominas = true");
+                                                tarifas ON cliente.rfc = tarifas.idCliente");
 
         return $this->EjecutarStamentDeQuerySelect($stmt);
     }
@@ -268,7 +267,7 @@ class ClienteService extends Connection
             return "Se ha actualizaco al cliente con RFC: " . $rfc;
         }
         else {
-            throw new Exception("Hubo un error al actualizar el cliente");
+            throw new Exception($stmt->error);
         }
     }
 
@@ -392,8 +391,30 @@ class ClienteService extends Connection
         }
     }
 
-    public function CancelarContraRecibo(string $rfc) {
-        
+    public function CancelarContraRecibo(int $folio) {
+        $stmt = $this->db_conection->prepare("CALL CancelarContraRecibo(?)");
+
+        $stmt->bind_param("i", $folio);
+
+        if($stmt->execute()) {
+            return "El contra recibo con folio " . $folio . " se ha cancelado.";
+        }
+        else {
+            throw new Exception($stmt->error);
+        }
+    }
+
+    public function DejarDeTimbrarContraRecibos(string $rfc) {
+        $stmt = $this->db_conection->prepare("CALL DejarDeTimbrarCliente(?)");
+
+        $stmt->bind_param("s", $rfc);
+
+        if($stmt->execute()) {
+            return "El cliente se ha desactivado";
+        }
+        else {
+            throw new Exception($stmt->error);
+        }
     }
 }
 ?>

@@ -603,7 +603,7 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
     let folio;
 
     Swal.fire({
-        title: 'Timbrar contra-recibo',
+        title: 'Timbrar contra recibo',
         html:
             '<label for="txtRfc" class="form__label">RFC del cliente a timbrar:</label>' +
             `<input id="txtRfc" class="double-form-container__form-input" value="${rfc}" placeholder="RFC" readonly><br>` +
@@ -636,7 +636,7 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
                 if(response.ok) {
                     Swal.fire({
                         title: 'Éxito',
-                        text: 'Datos insertados correctamente.',
+                        text: 'El contra recibo se ha timbrado.',
                         icon: 'success'
                     });
                 }
@@ -830,10 +830,10 @@ export async function GenerarReporteDeContraRecibosTimbrados() {
                     a.href = url;
 
                     if(Rfc === "TODOS") {
-                        a.download = 'Contra-Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal;
+                        a.download = 'Contra Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal;
                     }
                     else {
-                        a.download = 'Contra-Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal + ' -- ' + Rfc;
+                        a.download = 'Contra Recibos timbrados ' + FechaInicial + ' a ' + FechaFinal + ' -- ' + Rfc;
                     }
 
                     Swal.fire({
@@ -878,7 +878,7 @@ export async function GenerarReporteDeContraRecibosTimbrados() {
     });
 }
 
-export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, numero, ciudad, estado, cp, tarifa) {
+export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, numero, ciudad, estado, cp, tarifaM, table) {
     Swal.fire({
         title: 'Editar a ' + nombre,
         html:
@@ -901,7 +901,7 @@ export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, nume
             `<input id="txtCodigoPostal" class="double-form-container__form-input" value="${cp}" placeholder="Código postal">   ` +
 
             '<label for="txtTarifa" class="double-form-container__form-label swal-label">Tarifa mensual (Sin decimales y signos):</label>' +
-            `<input id="txtTarifa" class="double-form-container__form-input" value="${tarifa}" placeholder="Tarifa mensual">`,
+            `<input id="txtTarifa" class="double-form-container__form-input" value="${tarifaM}" placeholder="Tarifa mensual">`,
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
@@ -924,16 +924,7 @@ export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, nume
             datos.append("ciudad", ciudad);
             datos.append("estado", estado);
             datos.append("codigoPostal", codigoPostal);
-            datos.append("tarifa", tarifa);
-
-            Swal.fire({
-                title: "El archivo se está generando",
-                text: "Espere por favor",
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            datos.append("tarifaMensual", tarifa);
 
             fetch(`../Controllers/ClienteController.php?Operacion=updateTicketsInfo`, {
                 method: 'POST',
@@ -945,19 +936,21 @@ export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, nume
                         text: 'El cliente se ha actualizado.',
                         icon: 'success'
                     });
+
+                    ActualizarTablaClienteContraRecibos(table);
                 }
                 else {
                     const data = await response.json();
 
                     Swal.fire({
-                        title: '¡Error al generar el contrarecibo!',
-                        text: data["message"],
+                        title: '¡Error al editar el cliente!',
+                        text: data,
                         icon: 'error'
                     });
                 }
             }).catch(error => {
                 Swal.fire({
-                    title: '¡Error al generar el contrarecibo!',
+                    title: '¡Error al editar el cliente!',
                     text: error,
                     icon: 'error'
                 });
@@ -978,5 +971,155 @@ export async function EditarDetallesDeTimbrado(rfc, nombre, calle, colonia, nume
             text: error,
             icon: 'error'
         });
+    });
+}
+
+export async function CancelarContraRecibo(folio, table) {
+    Swal.fire({
+        title: "Se cancelará el contra recibo con folio " + folio,
+        text: "Deberá timbrar otro en caso de error",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "¡Si, cancelar contrarecibo!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            fetch('../Controllers/ClienteController.php?Operacion=cancelTicket&folio=' + folio).then(async response => {
+                const data = await response.json();
+                if(response.ok) {
+                    Swal.fire({
+                        title: '¡Acción realizada con éxito!',
+                        text: data,
+                        icon: 'success'
+                    });
+
+                    ActualizarTablaContraRecibos(table);
+                }
+                else {
+                    Swal.fire({
+                        title: '¡Error al cancelar el contrarecibo!',
+                        text: data,
+                        icon: 'error'
+                    });
+                }
+            }).catch(error => {
+                Swal.fire({
+                    title: '¡Error al cancelar el contrarecibo!',
+                    text: error,
+                    icon: 'error'
+                });
+            })
+        }
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        }
+    });
+}
+
+export async function ActualizarTablaContraRecibos(table) {
+    table.updateConfig({
+        search: true,
+        columns: ["Folio", "Fecha y hora", "Cliente", "Concepto", "Importe", "Estatus", {
+            name: 'Cancelar',
+            formatter: (cell, row) => {
+                const timbrarIcono = `<i class="fa-solid fa-trash" aria-hidden="true" title="Cancelar Contra Recibo"></i>`;
+
+                return gridjs.html(`<div class="acciones">${timbrarIcono}</div>`);
+            }
+        }],
+        server: {
+            url: '../Controllers/ClienteController.php?Operacion=viewRecibos',
+            then: data => data.map(recibo => [recibo[0], recibo[1] + " " + recibo[2], recibo[3], 
+                recibo[7], "$" + recibo[8] + ".00", recibo[9]])
+        },
+        pagination: {
+            limit: 10
+        },
+        language: {
+            'search': {
+                'placeholder': '🔍 Escriba para buscar...'
+            }
+        }
+    }).forceRender();
+}
+
+export async function ActualizarTablaClienteContraRecibos(table) {
+    table.updateConfig({
+        search: true,
+        columns: ["RFC", "Cliente", "Calle", "Colonia", "Número", "Ciudad", "Estado", "C.P.", "Tarifa mensual", "Activo", "Saldo actual", {
+            name: 'Acciones',
+            formatter: (cell, row) => {
+                const editarIcono = `<i class="fas fa-edit" aria-hidden="true" title="Editar datos"></i>`;
+                const eliminarIcono = `<i class="fas fa-trash" aria-hidden="true" title="Dejar de timbar"></i>`;
+                const estadoDeCuenta = `<i class="fa-solid fa-tablet" aria-hidden="true" title="Estado de cuenta"></i>`;
+                const agregarPago = `<i class="fa-solid fa-sack-dollar" aria-hidden="true" title="Registrar pago"></i>`
+
+                return gridjs.html(`<div class="acciones">${estadoDeCuenta}${editarIcono}${eliminarIcono}${agregarPago}</div>`);
+            }
+        }],
+        server: {
+            url: url,
+            then: data => data.map(cliente => [cliente[0], cliente[1], cliente[2], cliente[4], cliente[3], cliente[5], cliente[6], cliente[7], "$" + cliente[10] + ".00", cliente[8], "$" + cliente[9] + ".00"])
+        },
+        pagination: {
+            limit: 6
+        },
+        language: {
+            'search': {
+                'placeholder': '🔍 Escriba para buscar...'
+            }
+        }
+    }).forceRender();
+}
+
+export async function DejarDeTimbrarContraRecibos(rfc, table, nombre) {
+    Swal.fire({
+        title: nombre + " dejará de timbrar contra recibos",
+        text: "Los contra recibos ya timbrados seguirán existiendo",
+        icon: "warning",
+        showCancelButton: true, 
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "¡Si, cancelar cliente!"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            fetch('../Controllers/ClienteController.php?Operacion=cancelCustomer&rfc=' + rfc).then(async response => {
+                const data = await response.json();
+                if(response.ok) {
+                    Swal.fire({
+                        title: '¡Acción realizada con éxito!',
+                        text: data,
+                        icon: 'success'
+                    });
+
+                    ActualizarTablaClienteContraRecibos(table);
+                }
+                else {
+                    Swal.fire({
+                        title: '¡Error al cancelar el cliente!',
+                        text: data,
+                        icon: 'error'
+                    });
+                }
+            }).catch(error => {
+                Swal.fire({
+                    title: '¡Error al cancelar el cliente!',
+                    text: error,
+                    icon: 'error'
+                });
+            })
+        }
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelado',
+                text: 'La operación fue cancelada.',
+                icon: 'info'
+            });
+        }
     });
 }
