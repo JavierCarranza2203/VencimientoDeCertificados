@@ -54,7 +54,7 @@ document.getElementById("btnGenerarExcel").addEventListener('click', async ()=> 
     }
 });
 
-document.getElementById("btnGenerarExcelPorMes").addEventListener('click', async ()=> {
+document.getElementById("btnGenerarExcelMes").addEventListener('click', async ()=> {
     try {
         GenerarReporteDeContraRecibosTimbradosPorMes();
     }

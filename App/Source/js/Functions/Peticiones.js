@@ -631,9 +631,9 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
             fetch('../Controllers/ClienteController.php?Operacion=stampTicket', {
                 method: 'POST',
                 body: datos,
-            }).then(response => {
-
+            }).then(async response => {
                 if(response.ok) {
+
                     Swal.fire({
                         title: 'Éxito',
                         text: 'El contra recibo se ha timbrado.',

@@ -122,8 +122,7 @@ document.addEventListener('click', async function(event) {
             const rfc = row.cells[0].textContent;
             const tarifa = row.cells[3].textContent;
 
-            // TimbrarContraRecibo(rfc, tarifa);
-            this.location.href = "./00-FormatoContraRecibo.html"
+            TimbrarContraRecibo(rfc, tarifa);
         }
     }
     catch(error) {

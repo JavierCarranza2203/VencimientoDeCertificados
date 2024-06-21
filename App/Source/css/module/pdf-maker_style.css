@@ -8,16 +8,13 @@ body {
 .contra-recibo-container {
     padding: 50px;
     display: grid;
-    grid-template-rows: 150px 35px 300px;
+    grid-template-rows: 150px 35px 200px;
 }
 
 .contra-recibo-container .info-emisor-container {
     display: grid;
     grid-template-columns: 1fr 130px 500px 1fr;
     text-align: center;
-}
-
-.info-emisor-container__info {
 }
 
 .info-emisor-container__info-direccion > div {
@@ -58,5 +55,34 @@ h2 {
 
 .info-cliente-container {
     display: grid;
-    grid-template-columns: 1fr 650px 1fr;
+    grid-template-columns: 1fr 500px 1fr 1fr;
+    padding: 25px 0;
+}
+
+.info-cliente-container__info-pago{
+    border: 1px solid #242424;
+    border-bottom: 0;
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    width: 250px;
+}
+
+.info-cliente-container__info-pago h3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.info-cliente-container__info-pago h3 b {
+    border-right: 1px solid #242424;
+    border-bottom: 1px solid #242424;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+.info-cliente-container__info-pago h3 b#ultimo {
+    border-radius: 0px 0px 0px 8px;
 }

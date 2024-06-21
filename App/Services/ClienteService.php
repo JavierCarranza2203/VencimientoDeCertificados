@@ -142,7 +142,8 @@ class ClienteService extends Connection
                                             FROM 
                                                 cliente
                                             JOIN
-                                                tarifas ON cliente.rfc = tarifas.idCliente");
+                                                tarifas ON cliente.rfc = tarifas.idCliente
+                                            WHERE timbraNominas = TRUE");
 
         return $this->EjecutarStamentDeQuerySelect($stmt);
     }
@@ -344,7 +345,39 @@ class ClienteService extends Connection
 
         $stmt->bind_param("ss", $rfc, $concepto);
 
-        return $this->EjecutarStamentDeQuerySelect($stmt);
+        $infoContraRecibo = $this->EjecutarStamentDeQuerySelect($stmt);
+
+        $curl = curl_init("localhost:8082/login?folio=" . urlencode($infoContraRecibo['folio']) . 
+            "&fecha=" . urlencode($infoContraRecibo['fecha']) . 
+            "&nombre" . urlencode($infoContraRecibo['nombre']) . 
+            "&domiclio" . urlencode($infoContraRecibo['domicilio']) . 
+            "&ciudad" . urlencode($infoContraRecibo['ciudad']) . 
+            "&rfc". urlencode($infoContraRecibo['rfc']) . 
+            "&concepto" . urlencode($infoContraRecibo['concepto']) . 
+            "&importe" . urlencode($infoContraRecibo['tarifaMensual']));
+
+        if(!$curl) throw new Exception("Error al intentar conectarse a la API");
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+
+        $decodedResponse = json_decode($response, true);
+
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        curl_close($curl);
+
+        if($httpCode >= 200 && $httpCode < 300) {
+            
+        }
+        else if($httpCode == 401){
+            throw new UnexpectedValueException($decodedResponse['error'], $httpCode);
+        }
+        else {
+            throw new Exception($decodedResponse['error'], $httpCode);
+        }
     }
 
     public function TimbrarContraReciboMasivo($rfc, $concepto) {
