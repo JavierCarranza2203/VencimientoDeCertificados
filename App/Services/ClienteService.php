@@ -340,21 +340,14 @@ class ClienteService extends Connection
         }
     }
 
-    public function TimbrarContraRecibo($rfc, $concepto) {
+    public function TimbrarContraRecibo($rfc, $concepto, $nombreCarpeta) {
         $stmt = $this->db_conection->prepare("CALL TimbrarContraRecibo(?, ?)");
 
         $stmt->bind_param("ss", $rfc, $concepto);
 
         $infoContraRecibo = $this->EjecutarStamentDeQuerySelect($stmt);
 
-        $curl = curl_init("localhost:8082/login?folio=" . urlencode($infoContraRecibo['folio']) . 
-            "&fecha=" . urlencode($infoContraRecibo['fecha']) . 
-            "&nombre" . urlencode($infoContraRecibo['nombre']) . 
-            "&domiclio" . urlencode($infoContraRecibo['domicilio']) . 
-            "&ciudad" . urlencode($infoContraRecibo['ciudad']) . 
-            "&rfc". urlencode($infoContraRecibo['rfc']) . 
-            "&concepto" . urlencode($infoContraRecibo['concepto']) . 
-            "&importe" . urlencode($infoContraRecibo['tarifaMensual']));
+        $curl = curl_init("http://localhost:8082/generar-contrarecibo?folio=" . $infoContraRecibo[0][0] . "&fecha=" . urlencode($infoContraRecibo[0][1]) . "&nombre=" . urlencode($infoContraRecibo[0][3]) . "&domicilio=" . urlencode($infoContraRecibo[0][4]) . "&ciudad=" . urlencode($infoContraRecibo[0][5]) . "&rfc=". urlencode($infoContraRecibo[0][6]) . "&concepto=" . urlencode($infoContraRecibo[0][7]) . "&importe=" . urlencode($infoContraRecibo[0][8]) . "&carpeta=" . urlencode($nombreCarpeta));
 
         if(!$curl) throw new Exception("Error al intentar conectarse a la API");
 
@@ -362,25 +355,11 @@ class ClienteService extends Connection
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         $response = curl_exec($curl);
-
-        $decodedResponse = json_decode($response, true);
-
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-        curl_close($curl);
-
-        if($httpCode >= 200 && $httpCode < 300) {
-            
-        }
-        else if($httpCode == 401){
-            throw new UnexpectedValueException($decodedResponse['error'], $httpCode);
-        }
-        else {
-            throw new Exception($decodedResponse['error'], $httpCode);
-        }
+        
+        return "Se ha generado el contra recibo";
     }
 
-    public function TimbrarContraReciboMasivo($rfc, $concepto) {
+    private function TimbrarContraReciboMasivo($rfc, $concepto) {
         $stmt = $this->db_conection->prepare("CALL TimbrarContraRecibo(?, ?)");
 
         $stmt->bind_param("ss", $rfc, $concepto);

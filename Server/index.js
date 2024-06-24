@@ -11,6 +11,7 @@ import { jsPDF } from 'jspdf';
 import { AgregarEncabezados, AgregarRenglonesPorGrupoDeClientes, LlenarHojaDeRelacionDeGastos, LlenarFormulasDiot, AgregarTotalesDiot, CalcularSubTotal, CalcularValorParaMostrar, AsignarAnchoAColumnas, DarEstilosAEncabezados, DarEstilosARenglones, convertDate } from './MetodosExcel.js';
 import { RegresarRegistrosPorVencer, FiltarRegistroPorVencerEnLaSemana } from './MetodosServer.js';
 import { Factura } from './Factura.js';
+import { ContraRecibo } from './ContraRecibo.js';
 
 const app = new express();
 let LibroDeGastos;
@@ -354,108 +355,14 @@ app.get("/getXMLInfo", async(req, res)=> {
     });
 });
 
-app.post('/generar-contrarecibo', upload.single("img"), (req, res) => {
-    const { folio, fecha, nombre, domicilio, ciudad, rfc, concepto, importe  } = req.query;
+app.get('/generar-contrarecibo', (req, res) => {
+    const { folio, fecha, nombre, domicilio, ciudad, rfc, concepto, importe, carpeta  } = req.query;
 
-    var doc = new jsPDF();
-    var margin = 7;
+    const contrarecibo = new ContraRecibo(folio, fecha, nombre, domicilio, ciudad, rfc, concepto, importe, carpeta);
 
-    doc.line(margin, margin, doc.internal.pageSize.getWidth() - margin, margin);
+    contrarecibo.Generar();
 
-    doc.line(margin, doc.internal.pageSize.getHeight() - margin, doc.internal.pageSize.getWidth() - margin, doc.internal.pageSize.getHeight() - margin);
-
-    doc.line(margin, margin, margin, doc.internal.pageSize.getHeight() - margin);
-
-    doc.line(doc.internal.pageSize.getWidth() - margin, margin, doc.internal.pageSize.getWidth() - margin, doc.internal.pageSize.getHeight() - margin);
-
-    //========== CAMBIO DE LETRA
-    doc.setFontSize(14);
-    doc.setFont('Helvetica', 'Bold');
-    doc.text('GARCIA REYES Y ASOCIADOS', 88, 18);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Dinorah Ortiz Obregón', 100, 24);
-
-    //========== CAMBIO DE LETRA
-    doc.setFontSize(9);
-    doc.setFont('Helvetica', 'Bold');
-
-    doc.text('CONTADOR PÚBLICO', 110, 29);
-
-    //========== CAMBIO DE LETRA
-    doc.setFont('helvetica', 'normal');
-
-    doc.text('R.F.C.: OIOD650814KQ9', 78, 34);
-    doc.text('CURP: OIOD650814MTSRBN03', 130, 34);
-    doc.text('MATIAS GUERRA #73', 78, 39);
-    doc.text('COL. INFONAVIT', 116, 39);
-    doc.text('TEL.: (867) 717-0815', 146, 39);
-    doc.text('CORREO: rgarcia@globalpc.net', 68, 44);
-    doc.text('NUEVO LAREDO, TAMAULIPAS', 116, 44);
-    doc.text('C.P.: 88275', 165, 44);
-
-    //========== CAMBIO DE LETRA
-    doc.setFont('Helvetica', 'Bold');
-    doc.text('FECHA:', 15, 68);
-    doc.text('RECIBÍ DE:', 15, 73);
-    doc.text('DOMICILIO:', 15, 78);
-    doc.text('CIUDAD:', 15, 83);
-    doc.text('RFC:', 15, 88);
-    doc.text('CONCEPTO:', 15, 93);
-    doc.text('FOLIO:', 155, 57);
-
-    //========== CAMBIO DE LETRA
-    doc.setFont('helvetica', 'normal');
-    doc.line(30, 111, 125, 111);
-    doc.text('CANTIDAD CON LETRA', 60, 115);
-
-    doc.line(192, 65, 192, 95);
-    doc.line(140, 65, 140, 95);
-    doc.line(140, 65, 192, 65);
-    doc.line(140, 95, 192, 95);
-    doc.line(166, 65, 166, 95);
-
-    doc.line(140, 70, 192, 70);
-
-    doc.line(140, 75, 192, 75);
-
-    doc.line(140, 80, 192, 80);
-
-    doc.line(140, 85, 192, 85);
-
-    doc.line(140, 90, 192, 90);
-
-    //========== CAMBIO DE LETRA
-    doc.setFont('Helvetica', 'Bold');
-    doc.text('IMPORTE:', 149, 68.5);
-    doc.text('IVA:', 158, 73.5);
-    doc.text('SUBTOTAL:', 146, 78.5);
-    doc.text('RET. IVA:', 150, 83.5);
-    doc.text('RET. ISR:', 150, 88.5);
-    doc.text('TOTAL:', 153, 93.5);
-
-    //========== CAMBIO DE LETRA
-    doc.setFont('helvetica', 'normal');
-    doc.text(folio, 167, 57);
-    doc.text(fecha, 28, 68);
-    doc.text(nombre, 33, 73);
-    doc.text(domicilio, 34, 78);
-    doc.text(ciudad, 29, 83);
-    doc.text(rfc, 23, 88);
-    doc.text(concepto, 35, 93);
-
-    doc.text(importe, 167, 68.5);
-    doc.text('$0.00', 167, 73.5);
-    doc.text(importe, 167, 78.5);
-    doc.text('$0.00', 167, 83.5);
-    doc.text('$0.00', 167, 88.5);
-    doc.text(importe, 167, 93.5);
-
-    doc.setFillColor('#C0C0C0');
-    doc.setFontSize(12);
-    doc.rect(56, 52, 90, 7, 'FD');
-    doc.text('CONTRA RECIBO', 85, 57);
-
-    doc.save("contrarecibo.pdf");
+    res.json("Se ha generado el contrarecibo");
 });
 
 //Método para generar el archivo de excel de la relación de ingresos
@@ -544,8 +451,6 @@ app.post("/generar-reporte-contrarecibos-timbrados", async (req, res) => {
 
         const [rows, fields] = await pool.execute(consulta);
 
-        console.log(rows);
-
         if(rows.length === 0) {
             res.status(404).json( { message: "No hay contrarecibos timbrados" } )
         }
@@ -566,11 +471,15 @@ app.post("/generar-reporte-contrarecibos-timbrados", async (req, res) => {
 
             DarEstilosAEncabezados(HojaReporte);
 
-            rows.forEach((contrarecibo, i) => {
-                HojaReporte.getCell('G' + i).numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
-
+            let j = 1;
+            rows.forEach((contrarecibo) => {
                 HojaReporte.addRow([contrarecibo['folio'], contrarecibo['fecha'], contrarecibo['estatus'], contrarecibo['nombre'], contrarecibo['rfc'], contrarecibo['concepto'], contrarecibo['tarifaMensual']]);
+
+                HojaReporte.getCell('G' + j).numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
+                j++;
             });
+
+            HojaReporte.getCell('G' + j).numFmt = '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-';
 
             HojaReporte.getColumn('A').width = 11;
             HojaReporte.getColumn('B').width = 15;

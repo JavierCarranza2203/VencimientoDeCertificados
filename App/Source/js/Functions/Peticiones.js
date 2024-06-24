@@ -600,7 +600,7 @@ export async function LeerArchivoDeExcel(archivo, orderBy){
 /**********************************************************/
 
 export async function TimbrarContraRecibo(rfc, tarifa) {
-    let folio;
+    let nombreCarpeta;
 
     Swal.fire({
         title: 'Timbrar contra recibo',
@@ -611,8 +611,22 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
             '<label for="txtTarifa" class="form__label">Tarifa mensual:</label>' +
             `<input id="txtTarifa" class="double-form-container__form-input" value="${tarifa}" placeholder="Tarifa" readonly><br>` +
 
-            '<label for="txtConcepto" class="form__label">Ingrese el concepto:</label>' +
-            `<input id="txtConcepto" class="double-form-container__form-input" placeholder="HONORARIOS DEL MES DE..."><br>`,
+            '<label for="cmbMesDeTimbrado" class="form__label">Seleccione el mes que aparecerá en el concepto:</label>' +
+            '<select name="cmbMesDeTimbrado" id="cmbMesDeTimbrado" class="double-form-container__form-combobox">' +
+                '<option value=""></option>' +
+                '<option value="ENERO">ENERO</option>' +
+                '<option value="FEBRERO">FEBRERO</option>' +
+                '<option value="MARZO">MARZO</option>' +
+                '<option value="ABRIL">ABRIL</option>' +
+                '<option value="MAYO">MAYO</option>' +
+                '<option value="JUNIO">JUNIO</option>' +
+                '<option value="JULIO">JULIO</option>' +
+                '<option value="AGOSTO">AGOSTO</option>' +
+                '<option value="SEPTIEMBRE">SEPTIEMBRE</option>' +
+                '<option value="OCTUBRE">OCTUBRE</option>' +
+                '<option value="NOVIEMBRE">NOVIEMBRE</option>' +
+                '<option value="DICIEMBRE">DICIEMBRE</option>' +
+            '</select><br>',
         showCancelButton: true,
         confirmButtonText: 'Sí, insertar',
         cancelButtonText: 'Cancelar',
@@ -620,27 +634,75 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
         preConfirm: () => {
             // Obtiene los valores de los campos de entrada
             const Rfc = Swal.getPopup().querySelector('#txtRfc').value;
-            const Concepto = Swal.getPopup().querySelector('#txtConcepto').value;
+            const Mes = Swal.getPopup().querySelector('#cmbMesDeTimbrado').value;
+            const Concepto = 'HONORARIOS DEL MES DE ' + Mes + ' 2024';
+            const Carpeta = (Mes) => {
+                let numMes;
 
-            if(Concepto === null || Concepto === '') { throw new Error("Debe ingresar por lo menos un dato"); }
-            
+                switch(Mes) {
+                    case 'ENERO': 
+                        numMes = '01-'; 
+                    break;
+                    case 'FEBRERO': 
+                        numMes = '02-'; 
+                    break;
+                    case 'MARZO': 
+                        numMes = '03-';
+                    break;
+                    case 'ABRIL': 
+                        numMes = '04-';
+                    break;
+                    case 'MAYO': 
+                        numMes = '05-';
+                    break;
+                    case 'JUNIO': 
+                        numMes = '06-';
+                    break;
+                    case 'JULIO': 
+                        numMes = '07-';
+                    break;
+                    case 'AGOSTO': 
+                        numMes = '08-';
+                    break;
+                    case 'SEPTIEMBRE': 
+                        numMes = '09-';
+                    break;
+                    case 'OCTUBRE': 
+                        numMes = '10-';
+                    break;
+                    case 'NOVIEMBRE': 
+                        numMes = '11-';
+                    break;
+                    case 'DICIEMBRE': 
+                        numMes = '12-';
+                    break;
+                }
+
+                return numMes + Mes;
+            }
+
+            if(Concepto === null || Concepto === '') { throw new Error("Debe llenar todos los datos"); }
+            nombreCarpeta = Carpeta(Mes);
+
             let datos = new FormData();
             datos.append("rfc", Rfc);
             datos.append("concepto", Concepto);
+            datos.append("nombreCarpeta", nombreCarpeta);
 
             fetch('../Controllers/ClienteController.php?Operacion=stampTicket', {
                 method: 'POST',
                 body: datos,
             }).then(async response => {
-                if(response.ok) {
 
+                if(response.ok) {
                     Swal.fire({
-                        title: 'Éxito',
-                        text: 'El contra recibo se ha timbrado.',
+                        title: '¡Se ha generado el contra recibo!',
+                        text: 'Puede encontrarlo en: ' + 'SERVER/HONORARIOS/2024/' + nombreCarpeta,
                         icon: 'success'
                     });
                 }
                 else {
+                    const data = await response.json();
                     Swal.fire({
                         title: '¡Error al timbrar!',
                         text: "Verifique que no haya un contra-recibo con el mismo concepto e intente de nuevo, por favor.",
@@ -655,12 +717,6 @@ export async function TimbrarContraRecibo(rfc, tarifa) {
                 title: 'Cancelado',
                 text: 'La operación fue cancelada.',
                 icon: 'info'
-            });
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: res['message'],
-                icon: 'error'
             });
         }
     })

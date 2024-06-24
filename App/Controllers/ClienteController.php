@@ -57,8 +57,9 @@ require_once "../Models/Cliente.php";
             case 'stampTicket':
                 $concepto = $_POST['concepto'];
                 $rfc = $_POST['rfc'];
+                $nombreCarpeta = $_POST['nombreCarpeta'];
                 
-                echo json_encode($ClienteService->TimbrarContraRecibo($rfc, $concepto));
+                echo json_encode($ClienteService->TimbrarContraRecibo($rfc, $concepto, $nombreCarpeta));
             break;
             case 'pay':
                 $rfc = $_POST['rfc'];
